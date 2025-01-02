@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
 import 'package:virgil_demo/screens/new_post.dart';  // Import Post model
-import 'own_profile_screen.dart';  // Profile screen when a user is clicked
+import 'own_profile_screen.dart';  // Profile screen when self is clicked
+import 'others_profile_screen.dart';  // Profile screen when a user is clicked
+
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 
@@ -45,9 +47,6 @@ class HomeScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home Feed"),
-      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,10 +64,7 @@ class HomeScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfileScreen(
-                              user: currentUser,  // Your current user object
-                              isCurrentUser: true,  // Indicating this is the current user's profile
-                            ),
+                            builder: (context) => OtherProfileScreen(),
                           ),
                         );
                       },
@@ -97,28 +93,14 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             // Vertical list of posts
+                        // Expanded space for posts
             Expanded(
               child: ListView.builder(
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
-                  final post = posts[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(post.originalPoster.username, style: TextStyle(fontWeight: FontWeight.bold)),
-                          SizedBox(height: 8),
-                          Text(post.quote),
-                          SizedBox(height: 8),
-                          Image.network(post.imageUrl),
-                        ],
-                      ),
-                    ),
-                  );
+                  return PostWidget(post: posts[index]);
                 },
               ),
             ),
@@ -130,7 +112,7 @@ class HomeScreen extends StatelessWidget {
           // Navigate to the screen to create a new post
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => NewPostScreen()),
+            MaterialPageRoute(builder: (context) => CreatePostScreen()),
           );
         },
         child: Icon(Icons.add),

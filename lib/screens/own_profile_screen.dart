@@ -4,7 +4,8 @@ import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/screens/new_post.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
 import 'package:virgil_demo/widgets/profile_pane.dart';
-class ProfileScreen extends StatelessWidget {
+
+class OwnProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Sample user data for the logged-in user (self)

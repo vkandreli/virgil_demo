@@ -17,7 +17,7 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
     HomeScreen(),
     LibraryScreen(),
     RecommendationsScreen(),
-    ProfileScreen(),
+    OwnProfileScreen(),
   ];
 
   void _onTabTapped(int index) {

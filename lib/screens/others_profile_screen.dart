@@ -4,7 +4,7 @@ import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/screens/new_post.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
 
-class ProfileScreen extends StatelessWidget {
+class OtherProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User user = User(username: "user123", profileImage: "https://via.placeholder.com/150", password: "000", email: "user123@mail.com");
