@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'profile_screen.dart';
+import 'own_profile_screen.dart';
 import 'home_screen.dart';
 import 'library_screen.dart';
 import 'recommendations_screen.dart';

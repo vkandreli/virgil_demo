@@ -1,13 +1,15 @@
+import 'package:virgil_demo/models/user.dart'; 
+
 class Post {
-  final String originalPoster;
-  final String reblogger;
+  final User originalPoster;
+  User? reblogger; 
   final String imageUrl;
   final String quote;
 
   // Constructor
   Post({
     required this.originalPoster,
-    required this.reblogger,
+    this.reblogger,  
     required this.imageUrl,
     required this.quote,
   });

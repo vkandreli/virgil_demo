@@ -2,63 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/screens/new_post.dart';
-
-class ProfileScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Sample posts
-    List<Post> posts = [
-      Post(
-        originalPoster: "user123",
-        reblogger: "reblogger456",
-        imageUrl: "https://via.placeholder.com/150",
-        quote: "This is a quote",
-      ),
-      Post(
-        originalPoster: "user789",
-        reblogger: "reblogger101",
-        imageUrl: "https://via.placeholder.com/150",
-        quote: "This is another quote",
-      ),
-    ];
-
-    return Scaffold(
-      body: SafeArea( // Ensures no overlap with the status bar
-        child: Column(
-          children: [
-            // Profile Pane
-            ProfilePane(),
-
-            // Expanded space for posts
-            Expanded(
-              child: ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  return PostWidget(post: posts[index]);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      
-      // Floating action button for creating a new post
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to CreatePostScreen when pressed
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreatePostScreen()),
-          );
-        },
-        child: Icon(Icons.add), // Icon for the button
-        backgroundColor: Colors.blue, // Set button color
-      ),
-    );
-  }
-}
+import 'package:virgil_demo/models/user.dart';  // Import User model
 
 class ProfilePane extends StatelessWidget {
+  final User user;
+  ProfilePane({required this.user});  // Constructor to accept user
+  
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
