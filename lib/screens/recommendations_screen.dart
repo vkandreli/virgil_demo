@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/screens/book_presentation.dart'; // Import the MovieDetailScreen
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 class RecommendationsScreen extends StatelessWidget {
   @override
