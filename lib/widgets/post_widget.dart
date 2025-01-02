@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/models/post.dart';
+import 'package:logger/logger.dart';  // Import the logger package
 
 class PostWidget extends StatelessWidget {
   final Post post;
+  final Logger logger = Logger();  // Create an instance of the Logger
 
   PostWidget({required this.post});
 
@@ -20,13 +22,13 @@ class PostWidget extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(child: Icon(Icons.person)),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 Text(post.originalPoster, style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 Icon(Icons.replay), // Reblog icon
-                SizedBox(width: 8),
+                SizedBox(width: 16),
                 CircleAvatar(child: Icon(Icons.person)),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 Text(post.reblogger, style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
@@ -42,38 +44,38 @@ class PostWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton(
-                  icon: Icon(Icons.heart_broken),
+                  icon: Icon(Icons.favorite),
                   onPressed: () {
-                    // Implement like functionality
-                    print("Liked post");
+                    // Log the like action instead of print
+                    logger.i("Liked post by ${post.originalPoster}");
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.repeat), // Reblog icon
                   onPressed: () {
-                    // Implement reblog functionality
-                    print("Reblogged post");
+                    // Log the reblog action
+                    logger.i("Reblogged post by ${post.reblogger}");
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.comment),
                   onPressed: () {
-                    // Implement comment functionality
-                    print("Commented");
+                    // Log the comment action
+                    logger.i("Commented on post by ${post.originalPoster}");
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.save_alt),
                   onPressed: () {
-                    // Implement save functionality
-                    print("Saved post");
+                    // Log the save action
+                    logger.i("Saved post by ${post.originalPoster}");
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.add_circle_outline),
                   onPressed: () {
-                    // Implement add functionality
-                    print("Added book");
+                    // Log the add action
+                    logger.i("Added post by ${post.originalPoster} to collection");
                   },
                 ),
               ],

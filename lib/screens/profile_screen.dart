@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
+import 'package:virgil_demo/screens/new_post.dart';
+
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,12 +18,12 @@ class ProfileScreen extends StatelessWidget {
         originalPoster: "user789",
         reblogger: "reblogger101",
         imageUrl: "https://via.placeholder.com/150",
-        quote: "This is a quote",
+        quote: "This is another quote",
       ),
     ];
 
     return Scaffold(
-      body: SafeArea(  // Ensures no overlap with the status bar
+      body: SafeArea( // Ensures no overlap with the status bar
         child: Column(
           children: [
             // Profile Pane
@@ -39,10 +41,22 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+      
+      // Floating action button for creating a new post
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to CreatePostScreen when pressed
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreatePostScreen()),
+          );
+        },
+        child: Icon(Icons.add), // Icon for the button
+        backgroundColor: Colors.blue, // Set button color
+      ),
     );
   }
 }
-
 
 class ProfilePane extends StatelessWidget {
   @override
