@@ -1,0 +1,50 @@
+// import 'package:flutter/material.dart';
+
+// void main() {
+//   runApp(const MainApp());
+// }
+
+// class MainApp extends StatelessWidget {
+//   const MainApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const MaterialApp(
+//       home: Scaffold(
+//         body: Center(
+//           child: Text('Hello World!'),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+import 'package:flutter/material.dart';
+import 'screens/bottom_navigation.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Virgil',
+      theme: ThemeData(
+        primarySwatch: Colors.brown, // Matching primary color
+        scaffoldBackgroundColor:  Color(0xFFAB886D), // Set default background color to white
+        textTheme: TextTheme(
+          bodyLarge:  TextStyle(color: Colors.black),
+          bodyMedium:  TextStyle(color: Colors.black),
+          bodySmall:  TextStyle(color: Colors.black),
+          headlineLarge: TextStyle(color: Colors.black),
+          headlineMedium: TextStyle(color: Colors.black), 
+          headlineSmall: TextStyle(color: Colors.black), 
+
+        ),
+      ),
+      home: BottomNavWrapper(),
+    );
+  }
+}
