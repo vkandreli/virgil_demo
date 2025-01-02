@@ -1,19 +1,39 @@
 import 'package:flutter/material.dart';
-
+import 'package:virgil_demo/models/post.dart';
+import 'package:virgil_demo/widgets/post_widget.dart';
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Sample posts
+    List<Post> posts = [
+      Post(
+        originalPoster: "user123",
+        reblogger: "reblogger456",
+        imageUrl: "https://via.placeholder.com/150",
+        quote: "This is a quote",
+      ),
+      Post(
+        originalPoster: "user789",
+        reblogger: "reblogger101",
+        imageUrl: "https://via.placeholder.com/150",
+        quote: "This is a quote",
+      ),
+    ];
+
     return Scaffold(
-      body: SafeArea(  // Wrap the entire body with SafeArea
+      body: SafeArea(  // Ensures no overlap with the status bar
         child: Column(
           children: [
-            // Profile pane
+            // Profile Pane
             ProfilePane(),
 
-            // Expanded space for content
+            // Expanded space for posts
             Expanded(
-              child: Center(
-                child: Text('Posts'),
+              child: ListView.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  return PostWidget(post: posts[index]);
+                },
               ),
             ),
           ],
@@ -43,9 +63,9 @@ class ProfilePane extends StatelessWidget {
                 CircleAvatar(
                   radius: 47.5,
                   backgroundColor: Color(0xFFD9D9D9),
-                  child: CircleAvatar(
+                  child: CircleAvatar(                    
                     radius: 36,
-                    backgroundImage: NetworkImage("https://via.placeholder.com/72x72"),
+                    child: Icon(Icons.person)
                   ),
                 ),
                 SizedBox(width: 16),
