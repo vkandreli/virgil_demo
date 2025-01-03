@@ -3,45 +3,46 @@ import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/screens/new_post.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
+import 'package:virgil_demo/assets/placeholders.dart';
 
 class OtherProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User user = User(username: "user123", profileImage: "https://via.placeholder.com/150", password: "000", email: "user123@mail.com");
     // Sample posts
-    List<User> followedUsers = [
-      User(username: "user123", profileImage: "https://via.placeholder.com/150", password: "000", email: "user123@mail.com"),
-      User(username: "user456", profileImage: "https://via.placeholder.com/150", password: "000", email: "user456@mail.com"),
-      User(username: "user789", profileImage: "https://via.placeholder.com/150", password: "000", email: "user789@mail.com"),
-    ];
+    // List<User> followedUsers = [
+    //   User(username: "user123", profileImage: "https://via.placeholder.com/150", password: "000", email: "user123@mail.com"),
+    //   User(username: "user456", profileImage: "https://via.placeholder.com/150", password: "000", email: "user456@mail.com"),
+    //   User(username: "user789", profileImage: "https://via.placeholder.com/150", password: "000", email: "user789@mail.com"),
+    // ];
 
-    // Sample list of posts
-    List<Post> posts = [
-      Post(
-        originalPoster: followedUsers[0],
-        reblogger:  user,
-        imageUrl: "https://via.placeholder.com/150",
-        quote: "This is a quote",
-      ),
-      Post(
-        originalPoster: followedUsers[2],
-        reblogger:  followedUsers[1],
-        imageUrl: "https://via.placeholder.com/150",
-        quote: "This is another quote",
-      ),
-      Post(
-        originalPoster: followedUsers[1],
-        reblogger:  followedUsers[2],
-        imageUrl: "https://via.placeholder.com/150",
-        quote: "This is a quote",
-      ),
-      Post(
-        originalPoster: followedUsers[0],
-        reblogger:  followedUsers[1],
-        imageUrl: "https://via.placeholder.com/150",
-        quote: "This is another quote",
-      ),
-    ];
+    // // Sample list of posts
+    // List<Post> posts = [
+    //   Post(
+    //     originalPoster: followedUsers[0],
+    //     reblogger:  user,
+    //     imageUrl: "https://via.placeholder.com/150",
+    //     quote: "This is a quote",
+    //   ),
+    //   Post(
+    //     originalPoster: followedUsers[2],
+    //     reblogger:  followedUsers[1],
+    //     imageUrl: "https://via.placeholder.com/150",
+    //     quote: "This is another quote",
+    //   ),
+    //   Post(
+    //     originalPoster: followedUsers[1],
+    //     reblogger:  followedUsers[2],
+    //     imageUrl: "https://via.placeholder.com/150",
+    //     quote: "This is a quote",
+    //   ),
+    //   Post(
+    //     originalPoster: followedUsers[0],
+    //     reblogger:  followedUsers[1],
+    //     imageUrl: "https://via.placeholder.com/150",
+    //     quote: "This is another quote",
+    //   ),
+    // ];
     return Scaffold(
       body: SafeArea( // Ensures no overlap with the status bar
         child: Column(
@@ -52,9 +53,9 @@ class OtherProfileScreen extends StatelessWidget {
             // Expanded space for posts
             Expanded(
               child: ListView.builder(
-                itemCount: posts.length,
+                itemCount: placeholderPosts.length,
                 itemBuilder: (context, index) {
-                  return PostWidget(post: posts[index]);
+                  return PostWidget(post: placeholderPosts[index]);
                 },
               ),
             ),

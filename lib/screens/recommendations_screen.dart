@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/screens/book_presentation.dart'; // Import the MovieDetailScreen
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+//import 'package:virgil_demo/assets/placeholders.dart';
 
 class RecommendationsScreen extends StatefulWidget {
   @override
@@ -16,21 +18,21 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
   Location location = Location();
 
   // Sample list of movie poster URLs and movie titles
-  List<Map<String, String>> popularMovies = [
-    {"title": "Movie 1", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+1"},
-    {"title": "Movie 2", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+2"},
-    {"title": "Movie 3", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+3"},
-    {"title": "Movie 4", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+4"},
-    {"title": "Movie 5", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+5"},
-  ];
+  // List<Map<String, String>> popularMovies = [
+  //   {"title": "Movie 1", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+1"},
+  //   {"title": "Movie 2", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+2"},
+  //   {"title": "Movie 3", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+3"},
+  //   {"title": "Movie 4", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+4"},
+  //   {"title": "Movie 5", "imageUrl": "https://via.placeholder.com/150x225?text=Movie+5"},
+  // ];
 
-  List<Map<String, String>> newReleases = [
-    {"title": "New Release 1", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+1"},
-    {"title": "New Release 2", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+2"},
-    {"title": "New Release 3", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+3"},
-    {"title": "New Release 4", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+4"},
-    {"title": "New Release 5", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+5"},
-  ];
+  // List<Map<String, String>> newReleases = [
+  //   {"title": "New Release 1", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+1"},
+  //   {"title": "New Release 2", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+2"},
+  //   {"title": "New Release 3", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+3"},
+  //   {"title": "New Release 4", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+4"},
+  //   {"title": "New Release 5", "imageUrl": "https://via.placeholder.com/150x225?text=New+Release+5"},
+  // ];
 
   @override
   void initState() {
@@ -85,7 +87,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
               height: 225, // Height of the movie posters row
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: popularMovies.length,
+                itemCount: placeholderBooks.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
@@ -94,8 +96,8 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => MovieDetailScreen(
-                            movieTitle: popularMovies[index]["title"]!,
-                            imageUrl: popularMovies[index]["imageUrl"]!,
+                            movieTitle: placeholderBooks[index].title,
+                            imageUrl: placeholderBooks[index].posterUrl,
                           ),
                         ),
                       );
@@ -103,7 +105,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Image.network(
-                        popularMovies[index]["imageUrl"]!,
+                        placeholderBooks[index].posterUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -126,7 +128,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
               height: 225, // Height of the movie posters row
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: newReleases.length,
+                itemCount: placeholderBooks.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
@@ -135,8 +137,8 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => MovieDetailScreen(
-                            movieTitle: newReleases[index]["title"]!,
-                            imageUrl: newReleases[index]["imageUrl"]!,
+                            movieTitle: placeholderBooks[index].title,
+                            imageUrl: placeholderBooks[index].posterUrl,
                           ),
                         ),
                       );
@@ -144,7 +146,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Image.network(
-                        newReleases[index]["imageUrl"]!,
+                        placeholderBooks[index].posterUrl,
                         fit: BoxFit.cover,
                       ),
                     ),

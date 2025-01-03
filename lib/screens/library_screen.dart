@@ -1,11 +1,195 @@
 import 'package:flutter/material.dart';
 import 'own_profile_screen.dart';
 import 'home_screen.dart';
-import 'library_screen.dart';
 import 'recommendations_screen.dart';
 import 'package:logger/logger.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:camera/camera.dart';
+
+class LibraryScreen extends StatelessWidget {
+  final List<Book> currentBooks = [];
+  final List<Book> todoBooks = [];
+  final List<Book> packBooks = [];
+  final List<Book> completedBooks = [];
+
+  @override
+  Widget build(BuildContext context) {
+    final Logger logger = Logger();  // Create an instance of the Logger
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search books...',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.camera_alt),
+                    onPressed: () async {
+                      logger.i("Camera pressed");
+                      final cameras = await availableCameras();
+                      if (cameras.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CameraScreen(camera: cameras.first),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildSection('Current', currentBooks, showProgress: true),
+                  _buildSection('To Do', todoBooks),
+                  _buildSection('Packs', packBooks),
+                  _buildSection('Completed', completedBooks),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.chat),
+        onPressed: () {},
+      ),
+    );
+  }
+
+  Widget _buildSection(String title, List<Book> books, {bool showProgress = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(
+          height: showProgress ? 240 : 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            itemCount: books.isEmpty ? 1 : books.length,
+            itemBuilder: (context, index) {
+              if (books.isEmpty) {
+                return _BookCard(
+                  book: null,
+                  showProgress: showProgress,
+                );
+              }
+              return _BookCard(
+                book: books[index],
+                showProgress: showProgress,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BookCard extends StatelessWidget {
+  final Book? book;
+  final bool showProgress;
+
+  const _BookCard({
+    this.book,
+    this.showProgress = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        width: 120,
+        margin: EdgeInsets.only(right: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                book?.posterUrl ?? 'https://via.placeholder.com/120x180',
+                height: 180,
+                width: 120,
+                fit: BoxFit.cover,
+              ),
+            ),
+            if (showProgress)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: LinearProgressIndicator(
+                  value: 0.7,
+                  backgroundColor: Colors.grey[200],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CameraScreen extends StatefulWidget {
+  final CameraDescription camera;
+
+  const CameraScreen({required this.camera});
+
+  @override
+  _CameraScreenState createState() => _CameraScreenState();
+}
+
+class _CameraScreenState extends State<CameraScreen> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = CameraController(widget.camera, ResolutionPreset.medium);
+    _initializeControllerFuture = _controller.initialize();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return CameraPreview(_controller);
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
+  }
+}
 
 // class LibraryScreen extends StatelessWidget {
 //   final Logger logger = Logger();  // Create an instance of the Logger
@@ -197,186 +381,3 @@ import 'package:camera/camera.dart';
 //     );
 //   }
 // }
-
-class LibraryScreen extends StatelessWidget {
-  final List<Book> currentBooks = [];
-  final List<Book> todoBooks = [];
-  final List<Book> packBooks = [];
-  final List<Book> completedBooks = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search books...',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.camera_alt),
-                    onPressed: () async {
-                      final cameras = await availableCameras();
-                      if (cameras.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CameraScreen(camera: cameras.first),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildSection('Current', currentBooks, showProgress: true),
-                  _buildSection('To Do', todoBooks),
-                  _buildSection('Packs', packBooks),
-                  _buildSection('Completed', completedBooks),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.chat),
-        onPressed: () {},
-      ),
-    );
-  }
-
-  Widget _buildSection(String title, List<Book> books, {bool showProgress = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ),
-        SizedBox(
-          height: showProgress ? 240 : 200,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            itemCount: books.isEmpty ? 1 : books.length,
-            itemBuilder: (context, index) {
-              if (books.isEmpty) {
-                return _BookCard(
-                  book: null,
-                  showProgress: showProgress,
-                );
-              }
-              return _BookCard(
-                book: books[index],
-                showProgress: showProgress,
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _BookCard extends StatelessWidget {
-  final Book? book;
-  final bool showProgress;
-
-  const _BookCard({
-    this.book,
-    this.showProgress = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: 120,
-        margin: EdgeInsets.only(right: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                book?.posterUrl ?? 'https://via.placeholder.com/120x180',
-                height: 180,
-                width: 120,
-                fit: BoxFit.cover,
-              ),
-            ),
-            if (showProgress)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: LinearProgressIndicator(
-                  value: 0.7,
-                  backgroundColor: Colors.grey[200],
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CameraScreen extends StatefulWidget {
-  final CameraDescription camera;
-
-  const CameraScreen({required this.camera});
-
-  @override
-  _CameraScreenState createState() => _CameraScreenState();
-}
-
-class _CameraScreenState extends State<CameraScreen> {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = CameraController(widget.camera, ResolutionPreset.medium);
-    _initializeControllerFuture = _controller.initialize();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    );
-  }
-}

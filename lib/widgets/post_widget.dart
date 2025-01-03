@@ -39,7 +39,9 @@ class PostWidget extends StatelessWidget {
             SizedBox(height: 12),
 
             // Post Image
-            Image.network(post.imageUrl), // Displays the post's image
+            Image.network(
+              post.imageUrl ?? 'https://via.placeholder.com/500x300?text=Default+Image', // Default image if null
+            ),
 
             SizedBox(height: 12),
 
