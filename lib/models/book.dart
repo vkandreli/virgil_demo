@@ -6,6 +6,8 @@ class Book {
   final String publisher;
   final String posterUrl;
   final String description;
+  DateTime? dateAdded;
+  DateTime? dateCompleted;
 
   Book({
     required this.title,
@@ -14,5 +16,7 @@ class Book {
     required this.publisher,
     required this.posterUrl,
     required this.description,
+    this.dateAdded,
+    this.dateCompleted,
   });
 }
