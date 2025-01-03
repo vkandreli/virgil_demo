@@ -13,8 +13,7 @@ class ProfilePane extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: 
-      Container(
+      child: Container(
         margin: EdgeInsets.all(15),
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -28,9 +27,9 @@ class ProfilePane extends StatelessWidget {
                 CircleAvatar(
                   radius: 47.5,
                   backgroundColor: Color(0xFFD9D9D9),
-                  child: CircleAvatar(                    
+                  child: CircleAvatar(
                     radius: 36,
-                    child: Icon(Icons.person)
+                    child: Icon(Icons.person),
                   ),
                 ),
                 SizedBox(width: 16),
@@ -47,7 +46,7 @@ class ProfilePane extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        user.status,
+                        user.status ?? 'No status available', // Fallback if status is null
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 15,
@@ -57,18 +56,18 @@ class ProfilePane extends StatelessWidget {
                   ),
                 ),
                 if (user != currentUser) ...[
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text('Follow'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFAB886D),
-                    foregroundColor: Colors.black,
-                    minimumSize: Size(86, 31),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text('Follow'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFAB886D),
+                      foregroundColor: Colors.black,
+                      minimumSize: Size(86, 31),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
-                ),
                 ],
               ],
             ),
@@ -77,14 +76,22 @@ class ProfilePane extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildStatColumn(user.completedList.length.toString(), 'Books'),
-                _buildStatColumn(user.completedList.where((book) {
-      return book.dateCompleted.year == DateTime.now().year;}).toList().length.toString(), 'This year'),   
+                _buildStatColumn(
+                    user.completedList
+                        .where((book) {
+                          // Safe check for dateCompleted being null
+                          return book.dateCompleted?.year == DateTime.now().year;
+                        })
+                        .toList()
+                        .length
+                        .toString(),
+                    'This year'),
                 _buildStatColumn(user.usersPacks.length.toString(), 'Packs'),
               ],
             ),
           ],
         ),
-      )
+      ),
     );
   }
 

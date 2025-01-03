@@ -65,7 +65,7 @@ class OwnProfileScreen extends StatelessWidget {
           children: [
             // Profile Pane
             if (currentUser != null) // Check if the user is available
-              ProfilePane(user: currentUser),  // Pass user to ProfilePane
+              ProfilePane(user: currentUser, currentUser: currentUser,),  // Pass user to ProfilePane
 
             // Expanded space for posts
             Expanded(
