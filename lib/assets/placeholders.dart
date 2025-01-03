@@ -117,7 +117,6 @@ User placeholderSelf = User(
     usersReviews: [],
   );
 
-
 List<Post> placeholderPosts = [
   Post(
     originalPoster: placeholderUsers[0], // User 1 as the original poster
