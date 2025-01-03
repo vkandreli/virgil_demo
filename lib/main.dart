@@ -26,9 +26,9 @@ import 'models/user.dart';
 void main() {
   runApp(MyApp());
 }
-
 class MyApp extends StatelessWidget {
-  final User self = placeholderSelf;
+  final User self = placeholderSelf;//provider for user
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
