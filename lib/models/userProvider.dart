@@ -1,18 +1,18 @@
-import 'user.dart';
-import 'package:flutter/material.dart';
+// import 'user.dart';
+// import 'package:flutter/material.dart';
 
-class UserProvider extends ChangeNotifier {
-  User? _currentUser;
+// class UserProvider extends ChangeNotifier {
+//   User? _currentUser;
 
-  User? get currentUser => _currentUser;
+//   User? get currentUser => _currentUser;
 
-  void setUser(User user) {
-    _currentUser = user;
-    notifyListeners();
-  }
+//   void setUser(User user) {
+//     _currentUser = user;
+//     notifyListeners();
+//   }
 
-  void removeUser() {
-    _currentUser = null;
-    notifyListeners();
-  }
-}
+//   void removeUser() {
+//     _currentUser = null;
+//     notifyListeners();
+//   }
+// }

@@ -6,17 +6,18 @@ import 'others_profile_screen.dart';  // Profile screen when a user is clicked
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
-import 'package:virgil_demo/models/userProvider.dart';
-import 'package:provider/provider.dart'; 
+// import 'package:virgil_demo/models/userProvider.dart';
+// import 'package:provider/provider.dart'; 
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the current user from the UserProvider
-    User? currentUser = Provider.of<UserProvider>(context).currentUser;
+    User? currentUser = placeholderSelf; //.of<UserProvider>(context).currentUser;
 
     return Scaffold(
-      body: SafeArea(
+      body: 
+      SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,12 +31,12 @@ class HomeScreen extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         // Navigate to the selected user's profile, passing the selected user
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OtherProfileScreen(user: user), // Pass the selected user here
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => OtherProfileScreen(user: user), // Pass the selected user here
+                        //   ),
+                        // );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -51,7 +52,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-
 
             // Search Bar with circular profile picture
             Padding(
@@ -73,14 +73,14 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(width: 16),
                   // Circular profile image
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OwnProfileScreen(),
-                        ),
-                      );
-                    },
+                    // onTap: () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => OwnProfileScreen(),  // Navigate to OwnProfileScreen when the current user's profile is clicked
+                    //     ),
+                    //   );
+                    // },
                     child: CircleAvatar(
                       radius: 25,
                       backgroundImage: NetworkImage(

@@ -15,6 +15,7 @@ class User {
   List<Pack> usersPacks;
   List<Book> readingList;
   List<Book> completedList;
+  List<Book> currentList;
 
   static const String defaultProfileImage = "https://via.placeholder.com/150?text=Profile+Image";
 
@@ -29,6 +30,7 @@ class User {
     this.usersReviews = const [],
     this.usersPacks = const [],
     this.completedList = const [],
+    this.currentList = const [],
     this.readingList = const [],
     this.status = 'A small status, favourite quote etc',
 
@@ -78,6 +80,11 @@ class User {
       readingList.remove(book);
       book.dateAdded = null;
     }
+
+    void addTOCurrent(Book book){
+
+    }
+
 
     void addToCompleted(Book book) {
       completedList.add(book);

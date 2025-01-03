@@ -5,7 +5,7 @@ import 'package:virgil_demo/screens/new_post.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/userProvider.dart';
-import 'package:provider/provider.dart'; 
+//import 'package:provider/provider.dart'; 
 import 'package:virgil_demo/widgets/profile_pane.dart';
 
 class OtherProfileScreen extends StatelessWidget {
@@ -16,7 +16,7 @@ class OtherProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Access the currentUser from the UserProvider
-    User currentUser = Provider.of<UserProvider>(context).currentUser!;
+    User currentUser = placeholderSelf;//Provider.of<UserProvider>(context).currentUser!;
 
     return Scaffold(
       body: SafeArea( // Ensures no overlap with the status bar

@@ -24,14 +24,15 @@ import 'package:virgil_demo/assets/placeholders.dart';
 import 'screens/bottom_navigation.dart';
 import 'models/user.dart';
 import 'models/userProvider.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserProvider(),  // Create UserProvider instance
-      child: MyApp(),
-    ),
+    // ChangeNotifierProvider(
+    //   create: (context) => UserProvider(),  // Create UserProvider instance
+    //   child: MyApp(),
+    // ),
+  MyApp(),
   );
 }
 
