@@ -3,12 +3,12 @@ import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/screens/new_post.dart';
-import 'package:virgil_demo/models/user.dart';  // Import User model
+import 'package:virgil_demo/models/user.dart';  
 
 class ProfilePane extends StatelessWidget {
   final User currentUser;
   final User user;
-  ProfilePane({required this.user, required this.currentUser});  // Constructor to accept user
+  ProfilePane({required this.user, required this.currentUser});  
   
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class ProfilePane extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        user.status ?? 'No status available', // Fallback if status is null
+                        user.status ?? 'No status available', 
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 15,
@@ -79,7 +79,6 @@ class ProfilePane extends StatelessWidget {
                 _buildStatColumn(
                     user.completedList
                         .where((book) {
-                          // Safe check for dateCompleted being null
                           return book.dateCompleted?.year == DateTime.now().year;
                         })
                         .toList()

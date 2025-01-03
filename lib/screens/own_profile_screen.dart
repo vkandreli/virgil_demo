@@ -8,51 +8,6 @@ import 'package:virgil_demo/widgets/profile_pane.dart';
 import 'package:virgil_demo/models/userProvider.dart';
 import 'package:provider/provider.dart'; 
 
-// class OwnProfileScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     User? currentUser = Provider.of<UserProvider>(context).currentUser;
-//     // Filter the posts to only show those where self is the original poster or reblogger
-//     // List<Post> userPosts = placeholderPosts.where((post) {
-//     //   return post.originalPoster == placeholderSelf || post.reblogger == placeholderSelf;
-//     // }).toList();
-
-//     return Scaffold(
-//       body: SafeArea( // Ensures no overlap with the status bar
-//         child: Column(
-//           children: [
-//             // Profile Pane
-//             ProfilePane(user: currentUser),  // Pass user to ProfilePane
-
-//             // Expanded space for posts
-//             Expanded(
-//               child: ListView.builder(
-//                 itemCount: currentUser.usersPosts.length,
-//                 itemBuilder: (context, index) {
-//                   return PostWidget(post: currentUser.usersPosts[index]);
-//                 },
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-      
-//       // Floating action button for creating a new post
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () {
-//           // Navigate to CreatePostScreen when pressed
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(builder: (context) => CreatePostScreen()),
-//           );
-//         },
-//         child: Icon(Icons.add), // Icon for the button
-//         backgroundColor: Colors.blue, // Set button color
-//       ),
-//     );
-//   }
-// }
-
 class OwnProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

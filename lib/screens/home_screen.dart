@@ -10,10 +10,11 @@ import 'package:virgil_demo/models/userProvider.dart';
 import 'package:provider/provider.dart'; 
 
 class HomeScreen extends StatelessWidget {
-  final User currentUser = User(username: "user123", profileImage: "https://via.placeholder.com/150", password: "000", email: "user123@mail.com");
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
+    // Get the current user from the UserProvider
     User? currentUser = Provider.of<UserProvider>(context).currentUser;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -28,11 +29,11 @@ class HomeScreen extends StatelessWidget {
                   children: placeholderUsers.map((user) {
                     return GestureDetector(
                       onTap: () {
-                        // Navigate to the selected user's profile
+                        // Navigate to the selected user's profile, passing the selected user
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OtherProfileScreen(),
+                            builder: (context) => OtherProfileScreen(user: user), // Pass the selected user here
                           ),
                         );
                       },
@@ -40,7 +41,9 @@ class HomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: CircleAvatar(
                           radius: 30,
-                          backgroundImage: NetworkImage(user.profileImage ?? 'https://via.placeholder.com/150?text=Profile+Image',)
+                          backgroundImage: NetworkImage(
+                            user.profileImage ?? 'https://via.placeholder.com/150?text=Profile+Image',
+                          ),
                         ),
                       ),
                     );
@@ -48,22 +51,49 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            // Search Bar
+
+
+            // Search Bar with circular profile picture
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              child: Row(
+                children: [
+                  // Search bar
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search for a profile...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                    ),
                   ),
-                  prefixIcon: Icon(Icons.search),
-                ),
+                  SizedBox(width: 16),
+                  // Circular profile image
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OwnProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 25,
+                      backgroundImage: NetworkImage(
+                        currentUser?.profileImage ??
+                            'https://via.placeholder.com/150?text=Profile+Image',
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
             // Vertical list of posts
-                        // Expanded space for posts
             Expanded(
               child: ListView.builder(
                 itemCount: placeholderPosts.length,
@@ -75,6 +105,8 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+
+      // Floating action button to create a new post
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate to the screen to create a new post
