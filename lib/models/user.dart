@@ -8,6 +8,7 @@ class User {
   final String password;
   final String email;
   String? profileImage;
+  String? status;
   List<User> followedUsers;
   List<Post> usersPosts;
   List<Review> usersReviews;
@@ -29,6 +30,8 @@ class User {
     this.usersPacks = const [],
     this.completedList = const [],
     this.readingList = const [],
+    this.status = 'A small status, favourite quote etc',
+
   }) ;
 
 
@@ -82,6 +85,9 @@ class User {
       book.dateCompleted = DateTime.now();
     }
 
+    void changeStatus(String string) {
+      status = string;
+    }
 }
 
 

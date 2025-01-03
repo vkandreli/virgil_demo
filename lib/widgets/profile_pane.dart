@@ -6,8 +6,9 @@ import 'package:virgil_demo/screens/new_post.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
 
 class ProfilePane extends StatelessWidget {
+  final User currentUser;
   final User user;
-  ProfilePane({required this.user});  // Constructor to accept user
+  ProfilePane({required this.user, required this.currentUser});  // Constructor to accept user
   
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class ProfilePane extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'username',
+                        user.username,
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 16,
@@ -46,7 +47,7 @@ class ProfilePane extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'A small status, favourite quote etc',
+                        user.status,
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 15,
@@ -55,7 +56,7 @@ class ProfilePane extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (user != placeholderSelf) ...[
+                if (user != currentUser) ...[
                 ElevatedButton(
                   onPressed: () {},
                   child: Text('Follow'),
@@ -76,8 +77,9 @@ class ProfilePane extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildStatColumn(user.completedList.length.toString(), 'Books'),
-                _buildStatColumn('50', 'This year'),
-                _buildStatColumn('12', 'Packs'),
+                _buildStatColumn(user.completedList.where((book) {
+      return book.dateCompleted.year == DateTime.now().year;}).toList().length.toString(), 'This year'),   
+                _buildStatColumn(user.usersPacks.length.toString(), 'Packs'),
               ],
             ),
           ],

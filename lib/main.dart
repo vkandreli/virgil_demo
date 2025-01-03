@@ -23,12 +23,20 @@ import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'screens/bottom_navigation.dart';
 import 'models/user.dart';
+import 'models/userProvider.dart';
+import 'package:provider/provider.dart';
+
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),  // Create UserProvider instance
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  final User self = placeholderSelf;
+  //final User self = placeholderSelf;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,3 +58,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
