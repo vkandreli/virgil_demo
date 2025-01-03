@@ -5,9 +5,11 @@ import 'recommendations_screen.dart';
 import 'package:logger/logger.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:camera/camera.dart';
+import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
 
 class LibraryScreen extends StatelessWidget {
-
+  User currentUser = placeholderSelf;
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +51,10 @@ class LibraryScreen extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  _buildSection('Current', currentBooks, showProgress: true),
-                  _buildSection('To Do', todoBooks),
-                  _buildSection('Packs', packBooks),
-                  _buildSection('Completed', completedBooks),
+                  _buildSection('Current', currentUser.currentList, showProgress: true),
+                  _buildSection('To Do', currentUser.readingList),
+                  _buildSection('Packs', currentUser.readingList), //currentUser.usersPacks
+                  _buildSection('Completed', currentUser.completedList),
                 ],
               ),
             ),

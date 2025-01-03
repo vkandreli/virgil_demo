@@ -47,7 +47,7 @@ class ProfilePane extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        user.status ?? 'No status available', ,
+                        user.status ?? 'No status available',
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 15,
@@ -56,7 +56,7 @@ class ProfilePane extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (user != placeholderSelf) ...[
+                if (user != currentUser) ...[
                 ElevatedButton(
                   onPressed: () {},
                   child: Text('Follow'),
@@ -77,8 +77,16 @@ class ProfilePane extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildStatColumn(user.completedList.length.toString(), 'Books'),
-                _buildStatColumn('50', 'This year'),
-                _buildStatColumn('12', 'Packs'),
+                _buildStatColumn(
+                    user.completedList
+                        .where((book) {
+                          return book.dateCompleted?.year == DateTime.now().year;
+                        })
+                        .toList()
+                        .length
+                        .toString(),
+                    'This year'),
+                _buildStatColumn(user.usersPacks.length.toString(), 'Packs'),
               ],
             ),
           ],
