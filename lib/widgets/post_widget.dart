@@ -21,19 +21,21 @@ class PostWidget extends StatelessWidget {
             // Original Poster and Reblogger (conditionally show reblogger)
             Row(
               children: [
-                CircleAvatar(child: Icon(Icons.person)),
-                SizedBox(width: 4),
-                Text(post.originalPoster.username, style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(width: 4),
-                Icon(Icons.replay), // Reblog icon
-                SizedBox(width: 16),
+
 
                 // Conditionally display the reblogger's information
                 if (post.reblogger != null && post.reblogger != "none") ...[
                   CircleAvatar(child: Icon(Icons.person)),
                   SizedBox(width: 4),
                   Text(post.reblogger?.username ?? "", style: TextStyle(fontWeight: FontWeight.bold)), // Safely access username
-                ]
+                  SizedBox(width: 4),
+                  Icon(Icons.replay), // Reblog icon
+                  SizedBox(width: 16),
+                ],
+
+                CircleAvatar(child: Icon(Icons.person)),
+                SizedBox(width: 4),
+                Text(post.originalPoster.username, style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
             SizedBox(height: 12),

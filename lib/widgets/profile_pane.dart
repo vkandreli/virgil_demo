@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/screens/new_post.dart';
@@ -54,6 +55,7 @@ class ProfilePane extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (user != placeholderSelf) ...[
                 ElevatedButton(
                   onPressed: () {},
                   child: Text('Follow'),
@@ -66,6 +68,7 @@ class ProfilePane extends StatelessWidget {
                     ),
                   ),
                 ),
+                ],
               ],
             ),
             SizedBox(height: 24),
