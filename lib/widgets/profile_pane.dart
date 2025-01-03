@@ -6,8 +6,9 @@ import 'package:virgil_demo/screens/new_post.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
 
 class ProfilePane extends StatelessWidget {
+  final User currentUser;
   final User user;
-  ProfilePane({required this.user});  // Constructor to accept user
+  ProfilePane({required this.user, required this.currentUser});  
   
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class ProfilePane extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'username',
+                        user.username,
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 16,
@@ -46,7 +47,7 @@ class ProfilePane extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'A small status, favourite quote etc',
+                        user.status ?? 'No status available', ,
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 15,

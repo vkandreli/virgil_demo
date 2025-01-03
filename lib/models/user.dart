@@ -8,12 +8,14 @@ class User {
   final String password;
   final String email;
   String? profileImage;
+  String? status;
   List<User> followedUsers;
   List<Post> usersPosts;
   List<Review> usersReviews;
   List<Pack> usersPacks;
   List<Book> readingList;
   List<Book> completedList;
+  List<Book> currentList;
 
   static const String defaultProfileImage = "https://via.placeholder.com/150?text=Profile+Image";
 
@@ -28,7 +30,10 @@ class User {
     this.usersReviews = const [],
     this.usersPacks = const [],
     this.completedList = const [],
+    this.currentList = const [],
     this.readingList = const [],
+    this.status = 'A small status, favourite quote etc',
+
   }) ;
 
 
@@ -76,12 +81,19 @@ class User {
       book.dateAdded = null;
     }
 
+    void addTOCurrent(Book book){
+
+    }
+
+
     void addToCompleted(Book book) {
       completedList.add(book);
       readingList.remove(book);
       book.dateCompleted = DateTime.now();
     }
 
+    void changeStatus(String string) {
+      status = string;
+    }
 }
-
 

@@ -8,44 +8,9 @@ import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 
 class HomeScreen extends StatelessWidget {
-  final User currentUser = User(username: "user123", profileImage: "https://via.placeholder.com/150", password: "000", email: "user123@mail.com");
+  final User currentUser = placeholderSelf;
   @override
   Widget build(BuildContext context) {
-    // Sample list of followed users
-    // List<User> followedUsers = [
-    //   User(username: "user123", profileImage: "https://via.placeholder.com/150", password: "000", email: "user123@mail.com"),
-    //   User(username: "user456", profileImage: "https://via.placeholder.com/150", password: "000", email: "user456@mail.com"),
-    //   User(username: "user789", profileImage: "https://via.placeholder.com/150", password: "000", email: "user789@mail.com"),
-    // ];
-
-    // // Sample list of posts
-    // List<Post> posts = [
-    //   Post(
-    //     originalPoster: followedUsers[0],
-    //     reblogger:  followedUsers[2],
-    //     imageUrl: "https://via.placeholder.com/150",
-    //     quote: "This is a quote",
-    //   ),
-    //   Post(
-    //     originalPoster: followedUsers[2],
-    //     reblogger:  followedUsers[1],
-    //     imageUrl: "https://via.placeholder.com/150",
-    //     quote: "This is another quote",
-    //   ),
-    //   Post(
-    //     originalPoster: followedUsers[1],
-    //     reblogger:  followedUsers[2],
-    //     imageUrl: "https://via.placeholder.com/150",
-    //     quote: "This is a quote",
-    //   ),
-    //   Post(
-    //     originalPoster: followedUsers[0],
-    //     reblogger:  followedUsers[1],
-    //     imageUrl: "https://via.placeholder.com/150",
-    //     quote: "This is another quote",
-    //   ),
-    // ];
-
     return Scaffold(
       body: SafeArea(
         child: Column(

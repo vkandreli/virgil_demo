@@ -7,10 +7,7 @@ import 'package:virgil_demo/models/book.dart';
 import 'package:camera/camera.dart';
 
 class LibraryScreen extends StatelessWidget {
-  final List<Book> currentBooks = [];
-  final List<Book> todoBooks = [];
-  final List<Book> packBooks = [];
-  final List<Book> completedBooks = [];
+
 
   @override
   Widget build(BuildContext context) {
