@@ -110,10 +110,13 @@ User placeholderSelf = User(
     password: "password",
     email: "self@example.com",
     profileImage: "https://via.placeholder.com/150?text=Self", // Custom profile image for user6
-    followedUsers: [],
-    usersPosts: [],
+    followedUsers: placeholderUsers,
+    usersPosts: placeholderPosts.where((post) {
+      return post.originalPoster == placeholderSelf || post.reblogger == placeholderSelf;
+    }).toList(),
     usersReviews: [],
   );
+
 
 List<Post> placeholderPosts = [
   Post(
