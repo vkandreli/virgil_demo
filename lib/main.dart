@@ -20,13 +20,15 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
 import 'screens/bottom_navigation.dart';
-
+import 'models/user.dart';
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  final User self = placeholderSelf;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

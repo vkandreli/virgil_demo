@@ -51,3 +51,65 @@ class OwnProfileScreen extends StatelessWidget {
 }
 
 
+class UserProfileScreen extends StatefulWidget {
+  final User user;  // The profile user to show
+  final User currentUser;  // The logged-in user who will follow/unfollow
+
+  UserProfileScreen({required this.user, required this.currentUser});
+
+  @override
+  _UserProfileScreenState createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  late bool isFollowing;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if the current user is following the profile user
+    isFollowing = widget.currentUser.followedUsers.contains(widget.user);
+  }
+
+  void toggleFollow() {
+    setState(() {
+      if (isFollowing) {
+        widget.currentUser.unfollow(widget.user);
+      } else {
+        widget.currentUser.follow(widget.user);
+      }
+      isFollowing = !isFollowing; // Toggle the follow state
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.user.username)),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Profile info and other widgets here
+
+            // Follow button logic
+            if (widget.user != widget.currentUser) ...[
+              ElevatedButton(
+                onPressed: toggleFollow,
+                child: Text(isFollowing ? 'Unfollow' : 'Follow'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFAB886D),
+                  foregroundColor: Colors.black,
+                  minimumSize: Size(86, 31),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}

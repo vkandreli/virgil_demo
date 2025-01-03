@@ -75,7 +75,7 @@ class ProfilePane extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatColumn('500', 'Books'),
+                _buildStatColumn(user.completedList.length.toString(), 'Books'),
                 _buildStatColumn('50', 'This year'),
                 _buildStatColumn('12', 'Packs'),
               ],

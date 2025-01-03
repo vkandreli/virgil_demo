@@ -7,7 +7,7 @@ class User {
   final String username;
   final String password;
   final String email;
-  String profileImage;
+  String? profileImage;
   List<User> followedUsers;
   List<Post> usersPosts;
   List<Review> usersReviews;
