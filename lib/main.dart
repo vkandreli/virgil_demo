@@ -19,10 +19,18 @@
 //   }
 // }
 
+
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'screens/bottom_navigation.dart';
 import 'models/user.dart';
+
+class AppConfig {
+  static const String apiKey = /** 'AIzaSyAFruL6TGnJ7JQl4mFKUwVYb017K_ANdTc'*/String.fromEnvironment('API_KEY');
+}
+
+
+
 void main() {
   runApp(MyApp());
 }
@@ -31,7 +39,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp( 
       title: 'Virgil',
       theme: ThemeData(
         primarySwatch: Colors.brown, // Matching primary color

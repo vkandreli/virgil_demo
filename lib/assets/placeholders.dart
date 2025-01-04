@@ -113,11 +113,6 @@ User placeholderSelf = User(
     followedUsers: [],
     usersPosts: [],
     usersReviews: [],
-    //     followedUsers: placeholderUsers,
-    // usersPosts: placeholderPosts.where((post) {
-    //   return post.originalPoster == placeholderSelf || post.reblogger == placeholderSelf;
-    // }).toList(),
-    // usersReviews: [],
   );
 
 List<Post> placeholderPosts = [

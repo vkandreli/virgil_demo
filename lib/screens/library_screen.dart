@@ -7,6 +7,7 @@ import 'package:virgil_demo/models/book.dart';
 import 'package:camera/camera.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/screens/chatbot_screen.dart'; 
 
 class LibraryScreen extends StatelessWidget {
   User currentUser = placeholderSelf;
@@ -63,7 +64,13 @@ class LibraryScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.chat),
-        onPressed: () {},
+        onPressed: () {
+          // Navigate to the chatbot screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatbotScreen()),
+          );
+        },
       ),
     );
   }
