@@ -7,7 +7,7 @@ class Pack {
   final User creator;
   final String packImage;
   final String description;
-  List<Book>? books;
+  List<Book> books;
 
   Pack({
     required this.title,
@@ -15,6 +15,6 @@ class Pack {
     required this.creator,
     required this.packImage,
     required this.description,
-    this.books,
+    required this.books,
   });
 }

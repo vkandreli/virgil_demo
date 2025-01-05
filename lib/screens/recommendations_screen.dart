@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
-import 'package:virgil_demo/screens/book_presentation.dart'; // Import the MovieDetailScreen
+import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/screens/book_presentation.dart';
+import 'package:virgil_demo/screens/chatbot_screen.dart';
+import 'package:virgil_demo/widgets/book_scroll.dart'; // Import the MovieDetailScreen
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:location/location.dart';
 //import 'package:virgil_demo/assets/placeholders.dart';
@@ -11,6 +15,8 @@ class RecommendationsScreen extends StatefulWidget {
 }
 
 class _RecommendationsScreenState extends State<RecommendationsScreen> {
+    User currentUser = placeholderSelf;
+
   // late GoogleMapController mapController;
   // late LocationData currentLocation;
 
@@ -33,11 +39,45 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          children: [
-            // Google Map 
+  final Logger logger = Logger(); 
+  return Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Padding(
+              //   padding: const EdgeInsets.all(16.0),
+              //   child: Row(
+              //     children: [
+              //       Expanded(
+              //         child: TextField(
+              //           decoration: InputDecoration(
+              //             hintText: 'Search books...',
+              //             border: OutlineInputBorder(),
+              //           ),
+              //         ),
+              //       ),
+              //       IconButton(
+              //         icon: Icon(Icons.camera_alt),
+              //         onPressed: () async {
+              //           logger.i("Camera pressed");
+              //           final cameras = await availableCameras();
+              //           if (cameras.isNotEmpty) {
+              //             Navigator.push(
+              //               context,
+              //               MaterialPageRoute(
+              //                 builder: (_) => CameraScreen(camera: cameras.first),
+              //               ),
+              //             );
+              //           }
+              //         },
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              Expanded(
+                child: ListView(
+                children: [
+                              // Google Map 
             // Padding(
             //   padding: const EdgeInsets.all(8.0),
             //   child: SizedBox(
@@ -55,90 +95,24 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
             //         : Center(child: CircularProgressIndicator()),
             //   ),
             // ),
-
-            // Popular Right Now Header
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Popular Right Now",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            
-            // Horizontal Scrollable Popular Movies
-            Container(
-              height: 225, // Height of the movie posters row
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: placeholderBooks.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Navigate to MovieDetailScreen when a poster is tapped
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetailScreen(
-                            movieTitle: placeholderBooks[index].title,
-                            imageUrl: placeholderBooks[index].posterUrl,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.network(
-                        placeholderBooks[index].posterUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // New Releases Header
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "New Releases",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            
-            // Horizontal Scrollable New Releases Movies
-            Container(
-              height: 225, // Height of the movie posters row
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: placeholderBooks.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Navigate to MovieDetailScreen when a poster is tapped
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetailScreen(
-                            movieTitle: placeholderBooks[index].title,
-                            imageUrl: placeholderBooks[index].posterUrl,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.network(
-                        placeholderBooks[index].posterUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
+                  bookScroll("Popular in New York", placeholderBooks), //currentUser.currentList
+                  bookScroll('What your community is reading', currentUser.readingList),
+                  bookScroll('Hottest reviews', currentUser.readingList), //currentUser.usersPacks
+                ],
               ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.chat),
+        onPressed: () {
+          // Navigate to the chatbot screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatbotScreen()),
+          );
+        },
       ),
     );
   }

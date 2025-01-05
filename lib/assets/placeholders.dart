@@ -200,3 +200,54 @@ List<Review> placeholderReviews = [
     stars: 5,
   ),
 ];
+
+List<Pack> placeholderPacks = [
+  Pack(
+    title: 'Adventure Pack',
+    publicationDate: '2023-01-01',
+    creator: placeholderUsers[0],
+    packImage: 'https://via.placeholder.com/200x200',
+    description: 'A collection of thrilling adventure novels.',
+    books: placeholderBooks.sublist(0, 3), // First 3 books
+  ),
+  Pack(
+    title: 'Mystery Collection',
+    publicationDate: '2023-02-01',
+    creator: placeholderUsers[1],
+    packImage: 'https://via.placeholder.com/200x200',
+    description: 'Unravel the mysteries with these gripping novels.',
+    books: placeholderBooks.sublist(1, 4), // Books from index 1 to 3
+  ),
+  Pack(
+    title: 'Sci-Fi Essentials',
+    publicationDate: '2023-03-01',
+    creator: placeholderUsers[2],
+    packImage: 'https://via.placeholder.com/200x200',
+    description: 'The must-read science fiction books.',
+    books: placeholderBooks.sublist(2, 5), // Books from index 2 to 4
+  ),
+  Pack(
+    title: 'Historical Insights',
+    publicationDate: '2023-04-01',
+    creator: placeholderUsers[3],
+    packImage: 'https://via.placeholder.com/200x200',
+    description: 'Explore the history with these insightful books.',
+    books: placeholderBooks.sublist(3, 6), // Books from index 3 to 5
+  ),
+  Pack(
+    title: 'Fantasy World',
+    publicationDate: '2023-05-01',
+    creator: placeholderUsers[4],
+    packImage: 'https://via.placeholder.com/200x200',
+    description: 'Dive into a world of fantasy and magic.',
+    books: placeholderBooks.sublist(4, 6), // Last 2 books
+  ),
+  Pack(
+    title: 'Dart Programming Pack',
+    publicationDate: '2023-06-01',
+    creator: placeholderUsers[5],
+    packImage: 'https://via.placeholder.com/200x200',
+    description: 'Master Dart programming with this collection.',
+    books: [placeholderBooks.last], // Only the last book 
+  ),
+];
