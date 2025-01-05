@@ -7,12 +7,14 @@ import 'package:virgil_demo/models/user.dart';  // Import User model
 import 'package:virgil_demo/widgets/profile_pane.dart';
 
 class OwnProfileScreen extends StatelessWidget {
-  final User currentUser = placeholderSelf;
+  final User currentUser;
+  const OwnProfileScreen({Key? key, required this.currentUser}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // Filter the posts to only show those where self is the original poster or reblogger
     List<Post> userPosts = placeholderPosts.where((post) {
-      return post.originalPoster == placeholderSelf || post.reblogger == placeholderSelf;
+      return post.originalPoster == currentUser || post.reblogger == currentUser;
     }).toList();
 
     return Scaffold(

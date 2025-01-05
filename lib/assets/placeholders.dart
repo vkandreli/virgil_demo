@@ -232,7 +232,7 @@ List<Pack> placeholderPacks = [
     creator: placeholderUsers[3],
     packImage: 'https://via.placeholder.com/200x200',
     description: 'Explore the history with these insightful books.',
-    books: placeholderBooks.sublist(3, 6), // Books from index 3 to 5
+    books: placeholderBooks.sublist(3, 5), // Books from index 3 to 5
   ),
   Pack(
     title: 'Fantasy World',
@@ -240,7 +240,7 @@ List<Pack> placeholderPacks = [
     creator: placeholderUsers[4],
     packImage: 'https://via.placeholder.com/200x200',
     description: 'Dive into a world of fantasy and magic.',
-    books: placeholderBooks.sublist(4, 6), // Last 2 books
+    books: placeholderBooks.sublist(2, 5), // Last 2 books
   ),
   Pack(
     title: 'Dart Programming Pack',

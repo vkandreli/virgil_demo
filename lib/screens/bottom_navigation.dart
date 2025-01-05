@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/models/user.dart';
 import 'home_screen.dart';
 import 'library_screen.dart';
 import 'recommendations_screen.dart';
@@ -11,13 +13,13 @@ class BottomNavWrapper extends StatefulWidget {
 
 class _BottomNavWrapperState extends State<BottomNavWrapper> {
   int _currentIndex = 0;
-
+  //User currentUser = placeholderSelf;
   // List of screens for each index
   final List<Widget> _screens = [
     HomeScreen(),
     LibraryScreen(),
     RecommendationsScreen(),
-    OwnProfileScreen(),
+    OwnProfileScreen(currentUser: placeholderSelf,),
   ];
 
   void _onTabTapped(int index) {

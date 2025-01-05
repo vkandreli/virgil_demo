@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/pack.dart';
+import 'package:virgil_demo/models/review.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
+import 'package:virgil_demo/screens/others_profile_screen.dart';
 import 'package:virgil_demo/screens/pack_presentation.dart';
+import 'package:virgil_demo/screens/review_presentation.dart';
 
 Widget genericScroll<T>({
   required String title,
@@ -26,18 +31,19 @@ Widget genericScroll<T>({
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: 16),
-          itemCount: items.isEmpty ? 1 : items.length,
+          itemCount: items.isEmpty ? 1 : items.length,  // Correct itemCount for empty case
           itemBuilder: (context, index) {
             if (items.isEmpty) {
-              return itemBuilder(context, items[index]);
+              return Center(child: Text('No items available'));  // Handle empty state gracefully
             }
-            return itemBuilder(context, items[index]);
+            return itemBuilder(context, items[index]);  // Proceed if list has items
           },
         ),
       ),
     ],
   );
 }
+
 
 Widget bookScroll(String title, List<Book> books, {bool showProgress = false, bool isCompleted = false}) {
   return genericScroll<Book>(
@@ -66,80 +72,18 @@ Widget packScroll(String title, List<Pack> packs, { bool isCompleted = false}) {
   );
 }
 
+Widget reviewScroll(String title, List<Review> reviews) {
+  return genericScroll<Review>(
+    title: title,
+    items: reviews,
+    itemBuilder: (context, review) {
+      return _ReviewCard(
+        review: review,
+      );
+    },
+  );
+}
 
-
-// Widget bookScroll(String title, List<Book> books, {bool showProgress = false, bool isCompleted = false}) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Text(
-//             title,
-//             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//           ),
-//         ),
-//         SizedBox(
-//           height: showProgress ? 240 : 200,
-//           child: ListView.builder(
-//             scrollDirection: Axis.horizontal,
-//             padding: EdgeInsets.symmetric(horizontal: 16),
-//             itemCount: books.isEmpty ? 1 : books.length,
-//             itemBuilder: (context, index) {
-//               if (books.isEmpty) {
-//                 return _BookCard(
-//                   book: null,
-//                   showProgress: showProgress,
-//                   isCompleted: isCompleted,
-//                 );
-//               }
-//               return _BookCard(
-//                 book: books[index],
-//                 showProgress: showProgress,
-//                 isCompleted: isCompleted,
-//               );
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-  
-// Widget bookScroll(String title, List<Pack> packs, {bool isCompleted = false}) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Text(
-//             title,
-//             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//           ),
-//         ),
-//         SizedBox(
-//           height: showProgress ? 240 : 200,
-//           child: ListView.builder(
-//             scrollDirection: Axis.horizontal,
-//             padding: EdgeInsets.symmetric(horizontal: 16),
-//             itemCount: books.isEmpty ? 1 : books.length,
-//             itemBuilder: (context, index) {
-//               if (books.isEmpty) {
-//                 return _BookCard(
-//                   book: null,
-//                   showProgress: showProgress,
-//                   isCompleted: isCompleted,
-//                 );
-//               }
-//               return _PackCard(
-//                 pack: books[index],
-//                 isCompleted: isCompleted,
-//               );
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
 
 class _BookCard extends StatelessWidget {
   final Book? book;
@@ -255,6 +199,118 @@ class _PackCard extends StatelessWidget {
                 ),
               ),
             ),          
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class _ReviewCard extends StatelessWidget {
+  final Review review;
+
+  const _ReviewCard({
+    required this.review,
+  });
+  
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Navigate to the review detail screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ReviewDetailScreen(review: review),
+          ),
+        );
+      },
+      child: Container(
+        width: 200,
+        margin: EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.darkBrown),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Book Title - Clickable to navigate to BookDetailScreen
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BookDetailScreen(book: review.book),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  review.book.title,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            // User - Clickable to navigate to OtherProfileScreen
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OtherProfileScreen(user: review.user, currentUser: placeholderSelf,),//currentUser
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  'By: ${review.user.username}',
+                  style: TextStyle(fontSize: 14, color: AppColors.lightBrown),
+                ),
+              ),
+            ),
+            // Stars (show stars based on rating)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: List.generate(5, (index) {
+                  // This will generate 5 stars
+                  if (index < review.stars) {
+                    return Icon(
+                      Icons.star,
+                      size: 18,
+                      color: Colors.amber, // Full star
+                    );
+                  } else {
+                    return Icon(
+                      Icons.star_border,
+                      size: 18,
+                      color: Colors.amber, // Empty star
+                    );
+                  }
+                }),
+              ),
+            ),
+            // Review Text
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                review.text,
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            // Review Date
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                'Reviewed on: ${review.reviewDate}',
+                style: TextStyle(fontSize: 12, color: AppColors.lightBrown),
+              ),
+            ),
           ],
         ),
       ),

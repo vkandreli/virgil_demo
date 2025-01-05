@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/pack.dart';
-import 'package:virgil_demo/widgets/book_scroll.dart';
+import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 class PackDetailScreen extends StatelessWidget {
   final Pack pack;
