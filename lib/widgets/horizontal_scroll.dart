@@ -64,7 +64,7 @@ Widget packScroll(String title, List<Pack> packs, { bool isCompleted = false}) {
     title: title,
     items: packs,
     itemBuilder: (context, pack) {
-      return _PackCard(
+      return PackCard(
         pack: pack,
         isCompleted: isCompleted,
       );
@@ -77,7 +77,7 @@ Widget reviewScroll(String title, List<Review> reviews) {
     title: title,
     items: reviews,
     itemBuilder: (context, review) {
-      return _ReviewCard(
+      return ReviewCard(
         review: review,
       );
     },
@@ -154,11 +154,11 @@ class _BookCard extends StatelessWidget {
   }
 }
 
-class _PackCard extends StatelessWidget {
+class PackCard extends StatelessWidget {
   final Pack? pack;
   final bool isCompleted;
 
-  const _PackCard({
+  const PackCard({
     this.pack,
     this.isCompleted = false,
   });
@@ -208,10 +208,10 @@ class _PackCard extends StatelessWidget {
 
 
 
-class _ReviewCard extends StatelessWidget {
+class ReviewCard extends StatelessWidget {
   final Review review;
 
-  const _ReviewCard({
+  const ReviewCard({
     required this.review,
   });
   

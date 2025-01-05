@@ -17,6 +17,10 @@ class User {
   List<Book> completedList;
   List<Book> currentList;
 
+  bool isPacksPrivate;
+  bool isReviewsPrivate;
+  bool isReadListPrivate;
+
   static const String defaultProfileImage = "https://via.placeholder.com/150?text=Profile+Image";
 
   // Constructor
@@ -33,13 +37,32 @@ class User {
     List<Book> currentList = const [],   // Default empty list
     List<Book> readingList = const [],   // Default empty list
     this.status = 'A small status, favourite quote etc', // Default status
-  })  : followedUsers = followedUsers.isEmpty ? [] : followedUsers,
+    this.isPacksPrivate = true,   // Default privacy state
+    this.isReviewsPrivate = true,  // Default privacy state
+    this.isReadListPrivate = true,  // Default privacy state
+  }) : followedUsers = followedUsers.isEmpty ? [] : followedUsers,
         usersPosts = usersPosts.isEmpty ? [] : usersPosts,
         usersReviews = usersReviews.isEmpty ? [] : usersReviews,
         usersPacks = usersPacks.isEmpty ? [] : usersPacks,
-        completedList = completedList.isEmpty ? [] : completedList,
+        completedList = completedList.isEmpty ? [] : completedList, // Ensures empty list if null
         currentList = currentList.isEmpty ? [] : currentList,
         readingList = readingList.isEmpty ? [] : readingList;
+
+
+  // Method to toggle the privacy status of the current list
+  void togglePacksPrivacy() {
+    isPacksPrivate = !isPacksPrivate;
+  }
+
+  // Method to toggle the privacy status of the completed list
+  void toggleReviewsPrivacy() {
+    isReviewsPrivate = !isReviewsPrivate;
+  }
+
+  // Method to toggle the privacy status of the reading list
+  void toggleReadlistPrivacy() {
+    isReadListPrivate = !isReadListPrivate;
+  }
 
     void follow(User user) {
     if (!followedUsers.contains(user)) {

@@ -118,6 +118,9 @@ User placeholderSelf = User(
     followedUsers: [],
     usersPosts: [],
     usersReviews: [],
+    isPacksPrivate: false,
+    isReadListPrivate: true,
+    isReviewsPrivate: false,
   );
 
 List<Post> placeholderPosts = [

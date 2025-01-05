@@ -20,7 +20,9 @@ class ReviewDetailScreen extends StatelessWidget {
       //   title: Text('Review Detail'),
       //   backgroundColor: AppColors.mediumBrown,
       // ),
-      body: SingleChildScrollView( // Make the entire screen scrollable
+      body: SafeArea(
+        child:
+        SingleChildScrollView( // Make the entire screen scrollable
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -147,6 +149,7 @@ class ReviewDetailScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }
