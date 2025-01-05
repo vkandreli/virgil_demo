@@ -1,3 +1,4 @@
+import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/user.dart'; 
 
 class Post {
@@ -5,6 +6,8 @@ class Post {
   User? reblogger; 
   String? imageUrl;
   String? quote;
+  Book? book;
+  
 
   // Constructor
   Post({
@@ -12,6 +15,7 @@ class Post {
     this.reblogger,  
     this.imageUrl,
     this.quote,
+    this.book
   });
 
   @override

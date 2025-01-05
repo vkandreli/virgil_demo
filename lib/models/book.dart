@@ -8,6 +8,8 @@ class Book {
   final String description;
   DateTime? dateAdded;
   DateTime? dateCompleted;
+  int totalPages;
+  int? currentPage;
 
   Book({
     required this.title,
@@ -16,6 +18,8 @@ class Book {
     required this.publisher,
     required this.posterUrl,
     required this.description,
+    required this.totalPages,
+    this.currentPage = 0,
     this.dateAdded,
     this.dateCompleted,
   });

@@ -24,18 +24,22 @@ class User {
     required this.username,
     required this.password,
     required this.email,
-    this.profileImage = defaultProfileImage, // Default profile image if not provided
-    this.followedUsers = const [],
-    this.usersPosts = const [],
-    this.usersReviews = const [],
-    this.usersPacks = const [],
-    this.completedList = const [],
-    this.currentList = const [],
-    this.readingList = const [],
-    this.status = 'A small status, favourite quote etc',
-
-  }) ;
-
+    this.profileImage = defaultProfileImage,
+    List<User> followedUsers = const [], // Default empty list
+    List<Post> usersPosts = const [],    // Default empty list
+    List<Review> usersReviews = const [],  // Default empty list
+    List<Pack> usersPacks = const [],    // Default empty list
+    List<Book> completedList = const [], // Default empty list
+    List<Book> currentList = const [],   // Default empty list
+    List<Book> readingList = const [],   // Default empty list
+    this.status = 'A small status, favourite quote etc', // Default status
+  })  : followedUsers = followedUsers.isEmpty ? [] : followedUsers,
+        usersPosts = usersPosts.isEmpty ? [] : usersPosts,
+        usersReviews = usersReviews.isEmpty ? [] : usersReviews,
+        usersPacks = usersPacks.isEmpty ? [] : usersPacks,
+        completedList = completedList.isEmpty ? [] : completedList,
+        currentList = currentList.isEmpty ? [] : currentList,
+        readingList = readingList.isEmpty ? [] : readingList;
 
     void follow(User user) {
     if (!followedUsers.contains(user)) {
@@ -81,8 +85,8 @@ class User {
       book.dateAdded = null;
     }
 
-    void addTOCurrent(Book book){
-
+    void addToCurrent(Book book){
+        currentList.add(book);
     }
 
 

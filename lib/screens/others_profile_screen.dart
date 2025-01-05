@@ -31,17 +31,17 @@ class OtherProfileScreen extends StatelessWidget {
       ),
       
       // Floating action button for creating a new post
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to CreatePostScreen when pressed
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreatePostScreen()),
-          );
-        },
-        child: Icon(Icons.add), // Icon for the button
-        backgroundColor: Colors.blue, // Set button color
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // Navigate to CreatePostScreen when pressed
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => CreatePostScreen()),
+      //     );
+      //   },
+      //   child: Icon(Icons.add), // Icon for the button
+      //   backgroundColor: Colors.blue, // Set button color
+      // ),
     );
   }
 }

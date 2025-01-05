@@ -50,7 +50,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 decoration: InputDecoration(
-                  hintText: 'Search...',
+                  hintText: 'Search for a profile...',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
