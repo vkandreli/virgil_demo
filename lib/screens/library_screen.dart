@@ -28,14 +28,10 @@ class LibraryScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'Search for books...',
-                        border: OutlineInputBorder(),
-                      ),
-                      onSubmitted: (query) {
-                        // Navigate to BookSearchScreen on submit
+                    child: GestureDetector(
+                      onTap: () {
+                        // When user taps on the TextField, navigate to the search screen
+                        final query = _searchController.text;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -43,7 +39,26 @@ class LibraryScreen extends StatelessWidget {
                           ),
                         );
                       },
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search for books...',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
                     ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      final query = _searchController.text;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookSearchScreen(query: query),
+                        ),
+                      );
+                    },
                   ),
                   IconButton(
                     icon: Icon(Icons.camera_alt),
