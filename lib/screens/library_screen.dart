@@ -54,10 +54,10 @@ class LibraryScreen extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  bookScroll("Books you're reading", placeholderBooks, showProgress: true),//currentUser.currentList
-                  bookScroll('Your personal Read List',placeholderBooks ),//currentUser.readingList
-                  packScroll('Packs on your Read List', placeholderPacks), //currentUser.usersPacks
-                  bookScroll("Books you've finished", placeholderBooks, isCompleted: true),//currentUser.completedList
+                  bookScroll("Books you're reading", placeholderBooks, showProgress: true, currentUser: currentUser),//currentUser.currentList
+                  bookScroll('Your personal Read List',placeholderBooks, currentUser: currentUser ),//currentUser.readingList
+                  packScroll('Packs on your Read List', placeholderPacks, currentUser: currentUser,), //currentUser.usersPacks
+                  bookScroll("Books you've finished", placeholderBooks, isCompleted: true, currentUser: currentUser),//currentUser.completedList
                 ],
               ),
             ),

@@ -11,7 +11,7 @@ List<Book> placeholderBooks = [
     publicationDate: "21-03-2003",
     author: "D. P. Author",
     publisher: "Seals",
-    posterUrl: "https://via.placeholder.com/150x225?text=Book+1",
+    posterUrl: "https://tse2.mm.bing.net/th?id=OIP.QaqDrHSrWeTxrJVVkIYl4QHaL2&pid=Api",//"https://via.placeholder.com/150x225?text=Book+1",
     description: "This is a book.",
     totalPages: 255,
   ),

@@ -4,6 +4,7 @@ import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/pack.dart';
 import 'package:virgil_demo/models/review.dart';
+import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/others_profile_screen.dart';
 import 'package:virgil_demo/screens/pack_presentation.dart';
@@ -45,7 +46,13 @@ Widget genericScroll<T>({
 }
 
 
-Widget bookScroll(String title, List<Book> books, {bool showProgress = false, bool isCompleted = false}) {
+Widget bookScroll(
+  String title, 
+  List<Book> books, {
+  bool showProgress = false, 
+  bool isCompleted = false, 
+  required User currentUser,  // Add the `currentUser` parameter here
+}) {
   return genericScroll<Book>(
     title: title,
     items: books,
@@ -54,12 +61,18 @@ Widget bookScroll(String title, List<Book> books, {bool showProgress = false, bo
         book: book,
         showProgress: showProgress,
         isCompleted: isCompleted,
+        currentUser: currentUser,  // Pass currentUser here
       );
     },
   );
 }
 
-Widget packScroll(String title, List<Pack> packs, { bool isCompleted = false}) {
+Widget packScroll(
+  String title, 
+  List<Pack> packs, {
+  bool isCompleted = false,
+  required User currentUser,  // Add the `currentUser` parameter here
+}) {
   return genericScroll<Pack>(
     title: title,
     items: packs,
@@ -67,18 +80,24 @@ Widget packScroll(String title, List<Pack> packs, { bool isCompleted = false}) {
       return PackCard(
         pack: pack,
         isCompleted: isCompleted,
+        currentUser: currentUser,  // Pass currentUser here
       );
     },
   );
 }
 
-Widget reviewScroll(String title, List<Review> reviews) {
+Widget reviewScroll(
+  String title, 
+  List<Review> reviews, {
+  required User currentUser,  // Add the `currentUser` parameter here
+}) {
   return genericScroll<Review>(
     title: title,
     items: reviews,
     itemBuilder: (context, review) {
       return ReviewCard(
         review: review,
+        currentUser: currentUser,  // Pass currentUser here
       );
     },
   );
@@ -89,11 +108,13 @@ class _BookCard extends StatelessWidget {
   final Book? book;
   final bool showProgress;
   final bool isCompleted;
+  final User currentUser;
 
   const _BookCard({
     this.book,
     this.showProgress = false,
     this.isCompleted = false,
+    required this.currentUser,
   });
 
   @override
@@ -105,7 +126,7 @@ class _BookCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BookDetailScreen(book: book!),
+              builder: (context) => BookDetailScreen(book: book!, currentUser: currentUser,),
             ),
           );
         }
@@ -157,10 +178,13 @@ class _BookCard extends StatelessWidget {
 class PackCard extends StatelessWidget {
   final Pack? pack;
   final bool isCompleted;
+  final User currentUser;
 
   const PackCard({
     this.pack,
     this.isCompleted = false,
+    required this.currentUser,
+
   });
 
   @override
@@ -172,7 +196,7 @@ class PackCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PackDetailScreen(pack: pack!),
+              builder: (context) => PackDetailScreen(pack: pack!, currentUser: currentUser,),
             ),
           );
         }
@@ -209,9 +233,10 @@ class PackCard extends StatelessWidget {
 
 class ReviewCard extends StatelessWidget {
   final Review review;
-
+  final User currentUser;
   const ReviewCard({
     required this.review,
+    required this.currentUser
   });
   
   @override
@@ -222,7 +247,7 @@ class ReviewCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ReviewDetailScreen(review: review),
+            builder: (context) => ReviewDetailScreen(review: review, currentUser: currentUser,),
           ),
         );
       },
@@ -242,7 +267,7 @@ class ReviewCard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BookDetailScreen(book: review.book),
+                    builder: (context) => BookDetailScreen(book: review.book, currentUser: currentUser,),
                   ),
                 );
               },

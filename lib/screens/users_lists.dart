@@ -6,9 +6,9 @@ import 'package:virgil_demo/screens/review_presentation.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 class UserPacksScreen extends StatelessWidget {
-  final User user;
-
-  const UserPacksScreen({Key? key, required this.user}) : super(key: key);
+  final User user, currentUser;
+  
+  const UserPacksScreen({Key? key, required this.user, required this.currentUser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +36,7 @@ class UserPacksScreen extends StatelessWidget {
                 var pack = user.usersPacks[index];
                 return PackCard(
                   pack: pack,
+                  currentUser: currentUser,
                 );
               },
             ),
@@ -48,9 +49,9 @@ class UserPacksScreen extends StatelessWidget {
 
 
 class UserReviewsScreen extends StatelessWidget {
-  final User user;
+  final User user, currentUser;
 
-  const UserReviewsScreen({Key? key, required this.user}) : super(key: key);
+  const UserReviewsScreen({Key? key, required this.user, required this.currentUser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -82,11 +83,11 @@ class UserReviewsScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ReviewDetailScreen(review: review),
+                          builder: (context) => ReviewDetailScreen(review: review, currentUser: currentUser,),
                         ),
                       );
                     },
-                    child: ReviewCard(review: review), // Custom card for the review
+                    child: ReviewCard(review: review, currentUser: currentUser,), // Custom card for the review
                   );
                 },
               ),
@@ -100,9 +101,9 @@ class UserReviewsScreen extends StatelessWidget {
 
 
 class UserReadListScreen extends StatelessWidget {
-  final User user;
+  final User user, currentUser;
 
-  const UserReadListScreen({Key? key, required this.user}) : super(key: key);
+  const UserReadListScreen({Key? key, required this.user, required this.currentUser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +135,7 @@ class UserReadListScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BookDetailScreen(book: book),
+                          builder: (context) => BookDetailScreen(book: book, currentUser: currentUser,),
                         ),
                       );
                     },

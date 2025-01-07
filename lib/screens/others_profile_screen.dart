@@ -96,7 +96,7 @@ class OtherProfileScreen extends StatelessWidget {
       if (!user.isPacksPrivate) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UserPacksScreen(user: currentUser)),
+          MaterialPageRoute(builder: (context) => UserPacksScreen(user: currentUser, currentUser: currentUser,)),
         );
       }
     }
@@ -105,7 +105,7 @@ class OtherProfileScreen extends StatelessWidget {
       if (!user.isReviewsPrivate) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UserReviewsScreen(user: currentUser)),
+          MaterialPageRoute(builder: (context) => UserReviewsScreen(user: currentUser, currentUser: currentUser)),
         );
       }
     }
@@ -114,7 +114,7 @@ class OtherProfileScreen extends StatelessWidget {
       if (!user.isReadListPrivate) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UserReadListScreen(user: currentUser)),
+          MaterialPageRoute(builder: (context) => UserReadListScreen(user: currentUser, currentUser: currentUser)),
         );
       }
     }

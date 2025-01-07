@@ -50,21 +50,21 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
   void navigateToUserPacksScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UserPacksScreen(user: widget.currentUser)),
+      MaterialPageRoute(builder: (context) => UserPacksScreen(user: widget.currentUser, currentUser: widget.currentUser,)),
     );
   }
 
   void navigateToUserReviewsScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UserReviewsScreen(user: widget.currentUser)),
+      MaterialPageRoute(builder: (context) => UserReviewsScreen(user: widget.currentUser, currentUser: widget.currentUser,)),
     );
   }
 
   void navigateToUserReadListScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UserReadListScreen(user: widget.currentUser)),
+      MaterialPageRoute(builder: (context) => UserReadListScreen(user: widget.currentUser,  currentUser: widget.currentUser,)),
     );
   }
 

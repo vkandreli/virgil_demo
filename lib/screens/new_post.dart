@@ -37,9 +37,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     });
   }
 
-  // Check if the post can be created (both image, quote, and book are selected)
+  // Check if the post can be created (book is required, image or quote or both are required)
   bool _canCreatePost() {
-    return selectedBook != null && selectedImagePath != null && quoteText != null;
+    return selectedBook != null && (quoteText != null || selectedImagePath != null);
   }
 
   @override
@@ -130,7 +130,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         Post post = Post(
                           originalPoster: widget.currentUser, // Use the current user as the poster
                           timePosted: DateTime.now(),
-                          imageUrl: selectedImagePath,
+                          imageUrl: selectedImagePath, // Image is optional
                           quote: quoteText,
                           book: selectedBook!, // Use the full Book object
                           likes: 0,

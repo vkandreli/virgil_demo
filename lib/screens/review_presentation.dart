@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
-import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/models/review.dart';
 import 'package:virgil_demo/main.dart';
@@ -10,8 +9,8 @@ import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 class ReviewDetailScreen extends StatelessWidget {
   final Review review;
-
-  const ReviewDetailScreen({required this.review});
+  final User currentUser;
+  const ReviewDetailScreen({required this.review, required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class ReviewDetailScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BookDetailScreen(book: review.book),
+                      builder: (context) => BookDetailScreen(book: review.book, currentUser: currentUser,),
                     ),
                   );
                 },
@@ -143,9 +142,9 @@ class ReviewDetailScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               // Reviews from the same user, same book, same author
-              reviewScroll("Reviews by the same user", review.user.usersReviews),
-              reviewScroll("Reviews for the same book", review.user.usersReviews),
-              reviewScroll("Reviews for the same author", review.user.usersReviews),
+              reviewScroll("Reviews by the same user", review.user.usersReviews, currentUser: currentUser),
+              reviewScroll("Reviews for the same book", review.user.usersReviews, currentUser: currentUser),
+              reviewScroll("Reviews for the same author", review.user.usersReviews, currentUser: currentUser),
             ],
           ),
         ),

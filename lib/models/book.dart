@@ -12,6 +12,7 @@ class Book {
   DateTime? dateCompleted;
   int totalPages;
   int? currentPage;
+  String? genre;
 
   Book({
     required this.title,
@@ -24,6 +25,7 @@ class Book {
     this.currentPage = 0,
     this.dateAdded,
     this.dateCompleted,
+    this.genre,
   });
 
    factory Book.fromJson(Map<String, dynamic> json) {

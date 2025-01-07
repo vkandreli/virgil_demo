@@ -213,7 +213,7 @@ class _PostWidgetState extends State<PostWidget> {
     // Check if the book is already in the reading list
     isInReadingList = widget.currentUser.readingList.contains(widget.post.book);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -247,11 +247,11 @@ class _PostWidgetState extends State<PostWidget> {
             if (widget.post.imageUrl != null && widget.post.imageUrl!.isNotEmpty) 
               Image.network(
                 widget.post.imageUrl!,
-                height: 200,
                 width: double.infinity,
-                fit: BoxFit.cover,
+                height: 250, // Maximum height without clipping
+                fit: BoxFit.contain, // Ensure the image scales correctly without clipping
               ),
-
+ 
             // Conditionally show Quote if it exists
             if (widget.post.quote != null && widget.post.quote!.isNotEmpty) 
               Padding(
@@ -270,7 +270,7 @@ class _PostWidgetState extends State<PostWidget> {
                 // Navigate to the BookDetailScreen
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => BookDetailScreen(book: widget.post.book)),
+                  MaterialPageRoute(builder: (context) => BookDetailScreen(book: widget.post.book, currentUser: widget.currentUser,)),
                 );
               },
               child: Text(
@@ -346,9 +346,10 @@ class _PostWidgetState extends State<PostWidget> {
                     IconButton(
                       icon: Icon(Icons.add_circle_outline),
                       onPressed: () {
-                        logger.i("Added post by ${widget.post.originalPoster.username} to collection");
+                        logger.i("Added to pack");
                       },
                     ),
+                    Text("", style: TextStyle(fontSize: 14)),
                   ],
                 ),
                 Column(
@@ -372,6 +373,7 @@ class _PostWidgetState extends State<PostWidget> {
                         });
                       },
                     ),
+                    Text("", style: TextStyle(fontSize: 14)),
                   ],
                 ),
               ],

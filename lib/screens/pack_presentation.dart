@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/pack.dart';
+import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 class PackDetailScreen extends StatelessWidget {
   final Pack pack;
-
-  const PackDetailScreen({Key? key, required this.pack}) : super(key: key);
+  final User currentUser;
+  const PackDetailScreen({Key? key, required this.pack, required this.currentUser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class PackDetailScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-              bookScroll("Books in pack", pack.books),
+              bookScroll("Books in pack", pack.books, currentUser: currentUser),
               Text(
                 "Created by: ${pack.creator}",
                 style: TextStyle(fontSize: 18),
