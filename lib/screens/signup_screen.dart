@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'login_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+final storage = FlutterSecureStorage();
+
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -10,7 +15,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  void _signup() {
+  void _signup() async {
     // Implement your signup logic here (e.g., Firebase Auth)
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -29,20 +34,33 @@ class _SignupScreenState extends State<SignupScreen> {
       );
       return;
     }
+ Future<void> _saveCredentials() async {
+    await storage.write(key: 'email:$email', value: _emailController.text);
+    await storage.write(key: 'password:$email', value: _passwordController.text);
 
+  }
     // Perform signup, navigate to login, etc.
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Signup Successful')),
     );
+       _emailController.clear();
+      _passwordController.clear();
+      _confirmPasswordController.clear();
     // Navigate to the login screen or home screen
+    // Wait for 2 seconds
+    await Future.delayed(Duration(seconds: 2));
+    // Navigate to the Login screen
+    Navigator.pushReplacement(
+      context,
+       MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Signup'),
-      ),
+     
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -72,7 +90,10 @@ class _SignupScreenState extends State<SignupScreen> {
             TextButton(
               onPressed: () {
                 // Navigate to the login screen
-                Navigator.pushReplacementNamed(context, '/login');
+                Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
               },
               child: Text('Already have an account? Login'),
             ),
