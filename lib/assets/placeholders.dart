@@ -229,7 +229,7 @@ List<Pack> placeholderPacks = [
     title: 'Adventure Pack',
     publicationDate: '2023-01-01',
     creator: placeholderUsers[0],
-    packImage: 'https://via.placeholder.com/200x200',
+    packImage: "https://tse2.mm.bing.net/th?id=OIP.WxuBpk2j4-ugqYvjLb1CLQHaLU&pid=Api",//'https://via.placeholder.com/200x200',
     description: 'A collection of thrilling adventure novels.',
     books: placeholderBooks.sublist(0, 3), // First 3 books
   ),
