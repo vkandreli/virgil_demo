@@ -1,20 +1,23 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:virgil_demo/models/post.dart';
+import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/models/book.dart';
-import 'book_search_screen.dart'; // Import the book search screen
-import 'package:image_picker/image_picker.dart'; // Add this for image picking
+import 'package:virgil_demo/screens/book_search_screen.dart'; // Import the book search screen
 
 class CreatePostScreen extends StatefulWidget {
+  final User currentUser;
+  CreatePostScreen({required this.currentUser});
+
   @override
   _CreatePostScreenState createState() => _CreatePostScreenState();
 }
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
-  String? selectedBookTitle;
+  Book? selectedBook; // The book selected by the user
   String? selectedImagePath;
-
+  String? quoteText;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
 
   // Function to pick an image
@@ -34,9 +37,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     });
   }
 
-  // Check if the post can be created (both image and description not empty, and book selected)
+  // Check if the post can be created (both image, quote, and book are selected)
   bool _canCreatePost() {
-    return selectedBookTitle != null && selectedImagePath != null;
+    return selectedBook != null && selectedImagePath != null && quoteText != null;
   }
 
   @override
@@ -76,51 +79,72 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     ),
               SizedBox(height: 16),
 
-              // Description field (background always white)
+              // Quote field (background always white)
               TextField(
                 decoration: InputDecoration(
-                  labelText: 'Description',
+                  labelText: 'Quote',
                   fillColor: Colors.white, // Set background color to white
                   filled: true,
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 4,
+                onChanged: (value) {
+                  setState(() {
+                    quoteText = value;
+                  });
+                },
               ),
               SizedBox(height: 16),
 
               // Search bar for book title (background always white)
-            TextField(
-              decoration: InputDecoration(
-                labelText: selectedBookTitle ?? 'Search Book',
-                fillColor: Colors.white, 
-                filled: true,
-                border: OutlineInputBorder(),
-              ),
-              onTap: () async {
-                // Navigate to the book search screen when tapped
-                final selectedBook = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BookSearchScreen(query: selectedBookTitle ?? ""),
-                  ),
-                );
-                // If a book is selected, update the search bar
-                if (selectedBook != null) {
-                  setState(() {
-                    selectedBookTitle = selectedBook.title;
-                  });
-                }
-              },
+              TextField(
+                decoration: InputDecoration(
+                  labelText: selectedBook?.title ?? 'Search Book',
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(),
+                ),
+                onTap: () async {
+                  // Navigate to the book search screen when tapped
+                  final Book? book = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookSearchScreen(query: selectedBook?.title ?? ""),
+                    ),
+                  );
+                  // If a book is selected, update the selectedBook
+                  if (book != null) {
+                    setState(() {
+                      selectedBook = book;
+                    });
+                  }
+                },
               ),
               SizedBox(height: 16),
 
               // Create Post button
               ElevatedButton(
-                onPressed: _canCreatePost() ? () {
-                  // Handle the post creation logic here
-                  print('Post Created');
-                  Navigator.pop(context); // Navigate back to the Profile screen
-                } : null, // Disable the button if conditions are not met
+                onPressed: _canCreatePost()
+                    ? () {
+                        // Create the Post object
+                        Post post = Post(
+                          originalPoster: widget.currentUser, // Use the current user as the poster
+                          timePosted: DateTime.now(),
+                          imageUrl: selectedImagePath,
+                          quote: quoteText,
+                          book: selectedBook!, // Use the full Book object
+                          likes: 0,
+                          reblogs: 0,
+                          comments: [],
+                        );
+
+                        // Add the post to the current user's posts
+                        widget.currentUser.addPost(post);
+
+                        // Navigate back to the Profile screen
+                        Navigator.pop(context);
+                      }
+                    : null, // Disable the button if conditions are not met
                 child: Text('Create Post'),
               ),
             ],

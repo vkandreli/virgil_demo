@@ -123,7 +123,7 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreatePostScreen()),
+            MaterialPageRoute(builder: (context) => CreatePostScreen(currentUser: widget.currentUser,)),
           );
         },
         child: Icon(Icons.add),

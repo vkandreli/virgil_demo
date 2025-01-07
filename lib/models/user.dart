@@ -122,5 +122,9 @@ class User {
     void changeStatus(String string) {
       status = string;
     }
+
+    void addPost(Post post){
+      usersPosts.add(post);
+    }
 }
 

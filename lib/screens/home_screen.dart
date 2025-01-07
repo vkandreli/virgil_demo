@@ -77,7 +77,7 @@ class HomeScreen extends StatelessWidget {
           // Navigate to the screen to create a new post
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreatePostScreen()),
+            MaterialPageRoute(builder: (context) => CreatePostScreen(currentUser: currentUser,)),
           );
         },
         child: Icon(Icons.add),
