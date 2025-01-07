@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'own_profile_screen.dart';
 import 'home_screen.dart';
 import 'recommendations_screen.dart';
@@ -12,11 +13,12 @@ import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 class LibraryScreen extends StatelessWidget {
   User currentUser = placeholderSelf;
+  final TextEditingController _searchController = TextEditingController(); // Controller for TextField
+  
   @override
   Widget build(BuildContext context) {
-      //currentUser.addToCurrent(placeholderBooks[0]);
-
     final Logger logger = Logger();  // Create an instance of the Logger
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -27,10 +29,20 @@ class LibraryScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: TextField(
+                      controller: _searchController,
                       decoration: InputDecoration(
                         hintText: 'Search for books...',
                         border: OutlineInputBorder(),
                       ),
+                      onSubmitted: (query) {
+                        // Navigate to BookSearchScreen on submit
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookSearchScreen(query: query),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   IconButton(
