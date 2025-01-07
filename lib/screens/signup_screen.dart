@@ -34,11 +34,11 @@ class _SignupScreenState extends State<SignupScreen> {
       );
       return;
     }
- Future<void> _saveCredentials() async {
+ 
     await storage.write(key: 'email:$email', value: _emailController.text);
     await storage.write(key: 'password:$email', value: _passwordController.text);
 
-  }
+  
     // Perform signup, navigate to login, etc.
     
     ScaffoldMessenger.of(context).showSnackBar(
