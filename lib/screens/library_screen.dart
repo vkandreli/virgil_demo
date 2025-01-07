@@ -28,7 +28,7 @@ class LibraryScreen extends StatelessWidget {
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
-                        hintText: 'Search books...',
+                        hintText: 'Search for books...',
                         border: OutlineInputBorder(),
                       ),
                     ),

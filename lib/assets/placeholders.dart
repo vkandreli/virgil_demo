@@ -58,7 +58,7 @@ List<User> placeholderUsers = [
     username: "user1",
     password: "password1",
     email: "user1@example.com",
-    profileImage: "https://via.placeholder.com/150?text=User+1", // Custom profile image for user1
+    profileImage: "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",//"https://via.placeholder.com/150?text=User+1", // Custom profile image for user1
     followedUsers: [],
     usersPosts: [],
     usersReviews: [],
@@ -67,7 +67,7 @@ List<User> placeholderUsers = [
     username: "user2",
     password: "password2",
     email: "user2@example.com",
-    profileImage: "https://via.placeholder.com/150?text=User+2", // Custom profile image for user2
+    profileImage:"https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",// "https://via.placeholder.com/150?text=User+2", // Custom profile image for user2
     followedUsers: [],
     usersPosts: [],
     usersReviews: [],
@@ -76,7 +76,7 @@ List<User> placeholderUsers = [
     username: "user3",
     password: "password3",
     email: "user3@example.com",
-    profileImage: null, // No profile image, will use the default
+    profileImage: "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",//null, // No profile image, will use the default
     followedUsers: [],
     usersPosts: [],
     usersReviews: [],
@@ -85,7 +85,7 @@ List<User> placeholderUsers = [
     username: "user4",
     password: "password4",
     email: "user4@example.com",
-    profileImage: "https://via.placeholder.com/150?text=User+4", // Custom profile image for user4
+    profileImage: "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",//"https://via.placeholder.com/150?text=User+4", // Custom profile image for user4
     followedUsers: [],
     usersPosts: [],
     usersReviews: [],
@@ -94,7 +94,7 @@ List<User> placeholderUsers = [
     username: "user5",
     password: "password5",
     email: "user5@example.com",
-    profileImage: null, // No profile image, will use the default
+    profileImage: "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",//null, // No profile image, will use the default
     followedUsers: [],
     usersPosts: [],
     usersReviews: [],
@@ -103,7 +103,7 @@ List<User> placeholderUsers = [
     username: "user6",
     password: "password6",
     email: "user6@example.com",
-    profileImage: "https://via.placeholder.com/150?text=User+6", // Custom profile image for user6
+    profileImage:"https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",// "https://via.placeholder.com/150?text=User+6", // Custom profile image for user6
     followedUsers: [],
     usersPosts: [],
     usersReviews: [],
@@ -127,35 +127,55 @@ List<Post> placeholderPosts = [
   Post(
     originalPoster: placeholderUsers[0], // User 1 as the original poster
     reblogger: placeholderUsers[1], // User 2 reblogging
-    imageUrl: "https://via.placeholder.com/500x300?text=Post+1+Image",
+    //imageUrl: "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",//"https://via.placeholder.com/500x300?text=Post+1+Image",
     quote: "This is a quote for Post 1.",
+    timePosted: DateTime.now(),
+    book: placeholderBooks[0],
+      comments: [
+        "This book kept me on the edge of my seat!",
+        "I figured out the mystery halfway through, but it was still fun!"
+      ],
   ),
   Post(
     originalPoster: placeholderUsers[1], // User 2 as the original poster
     reblogger: placeholderSelf, // Self reblogging
-    imageUrl: "https://via.placeholder.com/500x300?text=Post+2+Image",
+    imageUrl: "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",//"https://via.placeholder.com/500x300?text=Post+2+Image",
     quote: "This is a quote for Post 2.",
+    timePosted: DateTime.now(),
+    book: placeholderBooks[0],      
+    comments: [
+        "I love this book! The plot twists are amazing.",
+        "Totally agree! The ending was unexpected."
+      ],
   ),
   Post(
     originalPoster: placeholderUsers[2], // User 3 as the original poster
-    imageUrl: "https://via.placeholder.com/500x300?text=Post+3+Image",
+    //imageUrl: "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",//"https://via.placeholder.com/500x300?text=Post+3+Image",
     quote: "This is a quote for Post 3.",
+    timePosted: DateTime.now(),
+    book: placeholderBooks[0],
   ),
   Post(
     originalPoster: placeholderUsers[3], // User 4 as the original poster
     reblogger: placeholderUsers[4], // User 5 reblogging
-    imageUrl: "https://via.placeholder.com/500x300?text=Post+4+Image",
+    imageUrl: "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",//"https://via.placeholder.com/500x300?text=Post+4+Image",
     quote: "This is a quote for Post 4.",
+    timePosted: DateTime.now(),
+    book: placeholderBooks[0],
   ),
   Post(
     originalPoster: placeholderUsers[4], // User 5 as the original poster
-    imageUrl: "https://via.placeholder.com/500x300?text=Post+5+Image",
+    imageUrl:"https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",// "https://via.placeholder.com/500x300?text=Post+5+Image",
     quote: "This is a quote for Post 5.",
+    timePosted: DateTime.now(),
+    book: placeholderBooks[0],
   ),
   Post(
     originalPoster: placeholderSelf, // User 6 as the original poster
-    imageUrl: "https://via.placeholder.com/500x300?text=Post+6+Image",
+    imageUrl: "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",//"https://via.placeholder.com/500x300?text=Post+6+Image",
     quote: "This is a quote for Post 6.",
+    timePosted: DateTime.now(),
+    book: placeholderBooks[0],
   ),
 ];
 

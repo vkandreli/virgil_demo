@@ -125,9 +125,9 @@ class UserReadListScreen extends StatelessWidget {
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
                 ),
-                itemCount: placeholderBooks.length, // Use user.readingList if available
+                itemCount: user.readingList.length, // Use user.readingList if available
                 itemBuilder: (context, index) {
-                  var book = placeholderBooks[index]; // Placeholder books
+                  var book = user.readingList[index]; // Placeholder books
                   return GestureDetector(
                     onTap: () {
                       // Navigate to BookDetailScreen when tapped

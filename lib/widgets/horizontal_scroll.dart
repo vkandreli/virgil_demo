@@ -207,7 +207,6 @@ class PackCard extends StatelessWidget {
 }
 
 
-
 class ReviewCard extends StatelessWidget {
   final Review review;
 
@@ -252,6 +251,8 @@ class ReviewCard extends StatelessWidget {
                 child: Text(
                   review.book.title,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis, // Ellipsis for overflow
                 ),
               ),
             ),
@@ -261,7 +262,7 @@ class ReviewCard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => OtherProfileScreen(user: review.user, currentUser: placeholderSelf,),//currentUser
+                    builder: (context) => OtherProfileScreen(user: review.user, currentUser: placeholderSelf,),
                   ),
                 );
               },
@@ -270,6 +271,8 @@ class ReviewCard extends StatelessWidget {
                 child: Text(
                   'By: ${review.user.username}',
                   style: TextStyle(fontSize: 14, color: AppColors.lightBrown),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis, // Ellipsis for overflow
                 ),
               ),
             ),
@@ -301,6 +304,8 @@ class ReviewCard extends StatelessWidget {
               child: Text(
                 review.text,
                 style: TextStyle(fontSize: 14),
+                maxLines: 3, // Allow up to 3 lines
+                overflow: TextOverflow.ellipsis, // Ellipsis for overflow
               ),
             ),
             // Review Date
@@ -309,6 +314,8 @@ class ReviewCard extends StatelessWidget {
               child: Text(
                 'Reviewed on: ${review.reviewDate}',
                 style: TextStyle(fontSize: 12, color: AppColors.lightBrown),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis, // Ellipsis for overflow
               ),
             ),
           ],
@@ -317,3 +324,4 @@ class ReviewCard extends StatelessWidget {
     );
   }
 }
+

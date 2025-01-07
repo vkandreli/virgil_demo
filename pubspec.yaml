@@ -1,5 +1,5 @@
 name: virgil_demo
-description: "A new Flutter project."
+description: "The exciting book social platform."
 publish_to: 'none'
 version: 0.1.0
 
@@ -17,7 +17,10 @@ dependencies:
   # location: ^4.4.0
   provider: ^6.0.0 
   image_picker: ^0.8.4+8
-  
+  sqflite: ^2.0.0+4
+  path_provider: ^2.0.8
+  http: ^1.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -25,3 +28,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  
+assets:
+    - assets/

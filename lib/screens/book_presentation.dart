@@ -49,6 +49,7 @@ class BookDetailScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: null, 
     );
   }
 }

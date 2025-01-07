@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
               child: ListView.builder(
                 itemCount: placeholderPosts.length,
                 itemBuilder: (context, index) {
-                  return PostWidget(post: placeholderPosts[index]);
+                  return PostWidget(post: placeholderPosts[index], currentUser: currentUser,);
                 },
               ),
             ),

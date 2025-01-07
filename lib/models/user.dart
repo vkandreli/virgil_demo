@@ -21,7 +21,7 @@ class User {
   bool isReviewsPrivate;
   bool isReadListPrivate;
 
-  static const String defaultProfileImage = "https://via.placeholder.com/150?text=Profile+Image";
+  static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";//"https://via.placeholder.com/150?text=Profile+Image";
 
   // Constructor
   User({
@@ -38,7 +38,7 @@ class User {
     List<Book> readingList = const [],   // Default empty list
     this.status = 'A small status, favourite quote etc', // Default status
     this.isPacksPrivate = true,   // Default privacy state
-    this.isReviewsPrivate = true,  // Default privacy state
+    this.isReviewsPrivate = false,  // Default privacy state
     this.isReadListPrivate = true,  // Default privacy state
   }) : followedUsers = followedUsers.isEmpty ? [] : followedUsers,
         usersPosts = usersPosts.isEmpty ? [] : usersPosts,

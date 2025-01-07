@@ -31,6 +31,8 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
     userPosts = placeholderPosts.where((post) {
       return post.originalPoster == widget.currentUser || post.reblogger == widget.currentUser;
     }).toList();
+
+    userPosts =  (widget.currentUser.usersPosts)+userPosts ;
   }
 
   void togglePrivacy(String section) {
@@ -108,7 +110,7 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
               child: ListView.builder(
                 itemCount: userPosts.length,
                 itemBuilder: (context, index) {
-                  return PostWidget(post: userPosts[index]);
+                  return PostWidget(post: userPosts[index], currentUser: widget.currentUser,);
                 },
               ),
             ),

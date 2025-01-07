@@ -89,28 +89,28 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               SizedBox(height: 16),
 
               // Search bar for book title (background always white)
-              TextField(
-                decoration: InputDecoration(
-                  labelText: selectedBookTitle ?? 'Search Book',
-                  fillColor: Colors.white, // Set background color to white
-                  filled: true,
-                  border: OutlineInputBorder(),
-                ),
-                onTap: () async {
-                  // Navigate to the book search screen when tapped
-                  final selectedBook = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookSearchScreen(query: ""),
-                    ),
-                  );
-                  // If a book is selected, update the search bar
-                  if (selectedBook != null) {
-                    setState(() {
-                      selectedBookTitle = selectedBook.title;
-                    });
-                  }
-                },
+            TextField(
+              decoration: InputDecoration(
+                labelText: selectedBookTitle ?? 'Search Book',
+                fillColor: Colors.white, 
+                filled: true,
+                border: OutlineInputBorder(),
+              ),
+              onTap: () async {
+                // Navigate to the book search screen when tapped
+                final selectedBook = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BookSearchScreen(query: selectedBookTitle ?? ""),
+                  ),
+                );
+                // If a book is selected, update the search bar
+                if (selectedBook != null) {
+                  setState(() {
+                    selectedBookTitle = selectedBook.title;
+                  });
+                }
+              },
               ),
               SizedBox(height: 16),
 
