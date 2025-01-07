@@ -43,6 +43,20 @@ class Book {
       totalPages: json['volumeInfo']['pageCount'] ?? 0,
     );
   }
+
+  factory Book.empty() {
+    return Book(
+      title: '',
+      description: '',
+      genre: '',
+      posterUrl: '',
+      totalPages: 0,
+      currentPage: 0,
+      publicationDate: "",
+      publisher: "",
+      author: "",
+    );
+  }
 }
 
 Future<Book> fetchBookInfo(String query) async {

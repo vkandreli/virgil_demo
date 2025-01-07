@@ -126,5 +126,20 @@ class User {
     void addPost(Post post){
       usersPosts.add(post);
     }
+
+int pageOfBook(Book bookSent) {
+  // Find the book in the currentList based on the title
+  try {
+    Book selected = currentList.firstWhere(
+      (book) => book.title == bookSent.title,
+    );
+    return selected.currentPage ?? 0;
+  } catch (e) {
+    // If the book is not found, return 0 or an appropriate default value
+    return 0;
+  }
+}
+
+    
 }
 

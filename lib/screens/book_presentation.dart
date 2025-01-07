@@ -16,13 +16,16 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
-  late bool isInReadingList;
+  late bool isInReadingList, isInCurrentList;
   final Logger logger = Logger();
+  TextEditingController _pageController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     // Check if the book is in the reading list of the current user
     isInReadingList = widget.currentUser.readingList.contains(widget.book);
+    isInCurrentList = widget.currentUser.currentList.contains(widget.book);
   }
 
   // Toggle Save/Remove button logic
@@ -46,42 +49,130 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
 
   // Handle Start Reading button click
   void _startReading() {
+    widget.currentUser.addToCurrent(widget.book);
     logger.i("Started reading: ${widget.book.title}");
+        isInCurrentList = widget.currentUser.currentList.contains(widget.book);
+    if(isInCurrentList) logger.i("Is in current list: ${widget.book.title}");
   }
 
-  // Build the Action Buttons Column
-  Widget _buildActionButtons() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        IconButton(
-          icon: Icon(Icons.add_circle_outline),
-          onPressed: _addToList,
-        ),
-        SizedBox(height: 10),
-        IconButton(
-          icon: Icon(
-            Icons.save_alt,
-            color: isInReadingList ? Colors.green : Colors.black, // Change color based on readingList
-          ),
-          onPressed: _toggleSaveRemove,
-        ),
-        SizedBox(height: 10),
-        // Start Reading button / Page count (only if the book is in the reading list)
-        if (isInReadingList)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ElevatedButton(
-                onPressed: _startReading,
-                child: Text('Start Reading'),
-              ),
-              Text('Pages: ${widget.book.currentPage ?? 0} / ${widget.book.totalPages}'),
-            ],
-          ),
-      ],
-    );
+  // Method to add new page
+void _addPages(int newPage) {
+  // Find the book in the currentList based on the title
+  Book? selected = widget.currentUser.currentList.firstWhere(
+    (book) => book.title == widget.book.title,
+    orElse: () => Book.empty(), // If the book is not found, return null
+  );
+
+  if (selected == Book.empty()) {
+    // Handle the case where the book is not found
+    logger.e("Book not found in the current list: ${widget.book.title}");
+  } else {
+    setState(() {
+      selected.currentPage = newPage;  // Directly update the book's currentPage
+    });
+    logger.i("Reached page: $newPage at ${widget.book.title}");
   }
+}
+
+
+
+Widget _buildActionButtons() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      IconButton(
+        icon: Icon(Icons.add_circle_outline),
+        onPressed: _addToList,
+      ),
+      SizedBox(height: 10),
+      IconButton(
+        icon: Icon(
+          Icons.save_alt,
+          color: isInReadingList ? Colors.green : Colors.black, // Change color based on readingList
+        ),
+        onPressed: _toggleSaveRemove,
+      ),
+      SizedBox(height: 10),
+      // Start Reading button / Page count (only if the book is in the reading list)
+      if (isInReadingList)
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!isInCurrentList) ...[
+              ElevatedButton(
+                onPressed: (){
+                  _startReading();
+                  setState(() {
+                      });
+                      },
+                child: Text('Start Reading'),
+                
+              ),
+            ],
+            if (isInCurrentList) ...[
+              // Wrap TextField with ConstrainedBox or Container to avoid overflow
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 165),
+                child: TextField(
+                  controller: _pageController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Enter new page',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                  },
+                ),
+              ),
+              SizedBox(height: 10),
+ElevatedButton(
+  onPressed: () {
+    if (_pageController.text.isNotEmpty) {
+      // Parse the entered page number
+      int newPage = int.tryParse(_pageController.text) ?? 0;
+
+      // Check if the page number is valid (within the total pages of the book)
+      if (newPage <= widget.book.totalPages && newPage > 0) {
+        // If valid, update the page
+        _addPages(newPage);
+
+        // Find the selected book
+        Book? selected = widget.currentUser.currentList.firstWhere(
+          (book) => book.title == widget.book.title,
+          orElse: () => Book.empty(),
+        );
+
+        logger.i("Reached page: ${selected.currentPage} at ${widget.book.title}");
+
+        // Clear the text field
+        _pageController.clear();
+
+        // Trigger a rebuild of the widget
+        setState(() {});
+      } else {
+        // Show an error message if the page number is invalid
+        final snackBar = SnackBar(
+          content: Text('Invalid page number. Please enter a number between 1 and ${widget.book.totalPages}.'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+  },
+  child: Text('Enter current page'),
+),
+
+              Text(
+                'Pages: ${widget.currentUser.pageOfBook(widget.book)} / ${widget.book.totalPages}',
+              ),
+            ],
+          ],
+        )
+    ],
+  );
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {
