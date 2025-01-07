@@ -34,14 +34,14 @@ class _LoginScreenState extends State<LoginScreen> {
     ///Map<String, String> allValues = await storage.readAll();
 
     // Check if the entered username exists in storage
-    if (allValues.containsKey('username:$email') && 
+  /**   if (allValues.containsKey('username:$email') && 
     allValues['username:$email'] == email &&
     allValues.containsKey('password:$email') &&
     allValues['password:$email'] == password) {
       // Perform login, navigate to next screen, etc.
      ScaffoldMessenger.of(context).showSnackBar(
        SnackBar(content: Text('Login Successful')),
-      );
+      ); */
      // Wait for 2 seconds
      await Future.delayed(Duration(seconds: 2));
      // Navigate to the Home screen
@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
        context,
        MaterialPageRoute(builder: (context) => BottomNavWrapper()),
      );
-    /** } else {
+     /** } else {
        ScaffoldMessenger.of(context).showSnackBar(
        SnackBar(content: Text('Invalid email or password')),
       );
