@@ -204,9 +204,16 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   bool isLiked = false;
   bool isShared = false;
+  late bool isInReadingList;
   TextEditingController _commentController = TextEditingController(); // Controller for comment input
   final Logger logger = Logger();
-
+  @override
+  void initState() {
+    super.initState();
+    // Check if the book is already in the reading list
+    isInReadingList = widget.currentUser.readingList.contains(widget.post.book);
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -347,11 +354,22 @@ class _PostWidgetState extends State<PostWidget> {
                 Column(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.save_alt,
-                        color: widget.currentUser.readingList.contains(widget.post.book) ? Colors.green : Colors.black,),
+                      icon: Icon(
+                        Icons.save_alt,
+                        color: isInReadingList ? Colors.green : Colors.black, // Change color based on readingList
+                      ),
                       onPressed: () {
-                        widget.currentUser.readingList.add(widget.post.book);
-                        logger.i("Saved book  ${widget.post.book.title}");
+                        setState(() {
+                          if (isInReadingList) {
+                            widget.currentUser.readingList.remove(widget.post.book);
+                            logger.i("Removed book from reading list: ${widget.post.book.title}");
+                          } else {
+                            widget.currentUser.readingList.add(widget.post.book);
+                            logger.i("Saved book to reading list: ${widget.post.book.title}");
+                          }
+                          // Update the state to reflect the change
+                          isInReadingList = !isInReadingList;
+                        });
                       },
                     ),
                   ],
