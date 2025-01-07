@@ -203,20 +203,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                     onSubmitted: _sendChatMessage,
                   ),
                 ),
-                const SizedBox.square(dimension: 15),
-                IconButton(
-                  onPressed: !_loading
-                      ? () async {
-                          
-                        }
-                      : null,
-                  icon: Icon(
-                    Icons.image,
-                    color: _loading
-                        ? Theme.of(context).colorScheme.secondary
-                        : Theme.of(context).colorScheme.primary,
-                  ),
-                ),
+            
                 if (!_loading)
                   IconButton(
                     onPressed: () async {
