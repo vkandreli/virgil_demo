@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class BookSearchScreen extends StatefulWidget {
-  final String query;
+  //final String query;
 
-  BookSearchScreen({required this.query});
+  //BookSearchScreen({required this.query});
 
   @override
   _BookSearchScreenState createState() => _BookSearchScreenState();
@@ -20,7 +20,7 @@ class _BookSearchScreenState extends State<BookSearchScreen> {
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController(text: widget.query);
+    _searchController = TextEditingController();//text: widget.query
     filteredBooks = [];  // Initialize as empty, we will fetch after pressing "Go"
   }
 

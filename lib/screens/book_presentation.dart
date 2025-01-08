@@ -252,6 +252,21 @@ Widget _buildActionButtons() {
                 ),
                 SizedBox(height: 16),
 
+                // Book Author
+                Text(
+                  'Author',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  widget.book.author,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(height: 16),
+
                 // Book Summary
                 Text(
                   'Summary',

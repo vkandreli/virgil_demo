@@ -35,7 +35,7 @@ class LibraryScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => BookSearchScreen(query: query),
+                            builder: (context) => BookSearchScreen(),//query: query
                           ),
                         );
                       },
@@ -55,7 +55,7 @@ class LibraryScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BookSearchScreen(query: query),
+                          builder: (context) => BookSearchScreen(),//query: query
                         ),
                       );
                     },

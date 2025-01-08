@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
 import 'package:virgil_demo/screens/new_post.dart';  // Import Post model
+import 'package:virgil_demo/screens/profile_search_scene.dart';
 import 'own_profile_screen.dart';  // Profile screen when self is clicked
 import 'others_profile_screen.dart';  // Profile screen when a user is clicked
 import 'package:virgil_demo/assets/placeholders.dart';
@@ -48,17 +50,42 @@ class HomeScreen extends StatelessWidget {
             // Search Bar
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search for a profile...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              //  child: TextField(
+              //   decoration: InputDecoration(
+              //     hintText: 'Search for a profile...',
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(10),
+              //     ),
+              //     prefixIcon: Icon(Icons.search),
+              //   ),
+              // ),
+              child: Expanded(
+              child: ElevatedButton(
+                    onPressed: () {                                         
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileSearchScreen(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      //fixedSize: Size(500, 40), 
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Search for a profile...",
+                      style: TextStyle(fontSize: 14, color: AppColors.darkBrown,),
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-                  prefixIcon: Icon(Icons.search),
-                ),
               ),
             ),
-
+              
+         
+ 
             // Vertical list of posts
                         // Expanded space for posts
             Expanded(

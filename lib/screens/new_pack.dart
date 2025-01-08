@@ -6,20 +6,19 @@ import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart'; // Import the book search screen
 
-class CreatePostScreen extends StatefulWidget {
+class CreatePackScreen extends StatefulWidget {
   final User currentUser;
-  CreatePostScreen({required this.currentUser});
+  CreatePackScreen({required this.currentUser});
 
   @override
-  _CreatePostScreenState createState() => _CreatePostScreenState();
+  _CreatePackScreenState createState() => _CreatePackScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
-  Book? selectedBook; // The book selected by the user
+class _CreatePackScreenState extends State<CreatePackScreen> {
   String? selectedImagePath;
   String? quoteText;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
-
+  List<Book>? selectedBooks;
   // Function to pick an image
   Future<void> _pickImage() async {
     final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
@@ -38,14 +37,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   // Check if the post can be created (book is required, image or quote or both are required)
-  bool _canCreatePost() {
-    return selectedBook != null && (quoteText != null || selectedImagePath != null);
+  bool _canCreatePack() {
+    return selectedBooks != null && quoteText != null && selectedImagePath != null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Post')),
+      appBar: AppBar(title: Text('Create Pack')),
       body: SingleChildScrollView( // Make the body scrollable
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -78,11 +77,18 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       ],
                     ),
               SizedBox(height: 16),
-
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  fillColor: Colors.white, // Set background color to white
+                  filled: true,
+                  border: OutlineInputBorder(),
+                ),
+              ),
               // Quote field (background always white)
               TextField(
                 decoration: InputDecoration(
-                  labelText: 'Quote',
+                  labelText: 'Description',
                   fillColor: Colors.white, // Set background color to white
                   filled: true,
                   border: OutlineInputBorder(),
@@ -122,14 +128,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
               SizedBox(height: 16),
 
-              // Create Post button
+              // Create Pack button
               ElevatedButton(
-                onPressed: _canCreatePost()
+                onPressed: _canCreatePack()
                     ? () {
-                        // Create the Post object
-                        Post post = Post(
-                          originalPoster: widget.currentUser, // Use the current user as the poster
-                          timePosted: DateTime.now(),
+                        // Create the Pack object
+                        Pack post = Pack(
+                          originalPacker: widget.currentUser, // Use the current user as the poster
+                          timePacked: DateTime.now(),
                           imageUrl: selectedImagePath, // Image is optional
                           quote: quoteText,
                           book: selectedBook!, // Use the full Book object
@@ -139,13 +145,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         );
 
                         // Add the post to the current user's posts
-                        widget.currentUser.addPost(post);
+                        widget.currentUser.addPack(post);
 
                         // Navigate back to the Profile screen
                         Navigator.pop(context);
                       }
                     : null, // Disable the button if conditions are not met
-                child: Text('Create Post'),
+                child: Text('Create Pack'),
               ),
             ],
           ),
