@@ -23,6 +23,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/screens/home_screen.dart';
+import 'package:virgil_demo/screens/new_pack.dart';
 import 'screens/bottom_navigation.dart';
 import 'models/user.dart';
 import 'screens/login_screen.dart';
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: BottomNavWrapper(),
+      home: BottomNavWrapper(),// CreatePackScreen(currentUser: placeholderSelf,),
     );
   }
 }

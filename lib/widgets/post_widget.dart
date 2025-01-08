@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:logger/logger.dart';
 import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/screens/add_to_pack.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/comment_screen.dart';
 // class PostWidget extends StatefulWidget {
@@ -346,7 +347,12 @@ class _PostWidgetState extends State<PostWidget> {
                     IconButton(
                       icon: Icon(Icons.add_circle_outline),
                       onPressed: () {
-                        logger.i("Added to pack");
+                        logger.i("Adding to pack");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AddToPack(currentUser: widget.currentUser,)),//book: widget.post.book, 
+                        );
+                        
                       },
                     ),
                     Text("", style: TextStyle(fontSize: 14)),

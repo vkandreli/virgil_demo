@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:virgil_demo/models/post.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/models/pack.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/models/book.dart';
-import 'package:virgil_demo/screens/book_search_screen.dart'; // Import the book search screen
+import 'package:virgil_demo/screens/book_search_screen.dart';
+import 'package:virgil_demo/widgets/horizontal_scroll.dart'; // Import the book search screen
 
 class CreatePackScreen extends StatefulWidget {
   final User currentUser;
@@ -16,9 +18,10 @@ class CreatePackScreen extends StatefulWidget {
 
 class _CreatePackScreenState extends State<CreatePackScreen> {
   String? selectedImagePath;
-  String? quoteText;
+  String? descriptionText, titleText;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
   List<Book>? selectedBooks;
+
   // Function to pick an image
   Future<void> _pickImage() async {
     final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
@@ -36,21 +39,47 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
     });
   }
 
-  // Check if the post can be created (book is required, image or quote or both are required)
+  // Check if the pack can be created (book is required, image or quote or both are required)
   bool _canCreatePack() {
-    return selectedBooks != null && quoteText != null && selectedImagePath != null;
+    return selectedBooks != null && descriptionText != null && selectedImagePath != null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Pack')),
       body: SingleChildScrollView( // Make the body scrollable
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('Title:',
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              // Title text field
+              TextField(
+                decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 2,
+                onChanged: (value) {
+                  setState(() {
+                    titleText = value;
+                  });
+                },
+              ),
+              SizedBox(height: 16),
+              Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('Pack image:',
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  ),
+                ),
               // Add Image button (now placed above the search bar)
               selectedImagePath == null
                   ? ElevatedButton(
@@ -58,13 +87,18 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
                       child: Icon(Icons.image),
                     )
                   : Stack(
+                      clipBehavior: Clip.none,
                       children: [
-                        // Display the selected image (fit the width of the screen)
-                        Image.file(
-                          File(selectedImagePath!),
-                          width: double.infinity, // Makes the image fit the width
-                          height: 200, // Set a fixed height for the image
-                          fit: BoxFit.cover, // Ensures the image maintains its aspect ratio
+                        // Display the selected image
+                        Container(
+                          width: double.infinity,
+                          height: 200,
+                          child: Image.file(
+                            File(selectedImagePath!),
+                            width: double.infinity,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         Positioned(
                           top: 8,
@@ -77,80 +111,54 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
                       ],
                     ),
               SizedBox(height: 16),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                  fillColor: Colors.white, // Set background color to white
-                  filled: true,
-                  border: OutlineInputBorder(),
+              Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('Description:',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              // Quote field (background always white)
+              // Description text field
               TextField(
                 decoration: InputDecoration(
-                  labelText: 'Description',
-                  fillColor: Colors.white, // Set background color to white
+                  fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 4,
                 onChanged: (value) {
                   setState(() {
-                    quoteText = value;
+                    descriptionText = value;
                   });
                 },
               ),
               SizedBox(height: 16),
-
-              // Search bar for book title (background always white)
-              TextField(
-                decoration: InputDecoration(
-                  labelText: selectedBook?.title ?? 'Search Book',
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(),
-                ),
-                onTap: () async {
-                  // Navigate to the book search screen when tapped
-                  final Book? book = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookSearchScreen(),//query: selectedBook?.title ?? ""
-                    ),
-                  );
-                  // If a book is selected, update the selectedBook
-                  if (book != null) {
-                    setState(() {
-                      selectedBook = book;
-                    });
-                  }
-                },
+              
+              // List of books
+              ListView(
+                shrinkWrap: true,  // Allow ListView to take only the required space
+                children: [
+                  bookScroll("Books in pack", selectedBooks ?? [], showProgress: true, currentUser: widget.currentUser),
+                ],
               ),
               SizedBox(height: 16),
-
+              
               // Create Pack button
               ElevatedButton(
                 onPressed: _canCreatePack()
                     ? () {
-                        // Create the Pack object
-                        Pack post = Pack(
-                          originalPacker: widget.currentUser, // Use the current user as the poster
-                          timePacked: DateTime.now(),
-                          imageUrl: selectedImagePath, // Image is optional
-                          quote: quoteText,
-                          book: selectedBook!, // Use the full Book object
-                          likes: 0,
-                          reblogs: 0,
-                          comments: [],
+                        Pack pack = Pack(
+                          packImage: selectedImagePath ?? "",
+                          publicationDate: DateTime.now().toString(),
+                          title: titleText ?? "",
+                          creator: widget.currentUser,
+                          description: descriptionText ?? "",
+                          books: selectedBooks ?? [], // Ensure non-null list
                         );
+                        widget.currentUser.postPack(pack);
 
-                        // Add the post to the current user's posts
-                        widget.currentUser.addPack(post);
-
-                        // Navigate back to the Profile screen
                         Navigator.pop(context);
                       }
-                    : null, // Disable the button if conditions are not met
+                    : null,
                 child: Text('Create Pack'),
               ),
             ],

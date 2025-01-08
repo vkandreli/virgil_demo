@@ -51,6 +51,7 @@ Widget bookScroll(
   List<Book> books, {
   bool showProgress = false, 
   bool isCompleted = false, 
+  bool addRemove = false,
   required User currentUser,  // Add the `currentUser` parameter here
 }) {
   return genericScroll<Book>(
@@ -109,11 +110,12 @@ class _BookCard extends StatelessWidget {
   final bool showProgress;
   final bool isCompleted;
   final User currentUser;
-
+  final bool addRemove;
   const _BookCard({
     this.book,
     this.showProgress = false,
     this.isCompleted = false,
+    this.addRemove = false,
     required this.currentUser,
   });
 
@@ -151,6 +153,7 @@ class _BookCard extends StatelessWidget {
                   width: 120,
                   fit: BoxFit.cover,
                 ),
+                
               ),
             ),
             // If showProgress is true, add the progress indicator on top
