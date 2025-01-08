@@ -42,7 +42,7 @@ class User {
     this.isReadListPrivate = true,  // Default privacy state
   }) : followedUsers = followedUsers.isEmpty ? [] : followedUsers,
         usersPosts = usersPosts.isEmpty ? [] : usersPosts,
-        usersReviews = usersReviews.isEmpty ? [] : usersReviews,
+       usersReviews = usersReviews.isEmpty ? [] : usersReviews,
         usersPacks = usersPacks.isEmpty ? [] : usersPacks,
         completedList = completedList.isEmpty ? [] : completedList, // Ensures empty list if null
         currentList = currentList.isEmpty ? [] : currentList,
@@ -116,6 +116,7 @@ class User {
     void addToCompleted(Book book) {
       completedList.add(book);
       readingList.remove(book);
+      book.currentPage = 0;
       book.dateCompleted = DateTime.now();
     }
 

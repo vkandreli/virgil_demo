@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/book.dart';
+import 'package:virgil_demo/screens/new_review.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 import 'package:virgil_demo/models/user.dart';  // Assuming we have the User model available
 
@@ -16,7 +17,7 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
-  late bool isInReadingList, isInCurrentList;
+  late bool isInReadingList, isInCurrentList, isCompleted;
   final Logger logger = Logger();
   TextEditingController _pageController = TextEditingController();
 
@@ -26,6 +27,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
     // Check if the book is in the reading list of the current user
     isInReadingList = widget.currentUser.readingList.contains(widget.book);
     isInCurrentList = widget.currentUser.currentList.contains(widget.book);
+    isCompleted = widget.currentUser.completedList.contains(widget.book);
   }
 
   // Toggle Save/Remove button logic
@@ -67,10 +69,20 @@ void _addPages(int newPage) {
     // Handle the case where the book is not found
     logger.e("Book not found in the current list: ${widget.book.title}");
   } else {
+    if (newPage == selected.totalPages)
+    {
+    setState(() {
+      isCompleted = true;
+      widget.currentUser.addToCompleted(selected);  // Directly update the book
+    });
+    logger.i("Finished book: ${widget.book.title}");
+    }
+    else {
     setState(() {
       selected.currentPage = newPage;  // Directly update the book's currentPage
     });
     logger.i("Reached page: $newPage at ${widget.book.title}");
+    }
   }
 }
 
@@ -109,7 +121,7 @@ Widget _buildActionButtons() {
                 
               ),
             ],
-            if (isInCurrentList) ...[
+            if (isInCurrentList && !isCompleted) ...[
               // Wrap TextField with ConstrainedBox or Container to avoid overflow
               ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 165),
@@ -125,48 +137,70 @@ Widget _buildActionButtons() {
                 ),
               ),
               SizedBox(height: 10),
-ElevatedButton(
-  onPressed: () {
-    if (_pageController.text.isNotEmpty) {
-      // Parse the entered page number
-      int newPage = int.tryParse(_pageController.text) ?? 0;
+                ElevatedButton(
+                  onPressed: () {
+                    if (_pageController.text.isNotEmpty) {
+                      // Parse the entered page number
+                      int newPage = int.tryParse(_pageController.text) ?? 0;
 
-      // Check if the page number is valid (within the total pages of the book)
-      if (newPage <= widget.book.totalPages && newPage > 0) {
-        // If valid, update the page
-        _addPages(newPage);
+                      // Check if the page number is valid (within the total pages of the book)
+                      if (newPage <= widget.book.totalPages && newPage > 0) {
+                        // If valid, update the page
+                        _addPages(newPage);
 
-        // Find the selected book
-        Book? selected = widget.currentUser.currentList.firstWhere(
-          (book) => book.title == widget.book.title,
-          orElse: () => Book.empty(),
-        );
+                        // Find the selected book
+                        Book? selected = widget.currentUser.currentList.firstWhere(
+                          (book) => book.title == widget.book.title,
+                          orElse: () => Book.empty(),
+                        );
 
-        logger.i("Reached page: ${selected.currentPage} at ${widget.book.title}");
+                        logger.i("Reached page: ${selected.currentPage} at ${widget.book.title}");
 
-        // Clear the text field
-        _pageController.clear();
+                        // Clear the text field
+                        _pageController.clear();
 
-        // Trigger a rebuild of the widget
-        setState(() {});
-      } else {
-        // Show an error message if the page number is invalid
-        final snackBar = SnackBar(
-          content: Text('Invalid page number. Please enter a number between 1 and ${widget.book.totalPages}.'),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
-    }
-  },
-  child: Text('Enter current page'),
-),
+                        // Trigger a rebuild of the widget
+                        setState(() {});
+                      } else {
+                        // Show an error message if the page number is invalid
+                        final snackBar = SnackBar(
+                          content: Text('Invalid page number. Please enter a number between 1 and ${widget.book.totalPages}.'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    }
+                  },
+                  child: Text('Enter current page'),
+                ),
 
               Text(
                 'Pages: ${widget.currentUser.pageOfBook(widget.book)} / ${widget.book.totalPages}',
               ),
             ],
           ],
-        )
+        ),
+        if (isCompleted)
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [            
+              ElevatedButton(
+                onPressed: (){
+                                          logger.i("Reviewing book: ${widget.book.title}");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateReviewScreen(currentUser: widget.currentUser, selectedBook: widget.book,),
+                          ),
+                        );
+                  //_reviewBook();
+                  setState(() {
+                      });
+                      },
+                child: Text('Review book'),
+                
+              ),
+          ],
+        ),            
     ],
   );
 }

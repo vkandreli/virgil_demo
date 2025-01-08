@@ -61,7 +61,7 @@ List<User> placeholderUsers = [
     profileImage: "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",//"https://via.placeholder.com/150?text=User+1", // Custom profile image for user1
     followedUsers: [],
     usersPosts: [],
-    usersReviews: [],
+    //usersReviews: [],
   ),
   User(
     username: "user2",
@@ -70,7 +70,7 @@ List<User> placeholderUsers = [
     profileImage:"https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",// "https://via.placeholder.com/150?text=User+2", // Custom profile image for user2
     followedUsers: [],
     usersPosts: [],
-    usersReviews: [],
+    //usersReviews: [],
   ),
   User(
     username: "user3",
@@ -79,7 +79,7 @@ List<User> placeholderUsers = [
     profileImage: "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",//null, // No profile image, will use the default
     followedUsers: [],
     usersPosts: [],
-    usersReviews: [],
+    //usersReviews: [],
   ),
   User(
     username: "user4",
@@ -88,7 +88,7 @@ List<User> placeholderUsers = [
     profileImage: "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",//"https://via.placeholder.com/150?text=User+4", // Custom profile image for user4
     followedUsers: [],
     usersPosts: [],
-    usersReviews: [],
+    //usersReviews: [],
   ),
   User(
     username: "user5",
@@ -97,7 +97,7 @@ List<User> placeholderUsers = [
     profileImage: "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",//null, // No profile image, will use the default
     followedUsers: [],
     usersPosts: [],
-    usersReviews: [],
+    //usersReviews: [],
   ),
   User(
     username: "user6",
@@ -106,7 +106,7 @@ List<User> placeholderUsers = [
     profileImage:"https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",// "https://via.placeholder.com/150?text=User+6", // Custom profile image for user6
     followedUsers: [],
     usersPosts: [],
-    usersReviews: [],
+   // usersReviews: [],
   ),
 ];
 
@@ -117,7 +117,7 @@ User placeholderSelf = User(
     profileImage: "https://tse1.mm.bing.net/th?id=OIP.qbGUIKPMpi5kfUsaFS9_QQHaFb&pid=Api",//"https://via.placeholder.com/150?text=Self", // Custom profile image for user6
     followedUsers: [],
     usersPosts: [],
-    usersReviews: [],
+    //usersReviews: [],
     isPacksPrivate: false,
     isReadListPrivate: true,
     isReviewsPrivate: false,

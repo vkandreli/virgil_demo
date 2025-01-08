@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:virgil_demo/models/review.dart';
+import 'package:virgil_demo/models/user.dart';
 
 class Book {
   final String title;
@@ -13,6 +15,7 @@ class Book {
   int totalPages;
   int? currentPage;
   String? genre;
+  List<Map<User, Review>>? reviews;
 
   Book({
     required this.title,
@@ -27,6 +30,13 @@ class Book {
     this.dateCompleted,
     this.genre,
   });
+
+  void addReview(User user, Review review) {
+    reviews ??= []; 
+    reviews!.add({user: review});
+    user.postReview(review);
+  }
+
 
    factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
@@ -83,4 +93,6 @@ Future<Book> fetchBookInfo(String query) async {
   } catch (error) {
     throw Exception('Failed to fetch book data: $error');
   }
+
+
 }
