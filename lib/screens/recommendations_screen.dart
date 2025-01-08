@@ -8,6 +8,8 @@ import 'package:virgil_demo/widgets/horizontal_scroll.dart'; // Import the Movie
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:location/location.dart';
 //import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';  // To convert lat/lon to address
 
 class RecommendationsScreen extends StatefulWidget {
   @override
@@ -16,26 +18,65 @@ class RecommendationsScreen extends StatefulWidget {
 
 class _RecommendationsScreenState extends State<RecommendationsScreen> {
     User currentUser = placeholderSelf;
-
+    String? _currentCity = 'your location';
   // late GoogleMapController mapController;
   // late LocationData currentLocation;
 
   // // Initialize the location package
   // Location location = Location();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _getCurrentLocation();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    //_getCurrentLocation();
+    _getLocationandPermission();
+  }
 
-  // // Fetch current location of the user
+  // Fetch current location of the user
   // Future<void> _getCurrentLocation() async {
   //   LocationData locationData = await location.getLocation();
   //   setState(() {
   //     currentLocation = locationData;
   //   });
-  // }
+
+      Future<void> _getLocationandPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        _currentCity = 'Location services are disabled.';
+      });
+      return;
+    }
+
+    // Request location permission
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      setState(() {
+        _currentCity = 'Location permission denied.';
+      });
+      return;
+    }
+
+    // Get the current position (latitude and longitude)
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    // Get the city name from the latitude and longitude
+    _getCityFromCoordinates(position.latitude, position.longitude);
+  }
+
+  // Get the city name from latitude and longitude using geocoding
+  Future<void> _getCityFromCoordinates(double latitude, double longitude) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+    Placemark place = placemarks[0];
+    setState(() {
+      _currentCity = place.locality;  // This gives the city name
+    });
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +136,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
             //         : Center(child: CircularProgressIndicator()),
             //   ),
             // ),
-                  bookScroll("Popular in New York", placeholderBooks, currentUser: currentUser), 
+                  bookScroll("Popular in ${_currentCity}", placeholderBooks, currentUser: currentUser), 
                   bookScroll('What your community is reading', placeholderBooks, currentUser: currentUser),
                   reviewScroll('Hottest reviews', placeholderReviews, currentUser: currentUser), 
                 ],
