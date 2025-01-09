@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/post.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/users_lists.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/screens/new_post.dart';
@@ -129,6 +130,8 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
       ),
+        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
+
     );
   }
 }

@@ -3,13 +3,27 @@ import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/own_profile_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
-class StatsScreen extends StatelessWidget {
+class StatsScreen extends StatefulWidget {
   final User currentUser;
 
   StatsScreen({required this.currentUser});
 
+  @override
+  _StatsScreenState createState() => _StatsScreenState();
+}
+
+class _StatsScreenState extends State<StatsScreen> {
+  int _currentIndex = 0;  // Bottom navigation index
+
+  // Function to handle tab taps for bottom navigation
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
   // Helper method to get pages read this week
   List<Map<DateTime, int>> getPagesReadThisWeek(
       List<Map<DateTime, int>> pagesPerDay) {
@@ -28,7 +42,7 @@ class StatsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     // Get pages read this week
-    final pagesReadThisWeek = getPagesReadThisWeek(currentUser.pagesPerDay);
+    final pagesReadThisWeek = getPagesReadThisWeek(widget.currentUser.pagesPerDay);
 
     return SafeArea(
       child: Scaffold(
@@ -48,7 +62,7 @@ class StatsScreen extends StatelessWidget {
                 IconButton(
                   icon: CircleAvatar(
                     backgroundImage: NetworkImage(
-                        currentUser.profileImage ?? User.defaultProfileImage),
+                        widget.currentUser.profileImage ?? User.defaultProfileImage),
                   ),
                   onPressed: () {
                     // Navigate to the user's profile screen
@@ -56,7 +70,7 @@ class StatsScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            OwnProfileScreen(currentUser: currentUser),
+                            OwnProfileScreen(currentUser: widget.currentUser),
                       ),
                     );
                   },
@@ -136,22 +150,22 @@ class StatsScreen extends StatelessWidget {
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                               SizedBox(height: 8),
-                              if (currentUser.completedList.isEmpty) ...[
+                              if (widget.currentUser.completedList.isEmpty) ...[
                               //                              bookScroll(
                               //   '',
                               //   <Book> [virgil],
                               //   isCompleted: false,
-                              //   currentUser: currentUser,
+                              //   widget.currentUser: widget.currentUser,
                               // ),
                                     Text("You have not finished any books yet. Try adding pages",
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: AppColors.darkBrown)),
                               ],
-                              if (currentUser.completedList.isNotEmpty) ...[
+                              if (widget.currentUser.completedList.isNotEmpty) ...[
                               bookScroll(
                                 '',
-                                currentUser.completedList,
+                                widget.currentUser.completedList,
                                 isCompleted: true,
-                                currentUser: currentUser,
+                                currentUser: widget.currentUser,
                               ),
                               ],
                             ],
@@ -189,7 +203,7 @@ class StatsScreen extends StatelessWidget {
                                 width: double.infinity,
                                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                 child: Text(
-                                  currentUser.goals.map((goal) => goal.name).join('\n'),
+                                  widget.currentUser.goals.map((goal) => goal.name).join('\n'),
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ),
@@ -226,8 +240,8 @@ class StatsScreen extends StatelessWidget {
                               ),
                               badgeScroll(
                                 "",
-                                currentUser.badges,
-                                currentUser: currentUser,
+                                widget.currentUser.badges,
+                                currentUser: widget.currentUser,
                               ),
                             ],
                           ),
@@ -241,7 +255,9 @@ class StatsScreen extends StatelessWidget {
             ),
           ],
         ),
+  bottomNavigationBar: CustomBottomNavBar(context: context, currentUser:widget.currentUser),
       ),
+      
     );
   }
 }

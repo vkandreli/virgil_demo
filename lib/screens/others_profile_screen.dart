@@ -5,53 +5,71 @@ import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/widgets/profile_pane.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';  // Import the custom bottom navigation bar
 
-
-class OtherProfileScreen extends StatelessWidget {
+class OtherProfileScreen extends StatefulWidget {
   final User user, currentUser;
   const OtherProfileScreen({Key? key, required this.user, required this.currentUser}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // Filtered posts list based on the user
-    List<Post> userPosts = placeholderPosts.where((post) {
-      return post.originalPoster == user || post.reblogger == user;
+  _OtherProfileScreenState createState() => _OtherProfileScreenState();
+}
+
+class _OtherProfileScreenState extends State<OtherProfileScreen> {
+  int _currentIndex = 0; 
+  late List<Post> userPosts;  
+
+  @override
+  void initState() {
+    super.initState();
+    userPosts = placeholderPosts.where((post) {
+      return post.originalPoster == widget.user || post.reblogger == widget.user;
     }).toList();
+  }
 
-    // Navigate to the corresponding screen
-    void navigateToUserPacksScreen() {
-      if (!user.isPacksPrivate) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => UserPacksScreen(user: currentUser, currentUser: currentUser,)),
-        );
-      }
+  // Navigate to the corresponding screen (methods for privacy box navigation)
+  void navigateToUserPacksScreen() {
+    if (!widget.user.isPacksPrivate) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => UserPacksScreen(user: widget.user, currentUser: widget.currentUser)),
+      );
     }
+  }
 
-    void navigateToUserReviewsScreen() {
-      if (!user.isReviewsPrivate) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => UserReviewsScreen(user: currentUser, currentUser: currentUser)),
-        );
-      }
+  void navigateToUserReviewsScreen() {
+    if (!widget.user.isReviewsPrivate) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => UserReviewsScreen(user: widget.user, currentUser: widget.currentUser)),
+      );
     }
+  }
 
-    void navigateToUserReadListScreen() {
-      if (!user.isReadListPrivate) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => UserReadListScreen(user: currentUser, currentUser: currentUser)),
-        );
-      }
+  void navigateToUserReadListScreen() {
+    if (!widget.user.isReadListPrivate) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => UserReadListScreen(user: widget.user, currentUser: widget.currentUser)),
+      );
     }
+  }
 
+  // Function to handle tab taps
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index; // Change the current selected index
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             // Profile Pane
-            ProfilePane(user: user, currentUser: currentUser),
+            ProfilePane(user: widget.user, currentUser: widget.currentUser),
 
             // Horizontal Line with 3 Boxes (packs, reviews, read list)
             Container(
@@ -61,18 +79,18 @@ class OtherProfileScreen extends StatelessWidget {
                 children: [
                   _privacyBox(
                     'Packs',
-                    user.isPacksPrivate,
-                    navigateToUserPacksScreen,      // Navigate to UserPacksScreen
+                    widget.user.isPacksPrivate,
+                    navigateToUserPacksScreen,
                   ),
                   _privacyBox(
                     'Reviews',
-                    user.isReviewsPrivate,
-                    navigateToUserReviewsScreen,     // Navigate to UserReviewsScreen
+                    widget.user.isReviewsPrivate,
+                    navigateToUserReviewsScreen,
                   ),
                   _privacyBox(
                     'Read List',
-                    user.isReadListPrivate,
-                    navigateToUserReadListScreen,      // Navigate to UserReadListScreen
+                    widget.user.isReadListPrivate,
+                    navigateToUserReadListScreen,
                   ),
                 ],
               ),
@@ -83,13 +101,14 @@ class OtherProfileScreen extends StatelessWidget {
               child: ListView.builder(
                 itemCount: userPosts.length,
                 itemBuilder: (context, index) {
-                  return PostWidget(post: userPosts[index], currentUser: currentUser,);
+                  return PostWidget(post: userPosts[index], currentUser: widget.currentUser);
                 },
               ),
             ),
           ],
         ),
-      ),    
+      ),
+  bottomNavigationBar: CustomBottomNavBar(context: context, currentUser:widget.currentUser),
     );
   }
 

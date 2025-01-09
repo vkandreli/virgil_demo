@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'own_profile_screen.dart';
 import 'home_screen.dart';
 import 'recommendations_screen.dart';
@@ -108,6 +109,8 @@ Navigator.push(
           );
         },
       ),
+        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
+
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/user.dart';  // Import User model
+import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/new_post.dart';  // Import Post model
 import 'package:virgil_demo/screens/profile_search_scene.dart';
 import 'own_profile_screen.dart';  // Profile screen when self is clicked
@@ -65,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProfileSearchScreen(),
+                          builder: (context) => ProfileSearchScreen(currentUser: currentUser,),
                         ),
                       );
                     },
@@ -74,6 +75,7 @@ class HomeScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
+                      minimumSize: Size(500,40),
                     ),
                     child: Text(
                       "Search for a profile...",
@@ -107,9 +109,11 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute(builder: (context) => CreatePostScreen(currentUser: currentUser,)),
           );
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: AppColors.darkBrown,),
         tooltip: 'Create New Post',
       ),
-    );
+
+  bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
+  );
   }
 }

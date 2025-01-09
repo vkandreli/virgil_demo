@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
 
 class UserSettingsScreen extends StatefulWidget {
   final User currentUser;
@@ -158,6 +159,8 @@ selectedImagePath == null
           ],
         ),
       ),
+        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
+
     );
   }
 }

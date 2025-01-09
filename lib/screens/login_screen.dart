@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
 import 'signup_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'bottom_navigation.dart';
@@ -50,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
      Navigator.pushReplacement(
        context,
-       MaterialPageRoute(builder: (context) => BottomNavWrapper()),
+       MaterialPageRoute(builder: (context) => CustomBottomNavBar(context: context, currentUser: placeholderSelf,)),
      );
       } else {  
        

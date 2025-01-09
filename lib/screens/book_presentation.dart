@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/book.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/new_review.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 import 'package:virgil_demo/models/user.dart';  // Assuming we have the User model available
@@ -17,6 +18,13 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
+    int _currentIndex = 0;  
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
   late bool isInReadingList, isInCurrentList, isCompleted;
   final Logger logger = Logger();
   TextEditingController _pageController = TextEditingController();
@@ -227,9 +235,6 @@ Widget _buildActionButtons() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.book.title),
-      ),
       body: SafeArea(
         child: SingleChildScrollView( // Make the body scrollable
           child: Padding(
@@ -323,6 +328,7 @@ Widget _buildActionButtons() {
           ),
         ),
       ),
+              bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),
     );
   }
 }

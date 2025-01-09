@@ -44,7 +44,7 @@ void main() {
   runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
-  final User self = placeholderSelf;//provider for user
+  final User currentUser = placeholderSelf;//provider for user
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: BottomNavWrapper(),// CreatePackScreen(currentUser: placeholderSelf,),
+      home: HomeScreen(),// CustomBottomNavBar(context: context, currentUser: currentUser,),// CreatePackScreen(currentUser: placeholderSelf,),
     );
   }
 }

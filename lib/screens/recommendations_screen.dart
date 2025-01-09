@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/chatbot_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart'; // Import the MovieDetailScreen
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -155,6 +156,8 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
           );
         },
       ),
+        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
+
     );
   }
 }
