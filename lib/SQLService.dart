@@ -39,14 +39,27 @@ void main() async {
       )
       ''',
     ); 
-    return db.execute(
+       db.execute(
       '''CREATE TABLE posts (
           id INTEGER PRIMARY KEY AUTOINCREMENT, originalPoster_id INTEGER, reblogger_id INTEGER, imageUrl TEXT,
           quote TEXT, book_id INTEGER, timePosted TEXT,likes INTEGER DEFAULT 0, reblogs INTEGER DEFAULT 0,
           FOREIGN KEY (originalPoster_id) REFERENCES users(id) ON DELETE CASCADE,
           FOREIGN KEY (reblogger_id) REFERENCES users(id) ON DELETE SET NULL,
           FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE''',
-);
+    );
+       db.execute(
+        '''CREATE TABLE reviews (
+     id INTEGER PRIMARY KEY AUTOINCREMENT, book_id INTEGER NOT NULL, user_id INTEGER NOT NULL,
+     text TEXT NOT NULL, reviewDate TEXT NOT NULL, stars INTEGER CHECK(stars >= 0 AND stars <= 10), 
+     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE'''
+   );
+      return db.execute(
+      '''CREATE TABLE packs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL, creator_id INTEGER NOT NULL, 
+  packImage TEXT NOT NULL, description TEXT NOT NULL, FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE'''
+      );
+
+
   },
     
     // Set the version. This executes the onCreate function and provides a
@@ -195,7 +208,7 @@ Future<void> insertBook(Book book) async {
     );
   }
 
-/*******     Post Setters      ********/
+ /*******       Post Setters      ********/
 
 
 Future<void> insertPost(Post post) async {
@@ -239,6 +252,95 @@ Future<void> insertPost(Post post) async {
     );
   }
 
+//*******     Review Setters      ********/
+
+
+Future<void> insertReview(Review review) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    await db.insert(
+      'reviews',
+      review.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+
+   Future<void> updateReview(Review review) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Update the given Review.
+     await db.update(
+      'reviews',
+      review.toMap(),
+      // Ensure that the Review has a matching id.
+      where: 'id = ?',
+      // Pass the Review's id as a whereArg to prevent SQL injection.
+      whereArgs: [review.id],
+    );
+  }
+
+  Future<void> deleteReview(int id) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Remove the Review from the database.
+    await db.delete(
+      'reviews',
+      // Use a `where` clause to delete a specific user.
+      where: 'id = ?',
+      // Pass the Review's id as a whereArg to prevent SQL injection.
+      whereArgs: [id],
+    );
+  }
+
+
+
+//*******     Pack Setters      ********/
+
+
+Future<void> insertPack(Pack pack) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    await db.insert(
+      'packs',
+      pack.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+
+   Future<void> updatePack(Pack pack) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Update the given Pack.
+     await db.update(
+      'packs',
+      pack.toMap(),
+      // Ensure that the Pack has a matching id.
+      where: 'id = ?',
+      // Pass the Pack's id as a whereArg to prevent SQL injection.
+      whereArgs: [pack.id],
+    );
+  }
+
+  Future<void> deletePack(int id) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Remove the Pack from the database.
+    await db.delete(
+      'packs',
+      // Use a `where` clause to delete a specific user.
+      where: 'id = ?',
+      // Pass the Pack's id as a whereArg to prevent SQL injection.
+      whereArgs: [id],
+    );
+  }
 
 
 
@@ -432,6 +534,8 @@ class Book {
 
 //*********    Post  **********/
 
+
+
 class Post {
   final int? id;
   final int originalPoster_id;
@@ -468,6 +572,72 @@ class Post {
     'likes': likes,  // int
     'reblogs': reblogs,  // int
  ///   'comments': comments.join(',')
+    };
+  }
+}
+
+
+//*********    Review  **********/
+
+
+class Review {
+  final int? id;
+  final int book_id; 
+  final int user_id; 
+  final String text;
+  final String reviewDate;
+  final int stars;
+
+
+  Review({
+    this.id,
+    required this.book_id,
+    required this.user_id,
+    required this.text,
+    required this.reviewDate,
+    required this.stars,
+  });
+    Map<String, dynamic> toMap() {
+    return {
+      'book_id': book_id,
+      'user_id': user_id,
+      'text': text,
+      'reviewDate': reviewDate,
+      'stars': stars,
+    };
+  }
+}
+
+
+//*********    Pack  **********/
+
+
+class Pack {
+  final int? id;
+  final String title;
+  final String publicationDate;
+  final int creator_id;
+  final String packImage;
+  final String description;
+
+
+   Pack({
+    this.id,
+    required this.title,
+    required this.publicationDate,
+    required this.creator_id,
+    required this.packImage,
+    required this.description,
+  });
+
+
+   Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'publicationDate': publicationDate,
+      'creator_id': creator_id, // Assuming 'id' is a property of the 'User' class
+      'packImage': packImage,
+      'description': description,
     };
   }
 }
