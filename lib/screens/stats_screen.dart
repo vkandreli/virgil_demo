@@ -144,7 +144,7 @@ class StatsScreen extends StatelessWidget {
                               //   currentUser: currentUser,
                               // ),
                                     Text("You have not finished any books yet. Try adding pages",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.darkBrown)),
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: AppColors.darkBrown)),
                               ],
                               if (currentUser.completedList.isNotEmpty) ...[
                               bookScroll(
