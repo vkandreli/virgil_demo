@@ -81,6 +81,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
               // Quote field (background always white)
               TextField(
+                  textInputAction: TextInputAction.done, 
+  onSubmitted: (value) {
+    FocusScope.of(context).unfocus();
+  },
                 decoration: InputDecoration(
                   labelText: 'Quote',
                   fillColor: Colors.white, // Set background color to white
@@ -98,6 +102,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
               // Search bar for book title (background always white)
               TextField(
+                  textInputAction: TextInputAction.done, 
+  onSubmitted: (value) {
+    FocusScope.of(context).unfocus();
+  },
                 decoration: InputDecoration(
                   labelText: selectedBook?.title ?? 'Search Book',
                   fillColor: Colors.white,
@@ -130,7 +138,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         Post post = Post(
                           originalPoster: widget.currentUser, // Use the current user as the poster
                           timePosted: DateTime.now(),
-                          imageUrl: selectedImagePath, // Image is optional
+                          imageUrl: 'https://tse3.mm.bing.net/th?id=OIP.PgvVbyS2yPLX6TlQ4Wf-iAHaDb&pid=Api',//selectedImagePath, 
                           quote: quoteText,
                           book: selectedBook!, // Use the full Book object
                           likes: 0,

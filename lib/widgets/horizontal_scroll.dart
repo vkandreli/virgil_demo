@@ -14,33 +14,37 @@ import 'package:virgil_demo/screens/review_presentation.dart';
 Widget genericScroll<T>({
   required String title,
   required List<T> items,
-  required Widget Function(BuildContext, T) itemBuilder,  // A callback for rendering each item
+  required Widget Function(BuildContext, T)
+      itemBuilder, // A callback for rendering each item
   bool showProgress = false,
   bool isCompleted = false,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      if (title!='') ...[
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(
-          title,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      if (title != '') ...[
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
       ],
       SizedBox(
         height: showProgress ? 240 : 200,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: 16),
-          itemCount: items.isEmpty ? 1 : items.length, 
+          itemCount: items.isEmpty ? 1 : items.length,
           itemBuilder: (context, index) {
             if (items.isEmpty) {
-              return Center(child: Text('No items available'));  // Handle empty state gracefully
+              return Center(
+                  child: Text(
+                      'No items available')); // Handle empty state gracefully
             }
-            return itemBuilder(context, items[index]);  // Proceed if list has items
+            return itemBuilder(
+                context, items[index]); // Proceed if list has items
           },
         ),
       ),
@@ -48,17 +52,16 @@ Widget genericScroll<T>({
   );
 }
 
-
 Widget bookScroll(
-  String title, 
+  String title,
   List<Book> booksToDisplay, {
-  bool showProgress = false, 
-  bool isCompleted = false, 
+  bool showProgress = false,
+  bool isCompleted = false,
   bool addRemove = false,
-  required User currentUser,  
+  required User currentUser,
 }) {
   //List<Book> booksToDisplay = booksToDisplay.isEmpty ? [Book.empty()] : booksToDisplay;
-  
+
   return genericScroll<Book>(
     title: title,
     items: booksToDisplay,
@@ -73,12 +76,12 @@ Widget bookScroll(
   );
 }
 
-
 Widget packScroll(
-  String title, 
+  String title,
   List<Pack> packs, {
   bool isCompleted = false,
-  required User currentUser,  
+  bool picking = false,
+  required User currentUser,
 }) {
   return genericScroll<Pack>(
     title: title,
@@ -86,17 +89,18 @@ Widget packScroll(
     itemBuilder: (context, pack) {
       return PackCard(
         pack: pack,
+        picking: picking,
         isCompleted: isCompleted,
-        currentUser: currentUser,  // Pass currentUser here
+        currentUser: currentUser, // Pass currentUser here
       );
     },
   );
 }
 
 Widget reviewScroll(
-  String title, 
+  String title,
   List<Review> reviews, {
-  required User currentUser,  // Add the `currentUser` parameter here
+  required User currentUser, // Add the `currentUser` parameter here
 }) {
   return genericScroll<Review>(
     title: title,
@@ -104,17 +108,17 @@ Widget reviewScroll(
     itemBuilder: (context, review) {
       return ReviewCard(
         review: review,
-        currentUser: currentUser,  // Pass currentUser here
+        currentUser: currentUser, // Pass currentUser here
       );
     },
   );
 }
 
 Widget badgeScroll(
-  String title, 
+  String title,
   List<Achievement> badges, {
-  bool showProgress = false, 
-  bool isCompleted = false, 
+  bool showProgress = false,
+  bool isCompleted = false,
   required User currentUser,
 }) {
   return genericScroll<Achievement>(
@@ -123,13 +127,11 @@ Widget badgeScroll(
     itemBuilder: (context, badge) {
       return BadgeCard(
         badge: badge,
-        currentUser: currentUser,  // Pass currentUser here
+        currentUser: currentUser, // Pass currentUser here
       );
     },
   );
 }
-
-
 
 class _BookCard extends StatelessWidget {
   final Book? book;
@@ -154,7 +156,10 @@ class _BookCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BookDetailScreen(book: book!, currentUser: currentUser,),
+              builder: (context) => BookDetailScreen(
+                book: book!,
+                currentUser: currentUser,
+              ),
             ),
           );
         }
@@ -163,35 +168,40 @@ class _BookCard extends StatelessWidget {
         width: 120,
         margin: EdgeInsets.only(right: 16),
         child: Stack(
-          clipBehavior: Clip.none,  // Allow the progress bar to go beyond the image
+          clipBehavior:
+              Clip.none, // Allow the progress bar to go beyond the image
           children: [
             // Image with border (only when isCompleted is true)
             Container(
               decoration: BoxDecoration(
-                border: isCompleted ? Border.all(color: Color.fromARGB(255, 27, 139, 55), width: 2) : null,
+                border: isCompleted
+                    ? Border.all(
+                        color: Color.fromARGB(255, 27, 139, 55), width: 2)
+                    : null,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  book?.posterUrl ?? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api",
+                  book?.posterUrl ??
+                      "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api",
                   height: 180, // Fixed height for image
                   width: 120,
                   fit: BoxFit.cover,
                 ),
-                
               ),
             ),
             // If showProgress is true, add the progress indicator on top
             if (showProgress)
               Positioned(
-                bottom: 0,  // Place the progress bar at the bottom of the image
+                bottom: 0, // Place the progress bar at the bottom of the image
                 left: 0,
                 right: 0,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),  // Adjust padding as needed
+                  padding:
+                      const EdgeInsets.all(8.0), // Adjust padding as needed
                   child: LinearProgressIndicator(
-                    value: 0.7,  // Example value, replace with dynamic value
+                    value: 0.7, // Example value, replace with dynamic value
                     color: Color.fromARGB(255, 27, 139, 55),
                     backgroundColor: Colors.grey[200],
                   ),
@@ -208,12 +218,13 @@ class PackCard extends StatelessWidget {
   final Pack? pack;
   final bool isCompleted;
   final User currentUser;
+  final bool picking;
 
   const PackCard({
     this.pack,
     this.isCompleted = false,
+    this.picking = false,
     required this.currentUser,
-
   });
 
   @override
@@ -221,37 +232,48 @@ class PackCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (pack != null) {
-          // Navigate to the BookDetailScreen with the selected book
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PackDetailScreen(pack: pack!, currentUser: currentUser,),
-            ),
-          );
+          if (!picking) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PackDetailScreen(
+                  pack: pack!,
+                  currentUser: currentUser,
+                ),
+              ),
+            );
+          } else {
+            Navigator.pop(context, pack);
+          }
         }
       },
       child: Container(
         width: 120,
         margin: EdgeInsets.only(right: 16),
         child: Stack(
-          clipBehavior: Clip.none,  // Allow the progress bar to go beyond the image
+          clipBehavior:
+              Clip.none, // Allow the progress bar to go beyond the image
           children: [
             // Image with border (only when isCompleted is true)
             Container(
               decoration: BoxDecoration(
-                border: isCompleted ? Border.all(color: Color.fromARGB(255, 27, 139, 55), width: 2) : null,
+                border: isCompleted
+                    ? Border.all(
+                        color: Color.fromARGB(255, 27, 139, 55), width: 2)
+                    : null,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  pack?.packImage?? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api",
+                  pack?.packImage ??
+                      "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api",
                   height: 180, // Fixed height for image
                   width: 120,
                   fit: BoxFit.cover,
                 ),
               ),
-            ),          
+            ),
           ],
         ),
       ),
@@ -259,15 +281,11 @@ class PackCard extends StatelessWidget {
   }
 }
 
-
 class ReviewCard extends StatelessWidget {
   final Review review;
   final User currentUser;
-  const ReviewCard({
-    required this.review,
-    required this.currentUser
-  });
-  
+  const ReviewCard({required this.review, required this.currentUser});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -276,7 +294,10 @@ class ReviewCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ReviewDetailScreen(review: review, currentUser: currentUser,),
+            builder: (context) => ReviewDetailScreen(
+              review: review,
+              currentUser: currentUser,
+            ),
           ),
         );
       },
@@ -296,7 +317,10 @@ class ReviewCard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BookDetailScreen(book: review.book, currentUser: currentUser,),
+                    builder: (context) => BookDetailScreen(
+                      book: review.book,
+                      currentUser: currentUser,
+                    ),
                   ),
                 );
               },
@@ -316,7 +340,10 @@ class ReviewCard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => OtherProfileScreen(user: review.user, currentUser: placeholderSelf,),
+                    builder: (context) => OtherProfileScreen(
+                      user: review.user,
+                      currentUser: placeholderSelf,
+                    ),
                   ),
                 );
               },
@@ -388,7 +415,7 @@ class BadgeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 140,  // Fixed width
+      width: 140, // Fixed width
       height: 160, // Fixed height
       child: Card(
         elevation: 4.0,
@@ -400,12 +427,13 @@ class BadgeCard extends StatelessWidget {
             children: [
               // Badge image with 16 padding from the top
               Padding(
-                padding: const EdgeInsets.only(top: 12.0),  // 16 padding from top
+                padding:
+                    const EdgeInsets.only(top: 12.0), // 16 padding from top
                 child: Image.network(
                   badge.image,
                   width: 100,
                   height: 100,
-                  fit: BoxFit.cover,  // Ensures the image scales properly
+                  fit: BoxFit.cover, // Ensures the image scales properly
                 ),
               ),
               //SizedBox(height: 8),
@@ -413,11 +441,13 @@ class BadgeCard extends StatelessWidget {
               Spacer(),
               // Badge name with 16 padding from the bottom of the card
               Padding(
-                padding: const EdgeInsets.only(bottom: 12.0), // 16 padding at the bottom
+                padding: const EdgeInsets.only(
+                    bottom: 12.0), // 16 padding at the bottom
                 child: Text(
                   badge.name,
                   style: TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,  // Centers the text below the image
+                  textAlign:
+                      TextAlign.center, // Centers the text below the image
                 ),
               ),
             ],

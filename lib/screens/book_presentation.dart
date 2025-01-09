@@ -122,7 +122,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 MaterialPageRoute(
                     builder: (context) => AddToPack(
                           currentUser: widget.currentUser,
-                        )), //book: widget.post.book,
+                          selectedBook: widget.book,
+                        )), 
               );
             }),
         SizedBox(height: 10),

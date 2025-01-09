@@ -7,12 +7,13 @@ import 'package:virgil_demo/screens/add_to_pack.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/comment_screen.dart';
 import 'package:virgil_demo/screens/others_profile_screen.dart';
+import 'package:virgil_demo/screens/own_profile_screen.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
   final User currentUser;
-
-  PostWidget({required this.post, required this.currentUser});
+  final bool isInOwnProfile;
+  PostWidget({required this.post, required this.currentUser, required this.isInOwnProfile});
 
   @override
   _PostWidgetState createState() => _PostWidgetState();
@@ -194,6 +195,15 @@ class _PostWidgetState extends State<PostWidget> {
                         widget.post.reblog(widget.currentUser);
                         setState(() {
                           isShared = true;
+                          if (widget.isInOwnProfile){
+                            Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => OwnProfileScreen(
+                            currentUser: widget.currentUser,
+                          )),
+                );
+                          }
                         });
                         logger.i(
                             "Reblogged post by ${widget.post.originalPoster.username}");
@@ -229,6 +239,7 @@ class _PostWidgetState extends State<PostWidget> {
                           MaterialPageRoute(
                               builder: (context) => AddToPack(
                                     currentUser: widget.currentUser,
+                                    selectedBook: widget.post.book,
                                   )), //book: widget.post.book,
                         );
                       },
@@ -300,6 +311,10 @@ class _PostWidgetState extends State<PostWidget> {
               SizedBox(height: 12),
               // TextField for new comment
               TextField(
+                  textInputAction: TextInputAction.done, 
+  onSubmitted: (value) {
+    FocusScope.of(context).unfocus();
+  },
                 controller: _commentController,
                 decoration: InputDecoration(
                   labelText: "Add a comment",

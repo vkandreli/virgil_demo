@@ -112,7 +112,7 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
               child: ListView.builder(
                 itemCount: userPosts.length,
                 itemBuilder: (context, index) {
-                  return PostWidget(post: userPosts[index], currentUser: widget.currentUser,);
+                  return PostWidget(post: userPosts[index], currentUser: widget.currentUser, isInOwnProfile: true,);
                 },
               ),
             ),

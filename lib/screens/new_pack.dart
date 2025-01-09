@@ -25,7 +25,8 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
   List<Book> selectedBooks = [];
   // Function to pick an image
   Future<void> _pickImage() async {
-    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         selectedImagePath = pickedImage.path;
@@ -42,24 +43,28 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
 
   // Check if the pack can be created (book is required, image or quote or both are required)
   bool _canCreatePack() {
-    return selectedBooks != [] && descriptionText != null && selectedImagePath != null;
+    return selectedBooks != [] &&
+        descriptionText != null &&
+        selectedImagePath != null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView( // Make the body scrollable
+      body: SingleChildScrollView(
+        // Make the body scrollable
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('Title:',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                  ),
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Title:',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
+              ),
               // Title text field
               TextField(
                 decoration: InputDecoration(
@@ -73,14 +78,19 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
                     titleText = value;
                   });
                 },
+                textInputAction: TextInputAction.done,
+                onSubmitted: (value) {
+                  FocusScope.of(context).unfocus();
+                },
               ),
               SizedBox(height: 16),
               Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('Pack image:',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                  ),
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Pack image:',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
+              ),
               // Add Image button (now placed above the search bar)
               selectedImagePath == null
                   ? ElevatedButton(
@@ -113,11 +123,12 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
                     ),
               SizedBox(height: 16),
               Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('Description:',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Description:',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
+              ),
               // Description text field
               TextField(
                 decoration: InputDecoration(
@@ -131,53 +142,64 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
                     descriptionText = value;
                   });
                 },
+                textInputAction: TextInputAction.done,
+                onSubmitted: (value) {
+                  FocusScope.of(context).unfocus();
+                },
               ),
+
               SizedBox(height: 16),
               ElevatedButton(
-                    onPressed: () async {
+                onPressed: () async {
                   // Navigate to the book search screen when tapped
                   final Book? book = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BookSearchScreen(),//query: selectedBook?.title ?? ""
+                      builder: (context) =>
+                          BookSearchScreen(), //query: selectedBook?.title ?? ""
                     ),
                   );
                   // If a book is selected, update the selectedBook
                   if (book != null) {
-                         setState(() {
+                    setState(() {
                       selectedBooks.add(book);
-                    }); 
-                    }
+                    });
+                  }
                 },
-                    style: ElevatedButton.styleFrom(
-                      //fixedSize: Size(100, 40), 
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text(
-                      "Search for a book...",
-                      style: TextStyle(fontSize: 14, color: AppColors.darkBrown,),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),  
-                               // SizedBox(height: 16),
+                style: ElevatedButton.styleFrom(
+                  //fixedSize: Size(100, 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  "Search for a book...",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.darkBrown,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              // SizedBox(height: 16),
 
               // List of books
               ListView(
-                shrinkWrap: true,  // Allow ListView to take only the required space
+                shrinkWrap:
+                    true, // Allow ListView to take only the required space
                 children: [
-                  bookScroll("Books in pack", selectedBooks ?? [], currentUser: widget.currentUser),
+                  bookScroll("Books in pack", selectedBooks ?? [],
+                      currentUser: widget.currentUser),
                 ],
               ),
               SizedBox(height: 16),
-              
+
               // Create Pack button
               ElevatedButton(
                 onPressed: _canCreatePack()
                     ? () {
                         Pack pack = Pack(
-                          packImage: selectedImagePath ?? "",
+                          packImage: 'https://tse3.mm.bing.net/th?id=OIP.SGiCm8refU69stH376qy6QHaHU&pid=Api', //selectedImagePath ?? "https://tse3.mm.bing.net/th?id=OIP.SGiCm8refU69stH376qy6QHaHU&pid=Api",
                           publicationDate: DateTime.now().toString(),
                           title: titleText ?? "",
                           creator: widget.currentUser,

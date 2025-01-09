@@ -17,4 +17,8 @@ class Pack {
     required this.description,
     required this.books,
   });
+
+  void addBook(Book book){
+    books.add(book);
+  }
 }

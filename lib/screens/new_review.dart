@@ -61,6 +61,10 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
 
               // Text field (background always white)
               TextField(
+                  textInputAction: TextInputAction.done, 
+  onSubmitted: (value) {
+    FocusScope.of(context).unfocus();
+  },
                 decoration: InputDecoration(
                   labelText: 'Write some words',
                   fillColor: Colors.white, // Set background color to white

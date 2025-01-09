@@ -113,6 +113,7 @@ selectedImagePath == null
 
             // Status TextField
             TextFormField(
+              
               controller: statusController,
               decoration: InputDecoration(
                 labelText: 'Status',

@@ -97,7 +97,7 @@ final User currentUser;
               child: ListView.builder(
                 itemCount: placeholderPosts.length,
                 itemBuilder: (context, index) {
-                  return PostWidget(post: placeholderPosts[index], currentUser: currentUser,);
+                  return PostWidget(post: placeholderPosts[index], currentUser: currentUser, isInOwnProfile: false,);
                 },
               ),
             ),
