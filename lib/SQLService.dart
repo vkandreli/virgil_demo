@@ -24,7 +24,10 @@ void main() async {
          isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0,)''',
       );
        db.execute(
-      'CREATE TABLE books(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, author TEXT, year INTEGER)',
+      '''CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL,
+        author TEXT NOT NULL, publisher TEXT NOT NULL,  posterUrl TEXT NOT NULL, description TEXT NOT NULL,
+        dateAdded TEXT, dateCompleted TEXT, totalPages INTEGER NOT NULL, currentPage INTEGER, genre TEXT
+        ''',
       );
        db.execute(
       '''CREATE TABLE user_books(user_id INTEGER,book_id INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -554,39 +557,65 @@ class User {
 class Book {
   final int? id;
   final String title;
+  final String publicationDate;
   final String author;
-  final int year;
+  final String publisher;
+  final String posterUrl;
+  final String description;
+  DateTime? dateAdded;
+  DateTime? dateCompleted;
+  int totalPages;
+  String? genre;
 
-  Book({
+   Book({
     this.id,
     required this.title,
+    required this.publicationDate,
     required this.author,
-    required this.year,
+    required this.publisher,
+    required this.posterUrl,
+    required this.description,
+    this.dateAdded,
+    this.dateCompleted,
+    required this.totalPages,
+    this.genre,
   });
 
 
-  Map<String, Object?> toMap() {
+ // Convert Book instance to a Map for database insertion
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'title': title,
-      'author': author, 
-      'year': year,
+      'publicationDate': publicationDate,
+      'author': author,
+      'publisher': publisher,
+      'posterUrl': posterUrl,
+      'description': description,
+      'dateAdded': dateAdded?.toIso8601String(),
+      'dateCompleted': dateCompleted?.toIso8601String(),
+      'totalPages': totalPages,
+      'genre': genre,
     };
   }
 
-
-
-
-   static Book fromMap(Map<String, dynamic> map) {
+  // Convert a Map to a Book instance (useful for fetching data from the database)
+  factory Book.fromMap(Map<String, dynamic> map) {
     return Book(
       id: map['id'],
       title: map['title'],
+      publicationDate: map['publicationDate'],
       author: map['author'],
-      year: map['year'],
-     );
-    }
+      publisher: map['publisher'],
+      posterUrl: map['posterUrl'],
+      description: map['description'],
+      dateAdded: map['dateAdded'] != null ? DateTime.parse(map['dateAdded']) : null,
+      dateCompleted: map['dateCompleted'] != null ? DateTime.parse(map['dateCompleted']) : null,
+      totalPages: map['totalPages'],
+      genre: map['genre'],
+    );
+  }
 }
-
 //*********    Post  **********/
 
 
