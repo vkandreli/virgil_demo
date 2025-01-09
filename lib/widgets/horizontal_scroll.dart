@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
+import 'package:virgil_demo/models/achievement.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/pack.dart';
 import 'package:virgil_demo/models/review.dart';
@@ -20,6 +21,7 @@ Widget genericScroll<T>({
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
+      if (title!='') ...[
       Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text(
@@ -27,6 +29,7 @@ Widget genericScroll<T>({
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
+      ],
       SizedBox(
         height: showProgress ? 240 : 200,
         child: ListView.builder(
@@ -103,6 +106,26 @@ Widget reviewScroll(
     },
   );
 }
+
+Widget badgeScroll(
+  String title, 
+  List<Achievement> badges, {
+  bool showProgress = false, 
+  bool isCompleted = false, 
+  required User currentUser,
+}) {
+  return genericScroll<Achievement>(
+    title: title,
+    items: badges,
+    itemBuilder: (context, badge) {
+      return BadgeCard(
+        badge: badge,
+        currentUser: currentUser,  // Pass currentUser here
+      );
+    },
+  );
+}
+
 
 
 class _BookCard extends StatelessWidget {
@@ -353,3 +376,51 @@ class ReviewCard extends StatelessWidget {
   }
 }
 
+class BadgeCard extends StatelessWidget {
+  final Achievement badge;
+  final User currentUser;
+
+  BadgeCard({required this.badge, required this.currentUser});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,  // Fixed width
+      height: 160, // Fixed height
+      child: Card(
+        elevation: 4.0,
+        color: AppColors.lightBrown,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              // Badge image with 16 padding from the top
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),  // 16 padding from top
+                child: Image.network(
+                  badge.image,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,  // Ensures the image scales properly
+                ),
+              ),
+              //SizedBox(height: 8),
+              // Spacer to push the title up from the bottom
+              Spacer(),
+              // Badge name with 16 padding from the bottom of the card
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12.0), // 16 padding at the bottom
+                child: Text(
+                  badge.name,
+                  style: TextStyle(fontSize: 16),
+                  textAlign: TextAlign.center,  // Centers the text below the image
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
