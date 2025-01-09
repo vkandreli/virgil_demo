@@ -15,7 +15,8 @@ import 'package:virgil_demo/screens/chatbot_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 class LibraryScreen extends StatelessWidget {
-  User currentUser = placeholderSelf;
+final User currentUser;
+  LibraryScreen({Key? key, required this.currentUser}) : super(key: key); 
   final TextEditingController _searchController = TextEditingController(); // Controller for TextField
   
   @override

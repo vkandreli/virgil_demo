@@ -14,6 +14,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';  // To convert lat/lon to address
 
 class RecommendationsScreen extends StatefulWidget {
+final User currentUser;
+  const RecommendationsScreen({Key? key, required this.currentUser}) : super(key: key); 
+
   @override
   _RecommendationsScreenState createState() => _RecommendationsScreenState();
 }

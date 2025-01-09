@@ -40,7 +40,7 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
                             SizedBox(height: 40),
-
+        Text("Write a review for ${widget.selectedBook.title}", style: TextStyle(color: AppColors.darkBrown, fontSize: 24),),
               // Star Rating Picker
               Row(
                 children: List.generate(5, (index) {

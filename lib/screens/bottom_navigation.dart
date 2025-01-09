@@ -47,19 +47,19 @@ class CustomBottomNavBar extends StatelessWidget {
           case 0:
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
+              MaterialPageRoute(builder: (context) => HomeScreen(currentUser: currentUser,)),
             );
             break;
           case 1:
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => LibraryScreen()),
+              MaterialPageRoute(builder: (context) => LibraryScreen(currentUser: currentUser)),
             );
             break;
           case 2:
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RecommendationsScreen()),
+              MaterialPageRoute(builder: (context) => RecommendationsScreen(currentUser: currentUser)),
             );
             break;
           case 3:

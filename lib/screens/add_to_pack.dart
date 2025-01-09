@@ -72,8 +72,8 @@ class AddToPack extends StatelessWidget {
               ),
             ),
             ElevatedButton(
-                onPressed: () {
-                       Navigator.push(
+                onPressed: () async {
+                    await   Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => CreatePackScreen(currentUser: currentUser,),
