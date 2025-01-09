@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+
 void main() async {
   // Avoid errors caused by flutter upgrade.
   // Importing 'package:flutter/widgets.dart' is required.
@@ -18,12 +19,27 @@ void main() async {
     onCreate: (db, version) {
       // Run the CREATE TABLE statement on the database.
        db.execute(
-        'CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER)',
+        '''CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT,
+         username TEXT NOT NULL, email TEXT NOT NULL, profileImage TEXT, status TEXT, 
+         isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0,)''',
       );
-      return db.execute(
+       db.execute(
       'CREATE TABLE books(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, author TEXT, year INTEGER)',
+      );
+       db.execute(
+      '''CREATE TABLE user_books(user_id INTEGER,book_id INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (user_id, book_id)
+      )
+      ''',
     );
-    },
+      return db.execute(
+      '''CREATE TABLE user_followeduser(user_id INTEGER,followeduser_id INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+         FOREIGN KEY (followeduser_id) REFERENCES users(id) ON DELETE CASCADE, PRIMARY KEY (user_id, followeduser_id)
+      )
+      ''',
+    ); 
+  },
+    
     // Set the version. This executes the onCreate function and provides a
     // path to perform database upgrades and downgrades.
     version: 1,
@@ -46,12 +62,12 @@ void main() async {
   }
 
   // A method that retrieves all the users from the users table.
-  Future<List<User>> users() async {
+  /**Future<List<User>> users() async {
     // Get a reference to the database.
     final db = await database;
 
     // Query the table for all the users.
-    final List<Map<String, Object?>> userMaps = await db.query('users');
+     final List<Map<String, Object?>> userMaps = await db.query('users');
 
     // Convert the list of each user's fields into a list of `User` objects.
     return [
@@ -62,7 +78,7 @@ void main() async {
           } in userMaps)
         User(id: id, name: name, age: age),
     ];
-  }
+  }*/
 
   Future<void> updateUser(User user) async {
     // Get a reference to the database.
@@ -94,9 +110,9 @@ void main() async {
   }
 
 
-/** 
-  // Create a User and add it to the users table
-  var fido = User(
+ 
+  /// Create a User and add it to the users table
+  /**var fido = User(
     id: 0,
     name: 'Fido',
     age: 35,
@@ -122,8 +138,8 @@ void main() async {
   await deleteUser(fido.id);
 
   // Print the list of users (empty).
-  print(await users());
-  */
+  print(await users());*/
+  
 
 Future<void> insertBook(Book book) async {
     // Get a reference to the database.
@@ -146,7 +162,7 @@ Future<void> insertBook(Book book) async {
     final db = await database;
 
     // Update the given Book.
-    await db.update(
+     await db.update(
       'books',
       book.toMap(),
       // Ensure that the Book has a matching id.
@@ -169,38 +185,161 @@ Future<void> insertBook(Book book) async {
       whereArgs: [id],
     );
   }
+
+
+
+
+//*************    User's Library     ******************/
+
+  Future<void> associateUserWithBook(int userId, int bookId) async {
+    final db = await database;
+
+    await db.insert(
+      'user_books',
+      {
+        'user_id': userId,
+        'book_id': bookId,
+      },
+    conflictAlgorithm: ConflictAlgorithm.ignore, // Ignore if the relation already exists
+   );
+  }
+
+   Future<void> disassociateUserWithBook(int userId, int bookId) async {
+    final db = await database;
+
+    await db.delete(
+      'user_books',
+       where: 'user_id = ? AND book_id = ?',
+       whereArgs: [userId, bookId],
+   );
+  }
+
+
+   Future<List<Book>> getBooksForUser(int userId) async {
+
+    final db = await database;
+
+    // Query to join 'user_books' and 'books' tables to get books for the user
+    final List<Map<String, dynamic>> maps = await db.query(
+      'books',
+        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ?)',
+        whereArgs: [userId],
+    );
+
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return Book.fromMap(maps[i]);
+    });
+  }
+
+
+
+//*************    User Following     ******************/
+
+
+   Future<void> followUser(int userId, int followedId) async {
+    final db = await database;
+
+    await db.insert(
+      'user_followeduser',
+      {
+        'user_id': userId,
+        'followeduser_id': followedId,
+      },
+    conflictAlgorithm: ConflictAlgorithm.ignore, 
+   );
+  }
+
+Future<void> unfollowUser(int userId, int followedId) async {
+    final db = await database;
+
+    await db.delete(
+      'user_dolloweduser',
+       where: 'user_id = ? AND followeduser_id = ?',
+       whereArgs: [userId, followedId],
+   );
+  }
+
+ Future<List<User>> getFollowersForUser(int userId) async {
+
+    final db = await database;
+
+   
+    final List<Map<String, dynamic>> maps = await db.query(
+      'users',
+        where: 'id IN (SELECT followeduser_id FROM user_followeduser WHERE user_id = ?)',
+        whereArgs: [userId],
+    );
+
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return User.fromMap(maps[i]);
+    });
+  }
+
+
+
 }
 
 
 
 class User {
   final int? id;
-  final String name;
-  final int age;
+  final String username;
+  final String email;
+  String? profileImage;
+  String? status;
+  bool isPacksPrivate;
+  bool isReviewsPrivate;
+  bool isReadListPrivate;
 
   User({
     this.id,
-    required this.name,
-    required this.age,
+    required this.username,
+    required this.email,
+    this.profileImage,
+    this.status,
+    this.isPacksPrivate = false,
+    this.isReviewsPrivate = false,
+    this.isReadListPrivate = false,
   });
 
   // Convert a User into a Map. The keys must correspond to the names of the
   // columns in the database.
   Map<String, Object?> toMap() {
     return {
-      'id': id,
-      'name': name,
-      'age': age,
+       'id': id,
+      'username': username,
+      'email': email,
+      'profileImage': profileImage,
+      'status': status,
+      'isPacksPrivate': isPacksPrivate ? 1 : 0,
+      'isReviewsPrivate': isReviewsPrivate ? 1 : 0, 
+      'isReadListPrivate': isReadListPrivate ? 1 : 0,
     };
   }
 
   // Implement toString to make it easier to see information about
   // each user when using the print statement.
-  @override
-  String toString() {
-    return 'User{id: $id, name: $name, age: $age}';
+ 
+
+  static User fromMap(Map<String, dynamic> map) {
+    return User(
+       id: map['id'],
+      username: map['username'],
+      email: map['email'],
+      profileImage: map['profileImage'], 
+      status: map['status'], 
+      isPacksPrivate: map['isPacksPrivate'] == 1, 
+      isReviewsPrivate: map['isReviewsPrivate'] == 1, 
+      isReadListPrivate: map['isReadListPrivate'] == 1,
+    );
   }
+  
 }
+
+//Classes, Class Mapping
+
 
 
 
@@ -234,4 +373,13 @@ class Book {
   String toString() {
     return 'Book{id: $id, title: $title, author: $author, year: $year}';
   }
+
+   static Book fromMap(Map<String, dynamic> map) {
+    return Book(
+      id: map['id'],
+      title: map['title'],
+      author: map['author'],
+      year: map['year'],
+     );
+    }
 }
