@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:virgil_demo/assets/placeholders.dart';
-import 'package:virgil_demo/models/post.dart';
-import 'package:virgil_demo/widgets/post_widget.dart';
-import 'package:virgil_demo/screens/new_post.dart';
-import 'package:virgil_demo/models/user.dart';  // Import User model
+import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/screens/settings.dart';
+import 'package:virgil_demo/screens/stats_screen.dart';  
 
 class ProfilePane extends StatelessWidget {
   final User currentUser;
@@ -70,6 +68,50 @@ class ProfilePane extends StatelessWidget {
                   ),
                 ),
                 ],
+                if (user == currentUser) ...[
+                  Column(children: [
+                ElevatedButton(
+                  onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StatsScreen(currentUser: currentUser,),
+                          ),
+                        );  
+                    
+                  },
+                  child: Text('Stats'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFAB886D),
+                    foregroundColor: Colors.black,
+                    minimumSize: Size(86, 31),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserSettingsScreen(currentUser: currentUser,),
+                          ),
+                        );                    
+                  },
+                  child: Text('Settings'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFAB886D),
+                    foregroundColor: Colors.black,
+                    minimumSize: Size(86, 31),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                ],
+                  ),
+                ]
               ],
             ),
             SizedBox(height: 24),
@@ -116,22 +158,22 @@ class ProfilePane extends StatelessWidget {
     );
   }
 
-  Widget _buildTab(String text) {
-    return Container(
-      width: 100,
-      height: 30,
-      decoration: BoxDecoration(
-        color: Color(0xFFD9D9D9),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 17.87,
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildTab(String text) {
+  //   return Container(
+  //     width: 100,
+  //     height: 30,
+  //     decoration: BoxDecoration(
+  //       color: Color(0xFFD9D9D9),
+  //     ),
+  //     child: Center(
+  //       child: Text(
+  //         text,
+  //         style: TextStyle(
+  //           fontSize: 17.87,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 

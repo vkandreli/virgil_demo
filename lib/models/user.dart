@@ -1,3 +1,5 @@
+import 'package:virgil_demo/models/achievement.dart';
+import 'package:virgil_demo/models/goal.dart';
 import 'package:virgil_demo/models/review.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/models/pack.dart';
@@ -16,7 +18,9 @@ class User {
   List<Book> readingList;
   List<Book> completedList;
   List<Book> currentList;
-
+  List<Map<DateTime, int>> pagesPerDay;
+  List<Achievement> badges;
+  List<Goal> goals;
   bool isPacksPrivate;
   bool isReviewsPrivate;
   bool isReadListPrivate;
@@ -36,6 +40,9 @@ class User {
     List<Book> completedList = const [], // Default empty list
     List<Book> currentList = const [],   // Default empty list
     List<Book> readingList = const [],   // Default empty list
+    List<Goal> goals = const [],
+    List<Map<DateTime, int>> pagesPerDay = const [],
+    List<Achievement> badges= const [],
     this.status = 'A small status, favourite quote etc', // Default status
     this.isPacksPrivate = true,   // Default privacy state
     this.isReviewsPrivate = false,  // Default privacy state
@@ -46,8 +53,10 @@ class User {
         usersPacks = usersPacks.isEmpty ? [] : usersPacks,
         completedList = completedList.isEmpty ? [] : completedList, // Ensures empty list if null
         currentList = currentList.isEmpty ? [] : currentList,
-        readingList = readingList.isEmpty ? [] : readingList;
-
+        readingList = readingList.isEmpty ? [] : readingList,
+       pagesPerDay= pagesPerDay.isEmpty ? [] :  pagesPerDay,
+        badges= badges.isEmpty ? [] : badges,
+       goals = goals.isEmpty ? [] : goals; 
 
   // Method to toggle the privacy status of the current list
   void togglePacksPrivacy() {

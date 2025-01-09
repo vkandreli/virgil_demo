@@ -1,4 +1,6 @@
+import 'package:virgil_demo/models/achievement.dart';
 import 'package:virgil_demo/models/book.dart';
+import 'package:virgil_demo/models/goal.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/models/review.dart';
@@ -121,6 +123,12 @@ User placeholderSelf = User(
     isPacksPrivate: false,
     isReadListPrivate: true,
     isReviewsPrivate: false,
+    goals: [
+    Goal(name: "Read 10 books this year", isCompleted: false),
+    Goal(name: "Complete a book challenge", isCompleted: false),
+    Goal(name: "Review 5 books", isCompleted: true),
+  ],
+  badges: placeholderAchievements,
   );
 
 List<Post> placeholderPosts = [
@@ -274,3 +282,73 @@ List<Pack> placeholderPacks = [
     books: [placeholderBooks.last], // Only the last book 
   ),
 ];
+
+List<Achievement> placeholderAchievements = [
+  // Achievement(
+  //   name: "Bookworm",
+  //   image: "https://tse4.mm.bing.net/th?id=OIP.eiLocwrWbByic5SUdjGzuwHaFG&pid=Api",
+  //   description: "Read 50 books in your lifetime.",
+  //   requirement: (User user) => user.completedList.length >= 50,  // Check if user completed 50 books
+  // ),
+  // Achievement(
+  //   name: "Master Reviewer",
+  //   image: "https://tse4.mm.bing.net/th?id=OIP.ZLe41HS2w6xHvOVpIo872AHaHa&pid=Api",
+  //   description: "Write 10 thoughtful book reviews.",
+  //   requirement: (User user) => user.usersReviews.length >= 10,  // Check if user has 10 reviews
+  // ),
+  // Achievement(
+  //   name: "Social Butterfly",
+  //   image: "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+  //   description: "Follow 20 different users on the platform.",
+  //   requirement: (User user) => user.followedUsers.length >= 20,  // Check if user follows 20 users
+  // ),
+  // Achievement(
+  //   name: "Night Owl",
+  //   image: "https://via.placeholder.com/150?text=Night+Owl",
+  //   description: "Read for 5 hours straight at night.",
+  //   requirement: (User user) {
+  //     // Check if the user has read 5+ hours in a day between 9 PM and 6 AM
+  //     bool hasReadAtNight = user.pagesPerDay.any((entry) {
+  //       DateTime date = entry.keys.first;
+  //       int pages = entry.values.first;
+  //       return date.hour >= 21 || date.hour < 6;  // Between 9 PM and 6 AM
+  //     });
+  //     return hasReadAtNight && user.pagesPerDay.any((entry) => entry.values.first >= 300);  // 5 hours = 300 pages
+  //   },
+  // ),
+  // Achievement(
+  //   name: "Page Turner",
+  //   image: "https://via.placeholder.com/150?text=Page+Turner",
+  //   description: "Read 100 pages in a day.",
+  //   requirement: (User user) {
+  //     // Check if the user has read 100 or more pages in a single day
+  //     return user.pagesPerDay.any((entry) => entry.values.first >= 100);
+  //   },
+  // ),
+  Achievement(
+    name: "Master Reviewer",
+    image: "https://via.placeholder.com/150?text=Master+Reviewer",
+    description: "Write 10 thoughtful book reviews.",
+    requirement: true,
+  ),
+  Achievement(
+    name: "Social Butterfly",
+    image: "https://via.placeholder.com/150?text=Social+Butterfly",
+    description: "Follow 20 different users on the platform.",
+    requirement: true,
+  ),
+  Achievement(
+    name: "Night Owl",
+    image: "https://via.placeholder.com/150?text=Night+Owl",
+    description: "Read for 5 hours straight at night.",
+    requirement: true,
+  ),
+  Achievement(
+    name: "Page Turner",
+    image: "https://via.placeholder.com/150?text=Page+Turner",
+    description: "Read 100 pages in a day.",
+    requirement: true,
+  ),
+
+];
+
