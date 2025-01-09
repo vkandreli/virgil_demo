@@ -16,7 +16,6 @@ class OtherProfileScreen extends StatefulWidget {
 }
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
-  int _currentIndex = 0; 
   late List<Post> userPosts;  
 
   @override
@@ -55,12 +54,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
     }
   }
 
-  // Function to handle tab taps
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index; // Change the current selected index
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {

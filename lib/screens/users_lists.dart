@@ -4,6 +4,7 @@ import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/library_screen.dart';
 import 'package:virgil_demo/screens/review_presentation.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
@@ -60,6 +61,10 @@ class UserPacksScreen extends StatelessWidget {
         ],
       ),
       ),
+            bottomNavigationBar: CustomBottomNavBar(
+        context: context, 
+        currentUser: currentUser,
+      ),
     );
   }
 }
@@ -113,6 +118,10 @@ class UserReviewsScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+            bottomNavigationBar: CustomBottomNavBar(
+        context: context, 
+        currentUser: currentUser,
       ),
     );
   }
@@ -228,6 +237,10 @@ class UserReadListScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+            bottomNavigationBar: CustomBottomNavBar(
+        context: context, 
+        currentUser: currentUser,
       ),
     );
   }

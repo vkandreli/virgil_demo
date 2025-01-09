@@ -23,15 +23,36 @@ class ProfilePane extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 47.5,
-                  backgroundColor: Color(0xFFD9D9D9),
-                  child: CircleAvatar(                    
-                    radius: 36,
-                    child: Icon(Icons.person)
-                  ),
+                // CircleAvatar(
+                //   radius: 47.5,
+                //   backgroundColor: Color(0xFFD9D9D9),
+                //   child: CircleAvatar(                    
+                //     radius: 36,
+                //     child: Icon(Icons.person)
+                //   ),
+                // ),
+                    IconButton(
+                      iconSize: 40,  // This controls the overall size of the IconButton widget
+                      icon: CircleAvatar(
+                        radius: 40,  // This controls the size of the CircleAvatar (should be half of the IconButton size)
+                        backgroundImage: NetworkImage(
+                          user == currentUser? 
+                          currentUser.profileImage ?? User.defaultProfileImage:
+                          user.profileImage ?? User.defaultProfileImage,
+                        ),
+                      ),
+                      onPressed: () {
+
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) =>
+                    //         ChangeProfile(currentUser: widget.currentUser),
+                    //   ),
+                    // );
+                  },
                 ),
-                SizedBox(width: 16),
+                //SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,7 +105,7 @@ class ProfilePane extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFAB886D),
                     foregroundColor: Colors.black,
-                    minimumSize: Size(86, 31),
+                    minimumSize: Size(70, 31),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -103,7 +124,7 @@ class ProfilePane extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFAB886D),
                     foregroundColor: Colors.black,
-                    minimumSize: Size(86, 31),
+                    minimumSize: Size(70, 31),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

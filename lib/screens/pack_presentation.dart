@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/pack.dart';
 import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
+import 'package:virgil_demo/screens/others_profile_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 class PackDetailScreen extends StatelessWidget {
@@ -12,48 +15,86 @@ class PackDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(pack.title),
-      // ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: 
-           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // pack poster image
-              Center(
-                child: Image.network(
-                  pack.packImage.isEmpty? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api" :pack.packImage,
-                  height: 300,
-                  fit: BoxFit.cover,
+        child: SingleChildScrollView( // Make the body scrollable
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // pack poster image
+                Center(
+                  child: Image.network(
+                    pack.packImage.isEmpty
+                        ? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api"
+                        : pack.packImage,
+                    height: 300,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              
-              // pack Title
-              Text(
-                pack.title,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
+                SizedBox(height: 16),
+                
+                // pack Title
+                Text(
+                  pack.title,
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              bookScroll("Books in pack", pack.books, currentUser: currentUser),
-              Text(
-                "Created by: ${pack.creator}",
-                style: TextStyle(fontSize: 18),
-              ),
-                            Text(
-                pack.description,
-                style: TextStyle(fontSize: 18),
-              ),
-            ],
+                SizedBox(height: 16),
+                bookScroll("Books in pack", pack.books, currentUser: currentUser),
+                
+                // Created by section with clickable username
+                Row(
+                  children: [
+                    Text(
+                      "Created by: ",
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OtherProfileScreen(
+                              user: pack.creator,
+                              currentUser: currentUser,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        pack.creator.username,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.lightBrown,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Description section
+                Text(
+                  "Description: ",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  pack.description,
+                  style: TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavBar(
+        context: context, 
+        currentUser: currentUser,
       ),
     );
   }
 }
+

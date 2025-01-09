@@ -36,7 +36,8 @@ class AppColors {
   static const Color darkBrown = Color(0xFF3E2723); // Example dark brown color
   static const Color mediumBrown = Color(0xFFAB886D); // Example medium brown color
   static const Color lightBrown = Color(0xFFD6C0B3); // Example light brown color
-  
+    static const Color grey = Color(0xFFD9D9D9); // Example light brown color
+
 }
 
 
