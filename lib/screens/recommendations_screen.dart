@@ -24,6 +24,7 @@ final User currentUser;
 class _RecommendationsScreenState extends State<RecommendationsScreen> {
     User currentUser = placeholderSelf;
     String? _currentCity = 'your location';
+    Logger logger = Logger();
   // late GoogleMapController mapController;
   // late LocationData currentLocation;
 
@@ -43,6 +44,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
   //   setState(() {
   //     currentLocation = locationData;
   //   });
+//}
 
       Future<void> _getLocationandPermission() async {
     bool serviceEnabled;
@@ -78,6 +80,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
     Placemark place = placemarks[0];
     setState(() {
+      logger.i("I'm finding your location");
       _currentCity = place.locality;  // This gives the city name
     });
   }
