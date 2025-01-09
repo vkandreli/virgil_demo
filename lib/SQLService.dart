@@ -53,13 +53,17 @@ void main() async {
      text TEXT NOT NULL, reviewDate TEXT NOT NULL, stars INTEGER CHECK(stars >= 0 AND stars <= 10), 
      FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE'''
    );
-      return db.execute(
+       db.execute(
       '''CREATE TABLE packs (
       id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL, creator_id INTEGER NOT NULL, 
   packImage TEXT NOT NULL, description TEXT NOT NULL, FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE'''
       );
-
-
+      return db.execute(
+      '''CREATE TABLE pack_books(pack_id INTEGER,book_id INTEGER, FOREIGN KEY (pack_id) REFERENCES packs(id) ON DELETE CASCADE,
+         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (pack_id, book_id)
+         )
+      ''',
+    );
   },
     
     // Set the version. This executes the onCreate function and provides a
@@ -208,7 +212,7 @@ Future<void> insertBook(Book book) async {
     );
   }
 
- /*******       Post Setters      ********/
+ //*******       Post Setters      ********/
 
 
 Future<void> insertPost(Post post) async {
@@ -434,7 +438,58 @@ Future<void> unfollowUser(int userId, int followedId) async {
 
 
 
+
+
+
+
+//*************    Books in a Pack     ******************/
+
+
+
+  Future<void> addBooktoPack(int packId, int bookId) async {
+    final db = await database;
+
+    await db.insert(
+      'pack_books',
+      {
+        'pack_id': packId,
+        'book_id': bookId,
+      },
+    conflictAlgorithm: ConflictAlgorithm.ignore, 
+   );
+  }
+
+Future<void> removeBookfromPack(int packId, int bookId) async {
+    final db = await database;
+
+    await db.delete(
+      'pack_books',
+       where: 'pack_id = ? AND book_id = ?',
+       whereArgs: [packId, bookId],
+   );
+  }
+
+ Future<List<Book>> getBooksForPack(int packId) async {
+
+    final db = await database;
+
+   
+    final List<Map<String, dynamic>> maps = await db.query(
+      'books',
+        where: 'id IN (SELECT book_id FROM pack_books WHERE pack_id = ?)',
+        whereArgs: [packId],
+    );
+
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return Book.fromMap(maps[i]);
+    });
+  }
+
+
 }
+
+
 
 //*************    Classes, Class Mapping     ******************/
 
