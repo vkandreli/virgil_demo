@@ -136,17 +136,17 @@ class StatsScreen extends StatelessWidget {
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                               SizedBox(height: 8),
-                              if (currentUser.completedList == List.empty()) ...[
-                                                           bookScroll(
-                                '',
-                                <Book> [virgil],
-                                isCompleted: false,
-                                currentUser: currentUser,
-                              ),
+                              if (currentUser.completedList.isEmpty) ...[
+                              //                              bookScroll(
+                              //   '',
+                              //   <Book> [virgil],
+                              //   isCompleted: false,
+                              //   currentUser: currentUser,
+                              // ),
                                     Text("You have not finished any books yet. Try adding pages",
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.darkBrown)),
                               ],
-                              if (currentUser.completedList != List.empty()) ...[
+                              if (currentUser.completedList.isNotEmpty) ...[
                               bookScroll(
                                 '',
                                 currentUser.completedList,
@@ -286,7 +286,7 @@ class PagesReadBarChart extends CustomPainter {
     // Draw bars
     for (int i = 0; i < pagesPerDayList.length; i++) {
       final pages = pagesPerDayList[i];
-      final barHeight = pages * barHeightFactor;
+      final barHeight = pages == 0 ? 1.0 :  pages * barHeightFactor;
 
       final xPosition = i * barWidth;
       final yPosition = size.height - barHeight;

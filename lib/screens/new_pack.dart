@@ -167,7 +167,7 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
               ListView(
                 shrinkWrap: true,  // Allow ListView to take only the required space
                 children: [
-                  bookScroll("Books in pack", selectedBooks ?? [], showProgress: true, currentUser: widget.currentUser),
+                  bookScroll("Books in pack", selectedBooks ?? [], currentUser: widget.currentUser),
                 ],
               ),
               SizedBox(height: 16),

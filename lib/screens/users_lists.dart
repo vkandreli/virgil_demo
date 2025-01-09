@@ -32,6 +32,7 @@ class UserPacksScreen extends StatelessWidget {
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
+           if (currentUser.usersPacks.isNotEmpty) ...[
           Expanded(
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -49,6 +50,13 @@ class UserPacksScreen extends StatelessWidget {
               },
             ),
           ),
+           ],
+                     if (currentUser.usersPacks.isEmpty) ...[
+              Text(
+                " Try creating some packs",
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
         ],
       ),
       ),

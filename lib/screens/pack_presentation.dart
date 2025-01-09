@@ -18,7 +18,8 @@ class PackDetailScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
+          child: 
+           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // pack poster image
