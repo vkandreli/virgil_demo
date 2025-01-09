@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
+import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/own_profile_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
-
-// Assuming AppColors is defined in main.dart
-// AppColors.mediumBrown, AppColors.darkBrown, and AppColors.lightBrown are predefined.
-
 class StatsScreen extends StatelessWidget {
   final User currentUser;
 
@@ -18,7 +16,6 @@ class StatsScreen extends StatelessWidget {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
     final endOfWeek = startOfWeek.add(Duration(days: 6));
-
     // Filter pages read this week
     return pagesPerDay.where((entry) {
       final date = entry.keys.first;
@@ -30,18 +27,6 @@ class StatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    List<Map<DateTime, int>> placeholderPagesRead = [
-  {DateTime(2025, 1, 8): 50},  // 50 pages read on Jan 1st
-  {DateTime(2025, 1, 9): 30},  // 30 pages read on Jan 2nd
-  {DateTime(2025, 1, 3): 45},  // 45 pages read on Jan 3rd
-  {DateTime(2025, 1, 4): 60},  // 60 pages read on Jan 4th
-  {DateTime(2025, 1, 5): 20},  // 20 pages read on Jan 5th
-  {DateTime(2025, 1, 6): 80},  // 80 pages read on Jan 6th
-  {DateTime(2025, 1, 7): 40},  // 40 pages read on Jan 7th
-];
-
-// Setting the placeholder data to the currentUser
-currentUser.pagesPerDay = placeholderPagesRead;
     // Get pages read this week
     final pagesReadThisWeek = getPagesReadThisWeek(currentUser.pagesPerDay);
 
@@ -50,7 +35,7 @@ currentUser.pagesPerDay = placeholderPagesRead;
         backgroundColor: AppColors.mediumBrown, // SafeArea background color
         body: Column(
           children: [
-            // Top row for search and profile navigation
+            // Top row for search and profile navigation (Fixed header)
             Row(
               children: [
                 IconButton(
@@ -95,10 +80,9 @@ currentUser.pagesPerDay = placeholderPagesRead;
                       child: Card(
                         elevation: 4.0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius
-                              .zero, // Remove rounding from all corners
+                          borderRadius: BorderRadius.zero,
                         ),
-                        color: AppColors.lightBrown, // Pane background color
+                        color: AppColors.lightBrown, 
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0.0),
                           child: Column(
@@ -106,24 +90,17 @@ currentUser.pagesPerDay = placeholderPagesRead;
                             children: [
                               // Pane Title
                               Container(
-                                color: AppColors
-                                    .darkBrown, // Title background color
-                                width: double
-                                    .infinity, // Title spans the full width
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
+                                color: AppColors.darkBrown, 
+                                width: double.infinity, 
+                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                 child: Text('Pages Read This Week',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                               SizedBox(height: 20),
                               Container(
                                 height: 200,
                                 width: double.infinity,
-                                child: 
-                                CustomPaint(
+                                child: CustomPaint(
                                   painter: PagesReadBarChart(pagesReadThisWeek),
                                 ),
                               ),
@@ -134,7 +111,7 @@ currentUser.pagesPerDay = placeholderPagesRead;
                     ),
                     SizedBox(height: 16),
 
-                    // Books Completed Section
+                    // Books Completed Section (Should remain fixed)
                     GestureDetector(
                       onTap: () {
                         // Navigate to a more detailed Pages Read Screen
@@ -142,10 +119,9 @@ currentUser.pagesPerDay = placeholderPagesRead;
                       child: Card(
                         elevation: 4.0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius
-                              .zero, // Remove rounding from all corners
+                          borderRadius: BorderRadius.zero,
                         ),
-                        color: AppColors.lightBrown, // Pane background color
+                        color: AppColors.lightBrown, 
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0.0),
                           child: Column(
@@ -153,32 +129,36 @@ currentUser.pagesPerDay = placeholderPagesRead;
                             children: [
                               // Pane Title
                               Container(
-                                color: AppColors
-                                    .darkBrown, // Title background color
-                                width: double
-                                    .infinity, // Title spans the full width
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
-                                child: Text( "Books You've Finished",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
+                                color: AppColors.darkBrown, 
+                                width: double.infinity, 
+                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                child: Text("Books You've Finished",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                               SizedBox(height: 8),
-bookScroll(
-                     '',
-                      currentUser.completedList,
-                      isCompleted: true,
-                      currentUser: currentUser,
-                    ),
+                              if (currentUser.completedList == List.empty()) ...[
+                                                           bookScroll(
+                                '',
+                                <Book> [virgil],
+                                isCompleted: false,
+                                currentUser: currentUser,
+                              ),
+                                    Text("You have not finished any books yet. Try adding pages",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.darkBrown)),
+                              ],
+                              if (currentUser.completedList != List.empty()) ...[
+                              bookScroll(
+                                '',
+                                currentUser.completedList,
+                                isCompleted: true,
+                                currentUser: currentUser,
+                              ),
+                              ],
                             ],
                           ),
                         ),
                       ),
                     ),
-
-
                     SizedBox(height: 16),
 
                     // Goals Section
@@ -189,10 +169,9 @@ bookScroll(
                       child: Card(
                         elevation: 4.0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius
-                              .zero, // Remove rounding from all corners
+                          borderRadius: BorderRadius.zero,
                         ),
-                        color: AppColors.lightBrown, // Pane background color
+                        color: AppColors.lightBrown, 
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0.0),
                           child: Column(
@@ -200,31 +179,20 @@ bookScroll(
                             children: [
                               // Pane Title
                               Container(
-                                color: AppColors
-                                    .darkBrown, // Title background color
-                                width: double
-                                    .infinity, // Title spans the full width
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
+                                color: AppColors.darkBrown, 
+                                width: double.infinity, 
+                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                 child: Text("Goals",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
-                              // Placeholder Info for Goals
-                                                            Container(
-                                width: double
-                                    .infinity, // Title spans the full width
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 8),
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                                 child: Text(
-  currentUser.goals.map((goal) => goal.name).join('\n'),
-  style: TextStyle(fontSize: 16),
-)
+                                  currentUser.goals.map((goal) => goal.name).join('\n'),
+                                  style: TextStyle(fontSize: 16),
+                                ),
                               ),
-
-  
                             ],
                           ),
                         ),
@@ -234,16 +202,38 @@ bookScroll(
 
                     // Badges Section
                     GestureDetector(
-                    onTap: () {
-                      // Navigate to Badges screen
-                    },
-                    child: badgeScroll(
-                      "Badges You've Earned",
-                      currentUser.badges,
-                      currentUser: currentUser,
+                      onTap: () {
+                        // Navigate to a more detailed Pages Read Screen
+                      },
+                      child: Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        color: AppColors.lightBrown, 
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Pane Title
+                              Container(
+                                color: AppColors.darkBrown, 
+                                width: double.infinity, 
+                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                child: Text("Badges You've Earned",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                              ),
+                              badgeScroll(
+                                "",
+                                currentUser.badges,
+                                currentUser: currentUser,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-
                     SizedBox(height: 16),
                   ],
                 ),
@@ -255,6 +245,7 @@ bookScroll(
     );
   }
 }
+
 class PagesReadBarChart extends CustomPainter {
   final List<Map<DateTime, int>> pagesReadPerDay;  // Data: pages read per day
   final List<int> pagesPerDayList;  // A list of total pages read each day

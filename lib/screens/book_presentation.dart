@@ -69,6 +69,22 @@ void _addPages(int newPage) {
     // Handle the case where the book is not found
     logger.e("Book not found in the current list: ${widget.book.title}");
   } else {
+        DateTime today = DateTime.now();
+    
+    // Check if there's already an entry for today's pages in pagesPerDay
+    Map<DateTime, int>? todayPagesEntry = widget.currentUser.pagesPerDay.firstWhere(
+      (entry) => entry.containsKey(today),
+      orElse: () => {},
+    );
+
+    if (todayPagesEntry.isEmpty) {
+      // If no entry exists for today, create a new entry
+      widget.currentUser.pagesPerDay.add({today: newPage});
+    } else {
+      // If there's an entry for today, update the pages
+      widget.currentUser.pagesPerDay.remove(todayPagesEntry);  // Remove the old entry
+      widget.currentUser.pagesPerDay.add({today: todayPagesEntry[today]! + newPage});  // Add updated value
+    }
     if (newPage == selected.totalPages)
     {
     setState(() {

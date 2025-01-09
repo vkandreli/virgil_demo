@@ -51,31 +51,34 @@ Widget genericScroll<T>({
 
 Widget bookScroll(
   String title, 
-  List<Book> books, {
+  List<Book> booksToDisplay, {
   bool showProgress = false, 
   bool isCompleted = false, 
   bool addRemove = false,
-  required User currentUser,  // Add the `currentUser` parameter here
+  required User currentUser,  
 }) {
+  //List<Book> booksToDisplay = booksToDisplay.isEmpty ? [Book.empty()] : booksToDisplay;
+  
   return genericScroll<Book>(
     title: title,
-    items: books,
+    items: booksToDisplay,
     itemBuilder: (context, book) {
       return _BookCard(
         book: book,
         showProgress: showProgress,
-        isCompleted: isCompleted,
-        currentUser: currentUser,  // Pass currentUser here
+        isCompleted: booksToDisplay.isEmpty ? false : isCompleted,
+        currentUser: currentUser,
       );
     },
   );
 }
 
+
 Widget packScroll(
   String title, 
   List<Pack> packs, {
   bool isCompleted = false,
-  required User currentUser,  // Add the `currentUser` parameter here
+  required User currentUser,  
 }) {
   return genericScroll<Pack>(
     title: title,

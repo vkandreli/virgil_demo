@@ -59,7 +59,7 @@ class Book {
       title: '',
       description: '',
       genre: '',
-      posterUrl: '',
+      posterUrl: 'https://tse3.mm.bing.net/th?id=OIP.0fb3mN86pTUI9jvsDmkqgwHaJl&pid=Api',
       totalPages: 0,
       currentPage: 0,
       publicationDate: "",

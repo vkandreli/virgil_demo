@@ -2,9 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/pack.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/models/book.dart';
+import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart'; // Import the book search screen
 
@@ -20,8 +22,7 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
   String? selectedImagePath;
   String? descriptionText, titleText;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
-  List<Book>? selectedBooks;
-
+  List<Book> selectedBooks = [];
   // Function to pick an image
   Future<void> _pickImage() async {
     final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
@@ -41,7 +42,7 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
 
   // Check if the pack can be created (book is required, image or quote or both are required)
   bool _canCreatePack() {
-    return selectedBooks != null && descriptionText != null && selectedImagePath != null;
+    return selectedBooks != [] && descriptionText != null && selectedImagePath != null;
   }
 
   @override
@@ -132,7 +133,36 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
                 },
               ),
               SizedBox(height: 16),
-              
+              ElevatedButton(
+                    onPressed: () async {
+                  // Navigate to the book search screen when tapped
+                  final Book? book = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookSearchScreen(),//query: selectedBook?.title ?? ""
+                    ),
+                  );
+                  // If a book is selected, update the selectedBook
+                  if (book != null) {
+                         setState(() {
+                      selectedBooks.add(book);
+                    }); 
+                    }
+                },
+                    style: ElevatedButton.styleFrom(
+                      //fixedSize: Size(100, 40), 
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Search for a book...",
+                      style: TextStyle(fontSize: 14, color: AppColors.darkBrown,),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),  
+                               // SizedBox(height: 16),
+
               // List of books
               ListView(
                 shrinkWrap: true,  // Allow ListView to take only the required space

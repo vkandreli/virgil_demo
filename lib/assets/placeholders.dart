@@ -352,3 +352,22 @@ List<Achievement> placeholderAchievements = [
 
 ];
 
+Book virgil =  Book(
+    title: "Virgil tutorial",
+    publicationDate: "01-01-2025",
+    author: "Dev Team",
+    publisher: "Dev Team",
+    posterUrl: "https://tse2.mm.bing.net/th?id=OIP.QaqDrHSrWeTxrJVVkIYl4QHaL2&pid=Api",//"https://via.placeholder.com/150x225?text=Book+1",
+    description: "You're only getting started.",
+    totalPages: 1,
+  );
+
+    List<Map<DateTime, int>> placeholderPagesRead = [
+  {DateTime(2025, 1, 8): 50},  // 50 pages read on Jan 1st
+  {DateTime(2025, 1, 9): 30},  // 30 pages read on Jan 2nd
+  {DateTime(2025, 1, 3): 45},  // 45 pages read on Jan 3rd
+  {DateTime(2025, 1, 4): 60},  // 60 pages read on Jan 4th
+  {DateTime(2025, 1, 5): 20},  // 20 pages read on Jan 5th
+  {DateTime(2025, 1, 6): 80},  // 80 pages read on Jan 6th
+  {DateTime(2025, 1, 7): 40},  // 40 pages read on Jan 7th
+];

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'own_profile_screen.dart';
 import 'home_screen.dart';
@@ -29,16 +30,22 @@ class LibraryScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
-                        // When user taps on the TextField, navigate to the search screen
-                        final query = _searchController.text;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookSearchScreen(),//query: query
-                          ),
-                        );
-                      },
+                      onTap: () async {
+                  // Navigate to the book search screen when tapped
+                  final Book? book = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookSearchScreen(),//query: selectedBook?.title ?? ""
+                    ),
+                  );
+                  // If a book is selected, update the selectedBook
+                  if (book != null) {
+Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => BookDetailScreen(book: book, currentUser: currentUser,)),
+                          );
+                  }
+                },
                       child: TextField(
                         controller: _searchController,
                         decoration: InputDecoration(
