@@ -233,7 +233,7 @@ class _PostWidgetState extends State<PostWidget> {
                 Text(widget.post.originalPoster.username, style: TextStyle(fontWeight: FontWeight.bold)),
                 // Conditionally display the reblogger's information
                 if (widget.post.reblogger != null) ...[
-                  SizedBox(width: 16),
+                  SizedBox(width: 4),
                   Icon(Icons.replay), // Reblog icon
                   CircleAvatar(child: Icon(Icons.person)),
                   SizedBox(width: 4),

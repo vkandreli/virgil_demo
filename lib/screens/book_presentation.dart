@@ -18,13 +18,7 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
-    int _currentIndex = 0;  
 
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
   late bool isInReadingList, isInCurrentList, isCompleted;
   final Logger logger = Logger();
   TextEditingController _pageController = TextEditingController();
@@ -260,7 +254,7 @@ Widget _buildActionButtons() {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(
-                        widget.book.posterUrl,
+                        widget.book.posterUrl.isEmpty? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api" :widget.book.posterUrl,
                         height: 200,
                         width: 150,
                         fit: BoxFit.cover,

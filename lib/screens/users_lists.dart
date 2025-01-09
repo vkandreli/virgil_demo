@@ -215,7 +215,7 @@ class UserReadListScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Image.network(
-                          book.posterUrl, // Assuming book has cover image URL
+                          book.posterUrl.isEmpty? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api" : book.posterUrl,
                           fit: BoxFit.cover, // This will ensure the image fills the entire area of the card
                           width: double.infinity, // Ensure the image stretches to fill the width of the card
                           height: double.infinity, // Ensure the image stretches to fill the height of the card

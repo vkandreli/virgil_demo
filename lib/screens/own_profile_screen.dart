@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/users_lists.dart';
@@ -127,8 +128,9 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
             MaterialPageRoute(builder: (context) => CreatePostScreen(currentUser: widget.currentUser,)),
           );
         },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppColors.darkBrown,
+        child: Icon(Icons.add, color: AppColors.lightBrown,),
+        
       ),
         bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
 

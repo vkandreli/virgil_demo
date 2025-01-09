@@ -50,7 +50,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          widget.review.book.posterUrl,
+                          widget.review.book.posterUrl.isEmpty? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api" :widget.review.book.posterUrl,
                           height: 180,
                           width: 120,
                           fit: BoxFit.cover,

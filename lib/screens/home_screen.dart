@@ -76,6 +76,7 @@ class HomeScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       minimumSize: Size(500,40),
+                      backgroundColor: AppColors.lightBrown,
                     ),
                     child: Text(
                       "Search for a profile...",
@@ -109,8 +110,9 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute(builder: (context) => CreatePostScreen(currentUser: currentUser,)),
           );
         },
-        child: Icon(Icons.add, color: AppColors.darkBrown,),
+        backgroundColor: AppColors.darkBrown,
         tooltip: 'Create New Post',
+        child: Icon(Icons.add, color: AppColors.lightBrown,),
       ),
 
   bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    

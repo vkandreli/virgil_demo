@@ -174,7 +174,7 @@ class _BookCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  book?.posterUrl ?? 'https://via.placeholder.com/120x180',
+                  book?.posterUrl ?? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api",
                   height: 180, // Fixed height for image
                   width: 120,
                   fit: BoxFit.cover,
@@ -245,7 +245,7 @@ class PackCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  pack?.packImage?? 'https://via.placeholder.com/120x180',
+                  pack?.packImage?? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api",
                   height: 180, // Fixed height for image
                   width: 120,
                   fit: BoxFit.cover,

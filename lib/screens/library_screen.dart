@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
@@ -30,44 +31,45 @@ class LibraryScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () async {
-                  // Navigate to the book search screen when tapped
-                  final Book? book = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookSearchScreen(),//query: selectedBook?.title ?? ""
-                    ),
-                  );
-                  // If a book is selected, update the selectedBook
-                  if (book != null) {
-Navigator.push(
+                       child: ElevatedButton(
+                        onPressed: () async {
+                          // Navigate to BookSearchScreen and await the result
+                          final Book? selectedBook = await Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => BookDetailScreen(book: book, currentUser: currentUser,)),
+                            MaterialPageRoute(
+                              builder: (context) => BookSearchScreen(),
+                            ),
                           );
-                  }
-                },
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Search for books...',
-                          border: OutlineInputBorder(),
-                        ),
+
+                          // If a Book was returned, navigate to BookDetailScreen
+                          if (selectedBook != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookDetailScreen(
+                                  book: selectedBook,
+                                  currentUser: currentUser,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                    style: ElevatedButton.styleFrom(
+                      //fixedSize: Size(500, 40), 
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                      minimumSize: Size(340,60),
+                      backgroundColor: AppColors.lightBrown,
+                    ),
+                    child: Text(
+                      "Search for a book...",
+                      style: TextStyle(fontSize: 14, color: AppColors.darkBrown,),
+                      textAlign: TextAlign.left,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                      final query = _searchController.text;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BookSearchScreen(),//query: query
-                        ),
-                      );
-                    },
                   ),
+
                   IconButton(
                     icon: Icon(Icons.camera_alt),
                     onPressed: () async {
@@ -100,7 +102,8 @@ Navigator.push(
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.chat),
+         backgroundColor: AppColors.darkBrown,
+        child: Icon(Icons.chat, color: AppColors.lightBrown,),
         onPressed: () {
           // Navigate to the chatbot screen
           Navigator.push(
@@ -108,6 +111,7 @@ Navigator.push(
             MaterialPageRoute(builder: (context) => ChatbotScreen()),
           );
         },
+        
       ),
         bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
 

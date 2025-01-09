@@ -25,7 +25,7 @@ class PackDetailScreen extends StatelessWidget {
               // pack poster image
               Center(
                 child: Image.network(
-                  pack.packImage,
+                  pack.packImage.isEmpty? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api" :pack.packImage,
                   height: 300,
                   fit: BoxFit.cover,
                 ),

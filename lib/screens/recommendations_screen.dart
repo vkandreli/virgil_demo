@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
@@ -140,14 +141,17 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                   bookScroll("Popular in ${_currentCity}", placeholderBooks, currentUser: currentUser), 
                   bookScroll('What your community is reading', placeholderBooks, currentUser: currentUser),
                   reviewScroll('Hottest reviews', placeholderReviews, currentUser: currentUser), 
+                  SizedBox(height: 12),
                 ],
               ),
             ),
+                      
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.chat),
+         backgroundColor: AppColors.darkBrown,
+        child: Icon(Icons.chat, color: AppColors.lightBrown,),
         onPressed: () {
           // Navigate to the chatbot screen
           Navigator.push(

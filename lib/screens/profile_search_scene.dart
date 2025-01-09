@@ -41,7 +41,7 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
  @override
 Widget build(BuildContext context) {
   return Scaffold(
-    appBar: AppBar(title: Text('Search Profiles')),
+    //appBar: AppBar(title: Text('Search Profiles')),
     body: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
