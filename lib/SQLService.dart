@@ -32,12 +32,21 @@ void main() async {
       )
       ''',
     );
-      return db.execute(
-      '''CREATE TABLE user_followeduser(user_id INTEGER,followeduser_id INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-         FOREIGN KEY (followeduser_id) REFERENCES users(id) ON DELETE CASCADE, PRIMARY KEY (user_id, followeduser_id)
+      db.execute(
+      '''CREATE TABLE user_followeduser(user_id INTEGER,followeduser_id INTEGER,CHECK (user_id != followeduser_id),
+       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, FOREIGN KEY (followeduser_id) REFERENCES users(id)
+        ON DELETE CASCADE, PRIMARY KEY (user_id, followeduser_id)
       )
       ''',
     ); 
+    return db.execute(
+      '''CREATE TABLE posts (
+          id INTEGER PRIMARY KEY AUTOINCREMENT, originalPoster_id INTEGER, reblogger_id INTEGER, imageUrl TEXT,
+          quote TEXT, book_id INTEGER, timePosted TEXT,likes INTEGER DEFAULT 0, reblogs INTEGER DEFAULT 0,
+          FOREIGN KEY (originalPoster_id) REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (reblogger_id) REFERENCES users(id) ON DELETE SET NULL,
+          FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE''',
+);
   },
     
     // Set the version. This executes the onCreate function and provides a
@@ -45,15 +54,16 @@ void main() async {
     version: 1,
   );
 
+
+
+/*******     User Setters      ********/
+
   // Define a function that inserts users into the database
   Future<void> insertUser(User user) async {
     // Get a reference to the database.
     final db = await database;
 
     // Insert the User into the correct table. You might also specify the
-    // `conflictAlgorithm` to use in case the same user is inserted twice.
-    //
-    // In this case, replace any previous data.
     await db.insert(
       'users',
       user.toMap(),
@@ -141,14 +151,13 @@ void main() async {
   print(await users());*/
   
 
+
+  /*******     Book Setters      ********/
+
 Future<void> insertBook(Book book) async {
     // Get a reference to the database.
     final db = await database;
 
-    // Insert the User into the correct table. You might also specify the
-    // `conflictAlgorithm` to use in case the same user is inserted twice.
-    //
-    // In this case, replace any previous data.
     await db.insert(
       'books',
       book.toMap(),
@@ -186,6 +195,50 @@ Future<void> insertBook(Book book) async {
     );
   }
 
+/*******     Post Setters      ********/
+
+
+Future<void> insertPost(Post post) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    await db.insert(
+      'posts',
+      post.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+
+   Future<void> updatePost(Post post) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Update the given Post.
+     await db.update(
+      'posts',
+      post.toMap(),
+      // Ensure that the Post has a matching id.
+      where: 'id = ?',
+      // Pass the Post's id as a whereArg to prevent SQL injection.
+      whereArgs: [post.id],
+    );
+  }
+
+  Future<void> deletePost(int id) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Remove the Post from the database.
+    await db.delete(
+      'posts',
+      // Use a `where` clause to delete a specific user.
+      where: 'id = ?',
+      // Pass the Post's id as a whereArg to prevent SQL injection.
+      whereArgs: [id],
+    );
+  }
+
 
 
 
@@ -200,7 +253,7 @@ Future<void> insertBook(Book book) async {
         'user_id': userId,
         'book_id': bookId,
       },
-    conflictAlgorithm: ConflictAlgorithm.ignore, // Ignore if the relation already exists
+    conflictAlgorithm: ConflictAlgorithm.ignore, 
    );
   }
 
@@ -281,7 +334,9 @@ Future<void> unfollowUser(int userId, int followedId) async {
 
 }
 
+//*************    Classes, Class Mapping     ******************/
 
+//*********    User  **********/
 
 class User {
   final int? id;
@@ -318,9 +373,6 @@ class User {
       'isReadListPrivate': isReadListPrivate ? 1 : 0,
     };
   }
-
-  // Implement toString to make it easier to see information about
-  // each user when using the print statement.
  
 
   static User fromMap(Map<String, dynamic> map) {
@@ -338,9 +390,8 @@ class User {
   
 }
 
-//Classes, Class Mapping
 
-
+//*********    Book  **********/
 
 
 class Book {
@@ -356,8 +407,7 @@ class Book {
     required this.year,
   });
 
-  // Convert a User into a Map. The keys must correspond to the names of the
-  // columns in the database.
+
   Map<String, Object?> toMap() {
     return {
       'id': id,
@@ -367,12 +417,8 @@ class Book {
     };
   }
 
-  // Implement toString to make it easier to see information about
-  // each user when using the print statement.
-  @override
-  String toString() {
-    return 'Book{id: $id, title: $title, author: $author, year: $year}';
-  }
+
+
 
    static Book fromMap(Map<String, dynamic> map) {
     return Book(
@@ -382,4 +428,46 @@ class Book {
       year: map['year'],
      );
     }
+}
+
+//*********    Post  **********/
+
+class Post {
+  final int? id;
+  final int originalPoster_id;
+  User? reblogger_id; 
+  String? imageUrl;
+  String? quote;
+  final int book_id;
+  String timePosted;
+  int likes, reblogs;
+ /// List<String> comments; 
+
+  // Constructor
+  Post({
+    this.id,
+    required this.originalPoster_id,
+    required this.timePosted,
+    this.reblogger_id,  
+    this.imageUrl,
+    this.quote,
+    required this.book_id,
+    this.likes = 0,           // Default value for likes
+    this.reblogs = 0,         // Default value for reblogs
+ ///   this.comments = const [], // Default empty list for comments   
+  });
+
+  Map<String, Object?> toMap(){
+    return {
+    'originalPosterId': originalPoster_id,  // User's ID (int)
+    'rebloggerId': reblogger_id?.id,  // User's ID (nullable int)
+    'imageUrl': imageUrl,  // String
+    'quote': quote,  // String
+    'bookId': book_id,  // Book's ID (int)
+    'timePosted': timePosted,  // String representation of DateTime
+    'likes': likes,  // int
+    'reblogs': reblogs,  // int
+ ///   'comments': comments.join(',')
+    };
+  }
 }
