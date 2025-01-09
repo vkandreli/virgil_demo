@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomeScreen(),// CustomBottomNavBar(context: context, currentUser: currentUser,),// CreatePackScreen(currentUser: placeholderSelf,),
+      home: HomeScreen(currentUser: currentUser),// CustomBottomNavBar(context: context, currentUser: currentUser,),// CreatePackScreen(currentUser: placeholderSelf,),
     );
   }
 }
