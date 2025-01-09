@@ -35,7 +35,7 @@ Widget genericScroll<T>({
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: 16),
-          itemCount: items.isEmpty ? 1 : items.length,  // Correct itemCount for empty case
+          itemCount: items.isEmpty ? 1 : items.length, 
           itemBuilder: (context, index) {
             if (items.isEmpty) {
               return Center(child: Text('No items available'));  // Handle empty state gracefully

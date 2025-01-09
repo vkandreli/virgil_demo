@@ -15,7 +15,7 @@ class Book {
   int totalPages;
   int? currentPage;
   String? genre;
-  List<Map<User, Review>>? reviews;
+  List< Review>? reviews;
 
   Book({
     required this.title,
@@ -33,7 +33,7 @@ class Book {
 
   void addReview(User user, Review review) {
     reviews ??= []; 
-    reviews!.add({user: review});
+    reviews!.add(review);
     user.postReview(review);
   }
 

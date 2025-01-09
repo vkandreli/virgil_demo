@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/review.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/models/book.dart';
@@ -8,7 +9,8 @@ class CreateReviewScreen extends StatefulWidget {
   final User currentUser;
   final Book selectedBook;
 
-  const CreateReviewScreen({required this.currentUser, required this.selectedBook});
+  const CreateReviewScreen(
+      {required this.currentUser, required this.selectedBook});
 
   @override
   _CreateReviewScreenState createState() =>
@@ -20,7 +22,7 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
   String? text;
   int? stars;
 
-   _CreateReviewScreenState({required this.selectedBook})      ;
+  _CreateReviewScreenState({required this.selectedBook});
 
   // Check if the review can be created (book is required, text is required, and stars are selected)
   bool _canCreateReview() {
@@ -30,21 +32,21 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Review')),
-      body: SingleChildScrollView( 
+      //appBar: AppBar(title: Text('Create Review')),
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+                            SizedBox(height: 40),
+
               // Star Rating Picker
               Row(
                 children: List.generate(5, (index) {
                   return IconButton(
                     icon: Icon(
-                      index < (stars ?? 0)
-                          ? Icons.star
-                          : Icons.star_border,
+                      index < (stars ?? 0) ? Icons.star : Icons.star_border,
                       color: Colors.amber,
                     ),
                     onPressed: () {
@@ -76,17 +78,22 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
 
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookDetailScreen(
-                        book: selectedBook,
-                        currentUser: widget.currentUser,
-                      ),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => BookDetailScreen(
+                  //       book: selectedBook,
+                  //       currentUser: widget.currentUser,
+                  //     ),
+                  //   ),
+                  // );
                 },
-                child: Text(selectedBook.title),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.lightBrown),
+                child: Text(
+                  selectedBook.title,
+                  style: TextStyle(color: AppColors.darkBrown),
+                ),
               ),
               SizedBox(height: 16),
 
@@ -96,21 +103,25 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                     ? () {
                         // Create the Review object
                         Review review = Review(
-                          user: widget.currentUser, // Use the current user as the reviewer
-                          reviewDate: DateTime.now().toString(),
+                          user: widget
+                              .currentUser, // Use the current user as the reviewer
+                          reviewDate: DateTime.now().toString().split(' ')[0],
                           text: text ?? "No text",
                           book: selectedBook,
-                          stars: stars?? 0,
+                          stars: stars ?? 0,
                         );
 
                         // Add the review to the current user's reviews
                         selectedBook.addReview(widget.currentUser, review);
-
+                        setState(() {});
                         // Navigate back to the Profile screen
                         Navigator.pop(context);
                       }
                     : null, // Disable the button if conditions are not met
-                child: Text('Create Review'),
+                    style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.darkBrown),
+                child: Text('Create Review',
+                  style: TextStyle(color: AppColors.lightBrown),),
               ),
             ],
           ),
