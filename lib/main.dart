@@ -27,6 +27,8 @@ import 'package:virgil_demo/screens/new_pack.dart';
 import 'screens/bottom_navigation.dart';
 import 'models/user.dart';
 import 'screens/login_screen.dart';
+import 'SQLService.dart';
+import 'data_seeder.dart';
 
 class AppConfig {
   static const String apiKey = /** 'AIzaSyAFruL6TGnJ7JQl4mFKUwVYb017K_ANdTc'*/String.fromEnvironment('API_KEY');
@@ -41,11 +43,18 @@ class AppColors {
 }
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+   
+  
+  await SQLService().database; 
+  await SQLService().printTables(); 
+
+ /// await DataSeeder.seedDummyData();
   runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
-  final User currentUser = placeholderSelf;//provider for user
+  ///final User currentUser = placeholderSelf;//provider for user
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +93,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomeScreen(currentUser: currentUser),// CustomBottomNavBar(context: context, currentUser: currentUser,),// CreatePackScreen(currentUser: placeholderSelf,),
+      home: LoginScreen(),// CustomBottomNavBar(context: context, currentUser: currentUser,),// CreatePackScreen(currentUser: placeholderSelf,),
     );
   }
 }
