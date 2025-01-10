@@ -3,6 +3,7 @@ import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
+import 'package:virgil_demo/screens/camera_screen.dart';
 import 'own_profile_screen.dart';
 import 'home_screen.dart';
 import 'recommendations_screen.dart';
@@ -77,12 +78,12 @@ final User currentUser;
                       logger.i("Camera pressed");
                       final cameras = await availableCameras();
                       if (cameras.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CameraScreen(camera: cameras.first),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => CameraScreen(camera: cameras.first),
+                        //   ),
+                        // );
                       }
                     },
                   ),
@@ -122,45 +123,45 @@ final User currentUser;
 }
 
 
-class CameraScreen extends StatefulWidget {
-  final CameraDescription camera;
+// class CameraScreen extends StatefulWidget {
+//   final CameraDescription camera;
 
-  const CameraScreen({required this.camera});
+//   const CameraScreen({required this.camera});
 
-  @override
-  _CameraScreenState createState() => _CameraScreenState();
-}
+//   @override
+//   _CameraScreenState createState() => _CameraScreenState();
+// }
 
-class _CameraScreenState extends State<CameraScreen> {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+// class _CameraScreenState extends State<CameraScreen> {
+//   late CameraController _controller;
+//   late Future<void> _initializeControllerFuture;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = CameraController(widget.camera, ResolutionPreset.medium);
-    _initializeControllerFuture = _controller.initialize();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = CameraController(widget.camera, ResolutionPreset.medium);
+//     _initializeControllerFuture = _controller.initialize();
+//   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder<void>(
+//         future: _initializeControllerFuture,
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.done) {
+//             return CameraPreview(_controller);
+//           } else {
+//             return Center(child: CircularProgressIndicator());
+//           }
+//         },
+//       ),
+//     );
+//   }
+// }

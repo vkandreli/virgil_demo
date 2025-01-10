@@ -5,6 +5,7 @@ import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
+import 'package:virgil_demo/screens/camera_screen.dart';
 import 'package:virgil_demo/screens/library_screen.dart';
 import 'package:virgil_demo/screens/review_presentation.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
@@ -172,12 +173,12 @@ class UserReadListScreen extends StatelessWidget {
                     onPressed: () async {
                       final cameras = await availableCameras();
                       if (cameras.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CameraScreen(camera: cameras.first),
-                          ),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => CameraScreen(camera: cameras.first),
+                        //   ),
+                        // );
                       }
                     },
                   ),
