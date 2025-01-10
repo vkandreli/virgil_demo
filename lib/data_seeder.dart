@@ -4,12 +4,12 @@ class DataSeeder {
   static Future<void> seedDummyData() async {
     final db = await SQLService().database; 
 
-  /**   await db.insert(
+     await db.insert(
     'users',
     {
       'username': 'reader2056',
       'email': 'reader@hotmail.com',
-      'profileImage': [],
+      'profileImage': null,
       'status': 'Active',
       'isPacksPrivate': 0,
       'isReviewsPrivate': 1,
@@ -87,7 +87,7 @@ class DataSeeder {
       'isPacksPrivate': 0,
       'isReviewsPrivate': 1,
       'isReadListPrivate': 0,
-    });*/
+    });
       
 
   await db.insert(
@@ -102,7 +102,6 @@ class DataSeeder {
     'dateAdded': null, // You can set this to the current date if needed.
     'dateCompleted': null, // You can set this to the current date if needed.
     'totalPages': 255,
-    'currentPage': 0, // Assuming the book hasn't been read.
     'genre': null, // Can be set to any value.
   },
 );
@@ -119,7 +118,7 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
+  
     'genre': null,
   },
 );
@@ -136,7 +135,6 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
     'genre': null,
   },
 );
@@ -153,7 +151,6 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
     'genre': null,
   },
 );
@@ -170,7 +167,6 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
     'genre': null,
   },
 );
@@ -187,7 +183,6 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
     'genre': null,
   },
 );
@@ -204,7 +199,6 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
     'genre': null,
   },
 );
@@ -223,7 +217,6 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
     'genre': null,
   },
 );
@@ -242,7 +235,6 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
     'genre': null,
   },
 );
@@ -260,14 +252,13 @@ await db.insert(
     'dateAdded': null,
     'dateCompleted': null,
     'totalPages': 255,
-    'currentPage': 0,
     'genre': null,
   },
 );
 
 
 
-/** 
+
 List<UserBook> dummyUserBooks = [
   UserBook(
     userId: 1,
@@ -335,6 +326,6 @@ for (var userBook in dummyUserBooks) {
   await SQLService().insertUserBook(userBook);
 }
 
-*/
+
   }
 }

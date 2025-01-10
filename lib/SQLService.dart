@@ -5,32 +5,56 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 
-void main() async {
-  // Avoid errors caused by flutter upgrade.
-  // Importing 'package:flutter/widgets.dart' is required.
-  WidgetsFlutterBinding.ensureInitialized();
-  // Open the database and store the reference.
-  final database = openDatabase(
-    // Set the path to the database. Note: Using the `join` function from the
-    // `path` package is best practice to ensure the path is correctly
-    // constructed for each platform.
-    join(await getDatabasesPath(), 'user_database.db'),
-    // When the database is first created, create a table to store users.
-    onCreate: (db, version) {
-      // Run the CREATE TABLE statement on the database.
-       db.execute(
+
+
+class SQLService {
+  // Singleton instance
+  static final SQLService _instance = SQLService._internal();
+
+  // Factory constructor to return the singleton
+  factory SQLService() => _instance;
+
+  // Private constructor
+  SQLService._internal();
+
+  // Database instance
+  static Database? _database;
+
+  // Getter to access the database
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+
+    // Initialize the database
+    _database = await _initDB();
+    return _database!;
+    
+  }
+ 
+
+  Future<void> deleteDatabase(String path) =>
+    databaseFactory.deleteDatabase(path);
+
+  // Initialize the database
+  Future<Database> _initDB() async {
+    final dbPath = await getDatabasesPath();
+    return await openDatabase(
+      join(dbPath, 'user_database.db'),
+      onCreate: (db, version) async {
+        // Create tables when the database is first created
+        await db.execute(
         '''CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT,
-         username TEXT NOT NULL, email TEXT NOT NULL, profileImage TEXT, status TEXT, 
-         isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0,)''',
+         username TEXT NOT NULL, email TEXT, profileImage TEXT, status TEXT, 
+         isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0)''',
       );
-       db.execute(
-      '''CREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL,
+      await  db.execute(
+      '''CREATE TABLE books(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL,
         author TEXT NOT NULL, publisher TEXT NOT NULL,  posterUrl TEXT NOT NULL, description TEXT NOT NULL,
-        dateAdded TEXT, dateCompleted TEXT, totalPages INTEGER NOT NULL, currentPage INTEGER, genre TEXT
+        dateAdded TEXT, dateCompleted TEXT, totalPages INTEGER NOT NULL, genre TEXT)
         ''',
       );
-       db.execute(
-      '''CREATE TABLE user_books(user_id INTEGER,book_id INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      await  db.execute(
+      '''CREATE TABLE user_books(user_id INTEGER,book_id INTEGER, list_category INTEGER CHECK(list_category >= 1 AND list_category <= 3),
+       pages_read INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
          FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (user_id, book_id)
       )
       ''',
@@ -48,20 +72,20 @@ void main() async {
           quote TEXT, book_id INTEGER, timePosted TEXT,likes INTEGER DEFAULT 0, reblogs INTEGER DEFAULT 0,
           FOREIGN KEY (originalPoster_id) REFERENCES users(id) ON DELETE CASCADE,
           FOREIGN KEY (reblogger_id) REFERENCES users(id) ON DELETE SET NULL,
-          FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE''',
+          FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE)''',
     );
        db.execute(
         '''CREATE TABLE reviews (
      id INTEGER PRIMARY KEY AUTOINCREMENT, book_id INTEGER NOT NULL, user_id INTEGER NOT NULL,
      text TEXT NOT NULL, reviewDate TEXT NOT NULL, stars INTEGER CHECK(stars >= 0 AND stars <= 10), 
-     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE'''
+     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)'''
    );
        db.execute(
       '''CREATE TABLE packs (
       id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL, creator_id INTEGER NOT NULL, 
-  packImage TEXT NOT NULL, description TEXT NOT NULL, FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE'''
+  packImage TEXT NOT NULL, description TEXT NOT NULL, FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE)'''
       );
-      return db.execute(
+       db.execute(
       '''CREATE TABLE pack_books(pack_id INTEGER,book_id INTEGER, FOREIGN KEY (pack_id) REFERENCES packs(id) ON DELETE CASCADE,
          FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (pack_id, book_id)
          )
@@ -73,10 +97,9 @@ void main() async {
     // path to perform database upgrades and downgrades.
     version: 1,
   );
+}
 
-
-
-/*******     User Setters      ********/
+//*******     User Setters      ********/
 
   // Define a function that inserts users into the database
   Future<void> insertUser(User user) async {
@@ -110,6 +133,92 @@ void main() async {
     ];
   }*/
 
+
+Future<void> reinitializeDatabase() async {
+  try {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, 'user_database.db');
+
+    // Delete the existing database
+    await deleteDatabase(path);
+    print('Database deleted successfully.');
+
+    // Trigger the reinitialization by accessing the database getter
+    final db = await database;
+    print('Database reinitialized successfully.');
+  } catch (e) {
+    print('Error during reinitialization: $e');
+  }
+}
+
+
+
+  Future<void> dropAllTables(Database db) async {
+
+    // Drop all existing tables
+    await db.execute('DROP TABLE IF EXISTS users');
+    await db.execute('DROP TABLE IF EXISTS books');
+    await db.execute('DROP TABLE IF EXISTS user_books');
+    await db.execute('DROP TABLE IF EXISTS user_followeduser');
+    await db.execute('DROP TABLE IF EXISTS pack_books');
+    await db.execute('DROP TABLE IF EXISTS packs');
+    await db.execute('DROP TABLE IF EXISTS posts');
+    await db.execute('DROP TABLE IF EXISTS reviews');
+
+    print('All tables dropped successfully');
+  }
+
+  Future<void> printUsername(int userId) async {
+  // Get a reference to the database
+  final db = await SQLService().database;
+
+  // Query the Users table for the user with the given userId
+  final List<Map<String, dynamic>> result = await db.query(
+    'users',
+    columns: ['username'], // Only fetch the username column
+    where: 'id = ?',       // Specify the condition
+    whereArgs: [userId],   // Pass the userId as an argument
+    limit: 1,              // Limit the query to one result
+  );
+
+  // Check if a user was found
+  if (result.isNotEmpty) {
+    // Extract the username from the query result
+    String username = result.first['username'] as String;
+
+    // Print the username
+    print('Username: $username');
+  } else {
+    print('No user found with id $userId');
+  }
+}
+
+
+
+
+Future<void> printTables() async {
+  var db = await SQLService().database;  // Get the initialized database
+  var tables = await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table"');
+  print(tables);  // This will print the names of all the tables in the database
+}
+
+
+Future<void> printTable(String tableName) async {
+  // Get a reference to the database
+  final db = await database;
+
+  // Query the entire table
+  final List<Map<String, dynamic>> rows = await db.query(tableName);
+
+  // Print each row
+  for (var row in rows) {
+    print(row); // Prints the row as a map
+  }
+}
+
+
+
+
   Future<void> updateUser(User user) async {
     // Get a reference to the database.
     final db = await database;
@@ -138,6 +247,23 @@ void main() async {
       whereArgs: [id],
     );
   }
+
+
+ /**   static Future<User> getUserByUsername(String username) async {
+    final db = await database;
+
+    // Query the user from the users table where the username matches
+    final List<Map<String, dynamic>> maps = await db.query(
+      'users',
+      where: 'username = ?',
+      whereArgs: [username],
+    );
+return User.fromMap(maps.first);
+  }*/
+
+
+
+
 
 
  
@@ -489,6 +615,59 @@ Future<void> removeBookfromPack(int packId, int bookId) async {
     });
   }
 
+Future<void> insertUserBook(UserBook userBook) async {
+  final db = await database;
+
+ 
+    await db.insert(
+      'user_books',         
+      userBook.toMap(),      
+      conflictAlgorithm: ConflictAlgorithm.replace, 
+    );
+}
+Future<void> updateUserBook(UserBook userBook) async {
+  final db = await SQLService().database;
+
+  
+    await db.update(
+      'user_books',                // Table name
+      userBook.toMap(),             // Data to update (converted to map)
+      where: 'user_id = ? AND book_id = ?',  // WHERE clause (matching user_id and book_id)
+      whereArgs: [userBook.userId, userBook.bookId], // Arguments to replace the placeholders
+    );
+}                                                       
+
+
+
+///////// Commands that would work if anything worked
+
+
+//on create post
+
+/** 
+
+ Post NewPost = Post(
+  
+
+)*/
+
+Future<void> CreatePost(Post post) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    await db.insert(
+      'posts',
+      post.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+
+
+
+
+
+
 
 }
 
@@ -501,7 +680,7 @@ Future<void> removeBookfromPack(int packId, int bookId) async {
 class User {
   final int? id;
   final String username;
-  final String email;
+  final String? email;
   String? profileImage;
   String? status;
   bool isPacksPrivate;
@@ -511,7 +690,7 @@ class User {
   User({
     this.id,
     required this.username,
-    required this.email,
+    this.email,
     this.profileImage,
     this.status,
     this.isPacksPrivate = false,
@@ -725,3 +904,31 @@ class Pack {
     };
   }
 }
+
+
+
+class UserBook {
+  final int? userId;
+  final int? bookId;
+  final int? listCategory;  // e.g., 1: Reading, 2: Completed, 3: Want to Read
+  final int? pagesRead;
+
+  UserBook({
+    this.userId,
+    this.bookId,
+    this.listCategory,
+    this.pagesRead,
+  });
+
+  // Convert the UserBook object to a Map for database operations
+  Map<String, dynamic> toMap() {
+    return {
+      'user_id': userId,           // The ID of the user
+      'book_id': bookId,           // The ID of the book
+      'list_category': listCategory, // The category of the book (e.g., Reading, Completed, etc.)
+      'pages_read': pagesRead,      // The number of pages the user has read in the book
+    };
+  }
+}
+
+/////////

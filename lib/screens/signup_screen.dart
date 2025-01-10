@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:virgil_demo/SQLService.dart';
 
 final storage = FlutterSecureStorage();
 
@@ -29,6 +30,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     if (password != confirmPassword) {
+      await SQLService().printTable('user_books');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Passwords do not match')),
       );

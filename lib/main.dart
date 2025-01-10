@@ -46,11 +46,10 @@ class AppColors {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
    
-  
-  await SQLService().database; 
+  await SQLService().reinitializeDatabase();
   await SQLService().printTables(); 
 
- /// await DataSeeder.seedDummyData();
+  await DataSeeder.seedDummyData();
   runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
