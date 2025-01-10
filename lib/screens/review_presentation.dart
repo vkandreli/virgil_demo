@@ -88,7 +88,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => OtherProfileScreen(user: widget.review.user, currentUser: placeholderSelf),
+                        builder: (context) => OtherProfileScreen(user: widget.review.user, currentUser: widget.currentUser),
                       ),
                     );
                   },

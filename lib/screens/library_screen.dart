@@ -93,10 +93,10 @@ final User currentUser;
             Expanded(
               child: ListView(
                 children: [
-                  bookScroll("Books you're reading", placeholderBooks, showProgress: true, currentUser: currentUser),//currentUser.currentList
-                  bookScroll('Your personal Read List',placeholderBooks, currentUser: currentUser ),//currentUser.readingList
-                  packScroll('Packs on your Read List', placeholderPacks, currentUser: currentUser,), //currentUser.usersPacks
-                  bookScroll("Books you've finished", placeholderBooks, isCompleted: true, currentUser: currentUser),//currentUser.completedList
+                  bookScroll("Books you're reading", currentUser.currentList, showProgress: true, currentUser: currentUser),//
+                  bookScroll('Your personal Read List',currentUser.readingList, currentUser: currentUser ),//
+                  packScroll('Packs on your Read List', currentUser.usersPacks, currentUser: currentUser,), //
+                  bookScroll("Books you've finished", currentUser.completedList, isCompleted: true, currentUser: currentUser),//
                 ],
               ),
             ),

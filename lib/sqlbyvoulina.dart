@@ -9,6 +9,7 @@ import 'package:virgil_demo/models/review.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/services/book_service.dart';
 import 'package:virgil_demo/services/user_service.dart';
+
 class SQLService {
   static Database? _database;
 
@@ -237,8 +238,84 @@ class SQLService {
       FOREIGN KEY (userId) REFERENCES users(id)
     );
     ''');
+        await _populateDatabaseWithPlaceholderData(db);
   }
 
+ // Populate the database with some placeholder data (users, books, posts, etc.)
+  static Future<void> _populateDatabaseWithPlaceholderData(Database db) async {
+    try {
+      // Insert placeholder users
+      await db.insert('users', {
+        'username': 'john_doe',
+        'password': 'password123',
+        'email': 'john.doe@example.com',
+        'profileImage': 'https://tse1.mm.bing.net/th?id=OIP.qbGUIKPMpi5kfUsaFS9_QQHaFb&pid=Api',
+        'status': 'active',
+        'isPacksPrivate': 0,
+        'isReviewsPrivate': 0,
+        'isReadListPrivate': 0,
+      });
+
+      await db.insert('users', {
+        'username': 'jane_smith',
+        'password': 'password456',
+        'email': 'jane.smith@example.com',
+        'profileImage': 'https://tse1.mm.bing.net/th?id=OIP.qbGUIKPMpi5kfUsaFS9_QQHaFb&pid=Api',
+        'status': 'active',
+        'isPacksPrivate': 1,
+        'isReviewsPrivate': 0,
+        'isReadListPrivate': 1,
+      });
+
+      // Insert placeholder books
+      await db.insert('books', {
+        'id': 'book1',
+        'title': 'The Great Adventure',
+        'publicationDate': '2025-01-01',
+        'authors': 'John Doe',
+        'publisher': 'FictionHouse',
+        'posterUrl': 'https://tse3.mm.bing.net/th?id=OIP.14V5hQxRbt9aRYag58fEKAHaLG&pid=Api',
+        'description': 'A thrilling adventure story.',
+        'language': 'English',
+        'dateAdded': '2025-01-10',
+        'dateCompleted': '',
+        'totalPages': 300,
+        'currentPage': 1,
+        'genre': 'Adventure',
+        'reviews': '[]',
+      });
+
+      // Insert placeholder posts
+      await db.insert('posts', {
+        'username': 'john_doe',
+        'reblogger': '',
+        'imageUrl': 'https://tse2.mm.bing.net/th?id=OIP.bbQY0YPgSSvAxVQ4dp_dnwHaFj&pid=Api',
+        'quote': 'An inspiring quote.',
+        'bookId': 'book1',
+        'timePosted': '2025-01-10T12:00:00',
+        'likes': 10,
+        'reblogs': 5,
+        'comments': '[]',
+      });
+
+      await db.insert('posts', {
+        'username': 'jane_smith',
+        'reblogger': 'john_doe',
+        'imageUrl': 'https://tse2.mm.bing.net/th?id=OIP.bbQY0YPgSSvAxVQ4dp_dnwHaFj&pid=Api',
+        'quote': 'Another inspiring quote.',
+        'bookId': 'book1',
+        'timePosted': '2025-01-10T12:30:00',
+        'likes': 15,
+        'reblogs': 7,
+        'comments': '[]',
+      });
+
+      print('Placeholder data inserted.');
+    } catch (e) {
+      print('Error inserting placeholder data: $e');
+    }
+  }
+  
   // Handle database version upgrades
   static Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
@@ -415,6 +492,7 @@ static Future<List<Post>> getPostsByUsername(String username) async {
 
     return posts;
   }
+
 
   // Insert User
   static Future<void> insertUser(User user) async {

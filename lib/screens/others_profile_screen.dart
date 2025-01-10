@@ -21,9 +21,10 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
   @override
   void initState() {
     super.initState();
-    userPosts = placeholderPosts.where((post) {
-      return post.originalPoster == widget.user || post.reblogger == widget.user;
-    }).toList();
+    userPosts = widget.user.usersPosts;
+    // placeholderPosts.where((post) {
+    //   return post.originalPoster == widget.user || post.reblogger == widget.user;
+    // }).toList();
   }
 
   // Navigate to the corresponding screen (methods for privacy box navigation)

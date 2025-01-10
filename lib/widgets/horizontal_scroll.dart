@@ -342,7 +342,7 @@ class ReviewCard extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => OtherProfileScreen(
                       user: review.user,
-                      currentUser: placeholderSelf,
+                      currentUser: currentUser,
                     ),
                   ),
                 );

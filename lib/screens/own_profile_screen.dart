@@ -30,9 +30,10 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
   void initState() {
     super.initState();
     // Initialize userPosts after widget is fully initialized
-    userPosts = placeholderPosts.where((post) {
-      return post.originalPoster == widget.currentUser || post.reblogger == widget.currentUser;
-    }).toList();
+    userPosts = widget.currentUser.usersPosts;
+    // placeholderPosts.where((post) {
+    //   return post.originalPoster == widget.currentUser || post.reblogger == widget.currentUser;
+    // }).toList();
 
     userPosts =  (widget.currentUser.usersPosts)+userPosts ;
   }

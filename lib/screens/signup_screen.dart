@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/services/user_service.dart';
 import 'login_screen.dart';
@@ -76,7 +77,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _confirmPasswordController.clear();
     _usernameController.clear();
 
-    await Future.delayed(Duration(seconds: 2));
+    //await Future.delayed(Duration(seconds: 2));
 
     // Navigate to the Login screen
     Navigator.pushReplacement(
@@ -93,19 +94,34 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+                        Text(
+              "Username",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
+            ),
             TextField(
               controller: _usernameController, // Username input
               decoration: InputDecoration(labelText: 'Username'),
+            ),
+                        Text(
+              "Email",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
             ),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
               keyboardType: TextInputType.emailAddress,
+            ),            
+            Text(
+              "Password",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
             ),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
+            ),            Text(
+              "Confirm Password",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
             ),
             TextField(
               controller: _confirmPasswordController,

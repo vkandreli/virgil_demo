@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
+import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/chatbot_screen.dart';
+import 'package:virgil_demo/services/book_service.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart'; 
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';  // To convert lat/lon to address
@@ -19,15 +21,17 @@ final User currentUser;
 }
 
 class _RecommendationsScreenState extends State<RecommendationsScreen> {
-    User currentUser = placeholderSelf;
     String? _currentCity = 'your location';
     Logger logger = Logger();
+  late Future<List<Book>> booksFuture;
 
   @override
   void initState() {
     super.initState();
     //_getCurrentLocation();
-    _getLocationandPermission();  }
+    _getLocationandPermission();  
+        booksFuture = _fetchBooks();
+}
 
       Future<void> _getLocationandPermission() async {
     bool serviceEnabled;
@@ -69,39 +73,57 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
   }
   
 
+  // Fetch books from the database
+  Future<List<Book>> _fetchBooks() async {
+    try {
+      final bookService = BookService();
+      await bookService.init(); // Ensure database is initialized
+      final books = await bookService.getAllBooks();
+      return books;
+    } catch (e) {
+      // Handle error (e.g., show a message or return an empty list)
+      print('Error fetching books: $e');
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-  final Logger logger = Logger(); 
-  return Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                children: [
-                  bookScroll("Popular in ${_currentCity}", placeholderBooks, currentUser: currentUser), 
-                  bookScroll('What your community is reading', placeholderBooks, currentUser: currentUser),
-                  reviewScroll('Hottest reviews', placeholderReviews, currentUser: currentUser), 
-                  SizedBox(height: 12),
-                ],
+    final Logger logger = Logger();
+
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Use FutureBuilder to display books from the database
+            Expanded(
+              child: FutureBuilder<List<Book>>(
+                future: booksFuture,  // Fetch books from the database
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No books available.'));
+                  } else {
+                    final books = snapshot.data!;
+                    return ListView(
+                      children: [
+                        bookScroll("Popular in ${_currentCity}", books, currentUser: widget.currentUser),
+                        bookScroll('What your community is reading', books, currentUser: widget.currentUser),
+                        reviewScroll('Hottest reviews', placeholderReviews, currentUser: widget.currentUser),
+                        SizedBox(height: 12),
+                      ],
+                    );
+                  }
+                },
               ),
             ),
-                      
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-         backgroundColor: AppColors.darkBrown,
-        child: Icon(Icons.chat, color: AppColors.lightBrown,),
-        onPressed: () {
-          // Navigate to the chatbot screen
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ChatbotScreen()),
-          );
-        },
-      ),
-        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
+        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
 
     );
   }
