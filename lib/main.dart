@@ -27,8 +27,7 @@ import 'package:virgil_demo/sqlbyvoulina.dart';
 import 'screens/bottom_navigation.dart';
 import 'models/user.dart';
 import 'screens/login_screen.dart';
-import 'SQLService.dart';
-import 'data_seeder.dart';
+
 
 class AppConfig {
   static const String apiKey = /** 'AIzaSyAFruL6TGnJ7JQl4mFKUwVYb017K_ANdTc'*/String.fromEnvironment('API_KEY');

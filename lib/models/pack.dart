@@ -7,7 +7,7 @@ class Pack {
   final User creator;
   final String packImage;
   final String description;
-  List<Book>? books;
+  List<Book> books;
 
   Pack({
     required this.title,

@@ -12,6 +12,8 @@ import 'package:logger/logger.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:camera/camera.dart';
 import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/screens/chatbot_screen.dart'; 
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 class AddToPack extends StatefulWidget {

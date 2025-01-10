@@ -69,7 +69,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                               ),
                             ),
                             Text(
-                              'By: ${widget.review.book.authors}',
+                              'By: ${widget.review.book.authors.join(",")}',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.lightBrown,

@@ -42,9 +42,7 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
 Widget build(BuildContext context) {
   return Scaffold(
     //appBar: AppBar(title: Text('Search Profiles')),
-    body: SafeArea(
-        child:
-    Padding(
+    body: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
@@ -88,9 +86,8 @@ Widget build(BuildContext context) {
         ],
       ),
     ),
-    ),
       bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
-    
+
   );
 }
 

@@ -1,145 +1,108 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
-import 'package:virgil_demo/screens/book_presentation.dart'; // Import the MovieDetailScreen
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:location/location.dart';
-//import 'package:virgil_demo/assets/placeholders.dart';
+import 'package:virgil_demo/main.dart';
+import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/screens/book_presentation.dart';
+import 'package:virgil_demo/screens/bottom_navigation.dart';
+import 'package:virgil_demo/screens/chatbot_screen.dart';
+import 'package:virgil_demo/widgets/horizontal_scroll.dart'; 
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';  // To convert lat/lon to address
 
 class RecommendationsScreen extends StatefulWidget {
+final User currentUser;
+  const RecommendationsScreen({Key? key, required this.currentUser}) : super(key: key); 
+
   @override
   _RecommendationsScreenState createState() => _RecommendationsScreenState();
 }
 
 class _RecommendationsScreenState extends State<RecommendationsScreen> {
-  // late GoogleMapController mapController;
-  // late LocationData currentLocation;
+    User currentUser = placeholderSelf;
+    String? _currentCity = 'your location';
+    Logger logger = Logger();
 
-  // // Initialize the location package
-  // Location location = Location();
+  @override
+  void initState() {
+    super.initState();
+    //_getCurrentLocation();
+    _getLocationandPermission();  }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _getCurrentLocation();
-  // }
+      Future<void> _getLocationandPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  // // Fetch current location of the user
-  // Future<void> _getCurrentLocation() async {
-  //   LocationData locationData = await location.getLocation();
-  //   setState(() {
-  //     currentLocation = locationData;
-  //   });
-  // }
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        _currentCity = 'Location services are disabled.';
+      });
+      return;
+    }
+
+    // Request location permission
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      setState(() {
+        _currentCity = 'Location permission denied.';
+      });
+      return;
+    }
+
+    // Get the current position (latitude and longitude)
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    // Get the city name from the latitude and longitude
+    _getCityFromCoordinates(position.latitude, position.longitude);
+  }
+
+  // Get the city name from latitude and longitude using geocoding
+  Future<void> _getCityFromCoordinates(double latitude, double longitude) async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+    Placemark place = placemarks[0];
+    setState(() {
+      logger.i("I'm finding your location");
+      _currentCity = place.locality;  // This gives the city name
+    });
+  }
+  
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          children: [
-            // Google Map 
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: SizedBox(
-            //     height: 300, // Height for the Google Map
-            //     child: currentLocation != null
-            //         ? GoogleMap(
-            //             initialCameraPosition: CameraPosition(
-            //               target: LatLng(currentLocation.latitude!, currentLocation.longitude!),
-            //               zoom: 14.0,
-            //             ),
-            //             onMapCreated: (GoogleMapController controller) {
-            //               mapController = controller;
-            //             },
-            //           )
-            //         : Center(child: CircularProgressIndicator()),
-            //   ),
-            // ),
-
-            // Popular Right Now Header
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Popular Right Now",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  final Logger logger = Logger(); 
+  return Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                children: [
+                  bookScroll("Popular in ${_currentCity}", placeholderBooks, currentUser: currentUser), 
+                  bookScroll('What your community is reading', placeholderBooks, currentUser: currentUser),
+                  reviewScroll('Hottest reviews', placeholderReviews, currentUser: currentUser), 
+                  SizedBox(height: 12),
+                ],
               ),
             ),
-            
-            // Horizontal Scrollable Popular Movies
-            Container(
-              height: 225, // Height of the movie posters row
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: placeholderBooks.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Navigate to MovieDetailScreen when a poster is tapped
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetailScreen(
-                            movieTitle: placeholderBooks[index].title,
-                            imageUrl: placeholderBooks[index].posterUrl,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.network(
-                        placeholderBooks[index].posterUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // New Releases Header
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "New Releases",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            
-            // Horizontal Scrollable New Releases Movies
-            Container(
-              height: 225, // Height of the movie posters row
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: placeholderBooks.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Navigate to MovieDetailScreen when a poster is tapped
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetailScreen(
-                            movieTitle: placeholderBooks[index].title,
-                            imageUrl: placeholderBooks[index].posterUrl,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.network(
-                        placeholderBooks[index].posterUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+                      
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+         backgroundColor: AppColors.darkBrown,
+        child: Icon(Icons.chat, color: AppColors.lightBrown,),
+        onPressed: () {
+          // Navigate to the chatbot screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatbotScreen()),
+          );
+        },
+      ),
+        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
+
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:virgil_demo/models/achievement.dart';
 import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/models/post.dart';
@@ -143,33 +144,45 @@ List<Post> placeholderPosts = [
     reblogger: placeholderUsers[1], // User 2 reblogging
     imageUrl: "https://via.placeholder.com/500x300?text=Post+1+Image",
     quote: "This is a quote for Post 1.",
+    timePosted: DateTime.now(), 
+    book: placeholderBooks[1],
   ),
   Post(
     originalPoster: placeholderUsers[1], // User 2 as the original poster
     reblogger: placeholderSelf, // Self reblogging
     imageUrl: "https://via.placeholder.com/500x300?text=Post+2+Image",
-    quote: "This is a quote for Post 2.",
+    quote: "This is a quote for Post 2.", 
+    timePosted: DateTime.now(), 
+    book: placeholderBooks[1],
   ),
   Post(
     originalPoster: placeholderUsers[2], // User 3 as the original poster
     imageUrl: "https://via.placeholder.com/500x300?text=Post+3+Image",
     quote: "This is a quote for Post 3.",
+    timePosted: DateTime.now(), 
+    book: placeholderBooks[1],
   ),
   Post(
     originalPoster: placeholderUsers[3], // User 4 as the original poster
     reblogger: placeholderUsers[4], // User 5 reblogging
     imageUrl: "https://via.placeholder.com/500x300?text=Post+4+Image",
     quote: "This is a quote for Post 4.",
+    timePosted: DateTime.now(), 
+    book: placeholderBooks[1],
   ),
   Post(
     originalPoster: placeholderUsers[4], // User 5 as the original poster
     imageUrl: "https://via.placeholder.com/500x300?text=Post+5+Image",
     quote: "This is a quote for Post 5.",
+    timePosted: DateTime.now(), 
+    book: placeholderBooks[1],
   ),
   Post(
     originalPoster: placeholderSelf, // User 6 as the original poster
     imageUrl: "https://via.placeholder.com/500x300?text=Post+6+Image",
     quote: "This is a quote for Post 6.",
+    timePosted: DateTime.now(), 
+    book: placeholderBooks[1],
   ),
 ];
 

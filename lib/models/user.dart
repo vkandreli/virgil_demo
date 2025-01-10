@@ -1,4 +1,5 @@
 import 'package:virgil_demo/models/achievement.dart';
+import 'package:virgil_demo/models/goal.dart';
 import 'package:virgil_demo/models/review.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/models/pack.dart';
@@ -104,7 +105,6 @@ class User {
   }
 
 
-
   // Method to toggle the privacy status of the current list
   void togglePacksPrivacy() {
     isPacksPrivate = !isPacksPrivate;
@@ -164,20 +164,39 @@ class User {
       book.dateAdded = null;
     }
 
-    void addTOCurrent(Book book){
-
+    void addToCurrent(Book book){
+        currentList.add(book);
     }
 
 
     void addToCompleted(Book book) {
       completedList.add(book);
       readingList.remove(book);
+      book.currentPage = 0;
       book.dateCompleted = DateTime.now();
     }
 
     void changeStatus(String string) {
       status = string;
     }
+
+    void addPost(Post post){
+      usersPosts.add(post);
+    }
+
+int pageOfBook(Book bookSent) {
+  // Find the book in the currentList based on the title
+  try {
+    Book selected = currentList.firstWhere(
+      (book) => book.title == bookSent.title,
+    );
+    return selected.currentPage ?? 0;
+  } catch (e) {
+    // If the book is not found, return 0 or an appropriate default value
+    return 0;
+  }
+}
+
 }
 
 

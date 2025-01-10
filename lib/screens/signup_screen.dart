@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/services/user_service.dart';
 import 'login_screen.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final storage = FlutterSecureStorage();
 
 class SignupScreen extends StatefulWidget {
   @override
