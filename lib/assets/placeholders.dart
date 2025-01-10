@@ -7,44 +7,64 @@ import 'package:virgil_demo/models/pack.dart';
 
 List<Book> placeholderBooks = [
   Book(
+    id: "zyTCAlFPjgYC",
     title: "Book 1",
     publicationDate: "21-03-2003",
-    author: "D. P. Author",
+    authors: ["D. P. Author"],
     publisher: "Seals",
     posterUrl: "https://via.placeholder.com/150x225?text=Book+1",
     description: "This is a book.",
+    totalPages: 255,
+    reviews: [],
+    language: "en",
   ),
   Book(
+    id: "zyTCAlFPjgYC",
     title: "Book 2",
     publicationDate: "01-01-2001",
-    author: "A. N. Other",
+    authors: ["A. N. Other"],
     publisher: "Seals",
     posterUrl: "https://via.placeholder.com/150x225?text=Book+2",
     description: "This is another book.",
+    totalPages: 255,
+    reviews: [],
+    language: "en",
   ),
   Book(
+    id: "zyTCAlFPjgYC",
     title: "Book 3",
     publicationDate: "15-05-2010",
-    author: "J. K. Writer",
+    authors: ["J. K. Writer"],
     publisher: "Seals",
     posterUrl: "https://via.placeholder.com/150x225?text=Book+3",
     description: "Description for Book 3.",
+    totalPages: 255,
+    reviews: [],
+    language: "en",
   ),
   Book(
+    id: "zyTCAlFPjgYC",
     title: "Book 4",
     publicationDate: "12-12-2005",
-    author: "L. P. Author",
+    authors: ["L. P. Author"],
     publisher: "Seals",
     posterUrl: "https://via.placeholder.com/150x225?text=Book+4",
     description: "Description for Book 4.",
+    totalPages: 255,
+    reviews: [],
+    language: "en",
   ),
   Book(
+    id: "zyTCAlFPjgYC",
     title: "Book 5",
     publicationDate: "09-07-2015",
-    author: "S. M. Writer",
+    authors: ["S. M. Writer"],
     publisher: "Seals",
     posterUrl: "https://via.placeholder.com/150x225?text=Book+5",
     description: "Description for Book 5.",
+    totalPages: 255,
+    reviews: [],
+    language: "en",
   ),
 ];
 
@@ -196,4 +216,151 @@ List<Review> placeholderReviews = [
     reviewDate: "20-02-2024",
     stars: 5,
   ),
+];
+
+List<Pack> placeholderPacks = [
+  Pack(
+    title: 'Adventure Pack',
+    publicationDate: '2023-01-01',
+    creator: placeholderUsers[0],
+    packImage: "https://tse2.mm.bing.net/th?id=OIP.WxuBpk2j4-ugqYvjLb1CLQHaLU&pid=Api",//'https://via.placeholder.com/200x200',
+    description: 'A collection of thrilling adventure novels.',
+    books: placeholderBooks.sublist(0, 3), // First 3 books
+  ),
+  Pack(
+    title: 'Mystery Collection',
+    publicationDate: '2023-02-01',
+    creator: placeholderUsers[1],
+    packImage: "https://tse2.mm.bing.net/th?id=OIP.WxuBpk2j4-ugqYvjLb1CLQHaLU&pid=Api",//'https://via.placeholder.com/200x200',
+    description: 'Unravel the mysteries with these gripping novels.',
+    books: placeholderBooks.sublist(1, 4), // Books from index 1 to 3
+  ),
+  Pack(
+    title: 'Sci-Fi Essentials',
+    publicationDate: '2023-03-01',
+    creator: placeholderUsers[2],
+    packImage: "https://tse2.mm.bing.net/th?id=OIP.WxuBpk2j4-ugqYvjLb1CLQHaLU&pid=Api",//'https://via.placeholder.com/200x200',
+    description: 'The must-read science fiction books.',
+    books: placeholderBooks.sublist(2, 5), // Books from index 2 to 4
+  ),
+  Pack(
+    title: 'Historical Insights',
+    publicationDate: '2023-04-01',
+    creator: placeholderUsers[3],
+    packImage: "https://tse2.mm.bing.net/th?id=OIP.WxuBpk2j4-ugqYvjLb1CLQHaLU&pid=Api",//'https://via.placeholder.com/200x200',
+    description: 'Explore the history with these insightful books.',
+    books: placeholderBooks.sublist(3, 5), // Books from index 3 to 5
+  ),
+  Pack(
+    title: 'Fantasy World',
+    publicationDate: '2023-05-01',
+    creator: placeholderUsers[4],
+    packImage: "https://tse2.mm.bing.net/th?id=OIP.WxuBpk2j4-ugqYvjLb1CLQHaLU&pid=Api",//'https://via.placeholder.com/200x200',
+    description: 'Dive into a world of fantasy and magic.',
+    books: placeholderBooks.sublist(2, 5), // Last 2 books
+  ),
+  Pack(
+    title: 'Dart Programming Pack',
+    publicationDate: '2023-06-01',
+    creator: placeholderUsers[5],
+    packImage: "https://tse2.mm.bing.net/th?id=OIP.WxuBpk2j4-ugqYvjLb1CLQHaLU&pid=Api",//'https://via.placeholder.com/200x200',
+    description: 'Master Dart programming with this collection.',
+    books: [placeholderBooks.last], // Only the last book 
+  ),
+];
+
+List<Achievement> placeholderAchievements = [
+  // Achievement(
+  //   name: "Bookworm",
+  //   image: "https://tse4.mm.bing.net/th?id=OIP.eiLocwrWbByic5SUdjGzuwHaFG&pid=Api",
+  //   description: "Read 50 books in your lifetime.",
+  //   requirement: (User user) => user.completedList.length >= 50,  // Check if user completed 50 books
+  // ),
+  // Achievement(
+  //   name: "Master Reviewer",
+  //   image: "https://tse4.mm.bing.net/th?id=OIP.ZLe41HS2w6xHvOVpIo872AHaHa&pid=Api",
+  //   description: "Write 10 thoughtful book reviews.",
+  //   requirement: (User user) => user.usersReviews.length >= 10,  // Check if user has 10 reviews
+  // ),
+  // Achievement(
+  //   name: "Social Butterfly",
+  //   image: "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+  //   description: "Follow 20 different users on the platform.",
+  //   requirement: (User user) => user.followedUsers.length >= 20,  // Check if user follows 20 users
+  // ),
+  // Achievement(
+  //   name: "Night Owl",
+  //   image: "https://via.placeholder.com/150?text=Night+Owl",
+  //   description: "Read for 5 hours straight at night.",
+  //   requirement: (User user) {
+  //     // Check if the user has read 5+ hours in a day between 9 PM and 6 AM
+  //     bool hasReadAtNight = user.pagesPerDay.any((entry) {
+  //       DateTime date = entry.keys.first;
+  //       int pages = entry.values.first;
+  //       return date.hour >= 21 || date.hour < 6;  // Between 9 PM and 6 AM
+  //     });
+  //     return hasReadAtNight && user.pagesPerDay.any((entry) => entry.values.first >= 300);  // 5 hours = 300 pages
+  //   },
+  // ),
+  // Achievement(
+  //   name: "Page Turner",
+  //   image: "https://via.placeholder.com/150?text=Page+Turner",
+  //   description: "Read 100 pages in a day.",
+  //   requirement: (User user) {
+  //     // Check if the user has read 100 or more pages in a single day
+  //     return user.pagesPerDay.any((entry) => entry.values.first >= 100);
+  //   },
+  // ),
+  Achievement(
+    id: "1234",
+    name: "Master Reviewer",
+    imageUrl: "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+    description: "Write 10 thoughtful book reviews.",
+    requirement: 'true',
+  ),
+  Achievement(
+    id: "1234",
+    name: "Social Butterfly",
+    imageUrl: "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+    description: "Follow 20 different users on the platform.",
+    requirement: 'true',
+  ),
+  Achievement(
+    id: "1234",
+    name: "Night Owl",
+    imageUrl: "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+    description: "Read for 5 hours straight at night.",
+    requirement: 'true',
+  ),
+  Achievement(
+    id: "1234",
+    name: "Page Turner",
+    imageUrl: "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+    description: "Read 100 pages in a day.",
+    requirement: 'true',
+  ),
+
+];
+
+Book virgil =  Book(
+    id: "zyTCAlFPjgYC",
+    title: "Virgil tutorial",
+    publicationDate: "01-01-2025",
+    authors: ["Dev Team"],
+    publisher: "Dev Team",
+    posterUrl: "https://tse2.mm.bing.net/th?id=OIP.QaqDrHSrWeTxrJVVkIYl4QHaL2&pid=Api",//"https://via.placeholder.com/150x225?text=Book+1",
+    description: "You're only getting started.",
+    totalPages: 1,
+    reviews: [],
+    language: "en",
+  );
+
+    List<Map<DateTime, int>> placeholderPagesRead = [
+  {DateTime(2025, 1, 8): 50},  // 50 pages read on Jan 1st
+  {DateTime(2025, 1, 9): 30},  // 30 pages read on Jan 2nd
+  {DateTime(2025, 1, 3): 45},  // 45 pages read on Jan 3rd
+  {DateTime(2025, 1, 4): 60},  // 60 pages read on Jan 4th
+  {DateTime(2025, 1, 5): 20},  // 20 pages read on Jan 5th
+  {DateTime(2025, 1, 6): 80},  // 80 pages read on Jan 6th
+  {DateTime(2025, 1, 7): 40},  // 40 pages read on Jan 7th
 ];

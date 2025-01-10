@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/screens/home_screen.dart';
+import 'signup_screen.dart';
+import 'package:virgil_demo/services/user_service.dart';
+import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/assets/placeholders.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -6,26 +11,58 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _login() {
-    // Implement your login logic here (e.g., Firebase Auth or local validation)
-    String email = _emailController.text;
+  // UserService instance to access database
+  final UserService userService = UserService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize UserService (important for setting up the DB)
+    userService.init();
+  }
+
+  void _login() async {
+    String username = _usernameController.text;
     String password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
+    if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter your email and password')),
+        SnackBar(content: Text('Please enter your username and password')),
       );
       return;
     }
 
-    // Perform login, navigate to next screen, etc.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login Successful')),
+    // Fetch all users from the database and check the credentials
+    List<User> users = await userService.getAllUsers();
+    User? matchingUser = users.firstWhere(
+      (user) => user.username == username && user.password == password,
+      orElse: () => User.empty(),
     );
-    // Navigate to home screen or other pages
+
+    if (matchingUser.username.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invalid username or password')),
+      );
+    } else {
+      // Successfully logged in
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login Successful')),
+      );
+
+      // Navigate to the Home screen (or wherever you want)
+      await Future.delayed(Duration(seconds: 2));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            currentUser: matchingUser,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -40,9 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-              keyboardType: TextInputType.emailAddress,
+              controller: _usernameController,
+              decoration: InputDecoration(labelText: 'Username'),
             ),
             TextField(
               controller: _passwordController,
@@ -57,8 +93,10 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20),
             TextButton(
               onPressed: () {
-                // Navigate to the signup screen
-                Navigator.pushReplacementNamed(context, '/signup');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignupScreen()),
+                );
               },
               child: Text('Don\'t have an account? Sign up'),
             ),
