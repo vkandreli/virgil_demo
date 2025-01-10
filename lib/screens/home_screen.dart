@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:virgil_demo/main.dart';
-import 'package:virgil_demo/models/user.dart';  // Import User model
+import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
-import 'package:virgil_demo/screens/new_post.dart';  // Import Post model
+import 'package:virgil_demo/screens/new_post.dart';
 import 'package:virgil_demo/screens/profile_search_scene.dart';
+import 'package:virgil_demo/services/user_service.dart';
 import 'package:virgil_demo/sqlbyvoulina.dart';
-import 'own_profile_screen.dart';  // Profile screen when self is clicked
-import 'others_profile_screen.dart';  // Profile screen when a user is clicked
+import 'own_profile_screen.dart';
+import 'others_profile_screen.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
@@ -26,10 +27,27 @@ class _HomeScreenState extends State<HomeScreen> {
   late List<Post> posts = []; // This will hold the list of posts
   bool isLoading = true; // To track loading state
 
+  // Add an instance of UserService
+  //final UserService userService = UserService(); 
+
   @override
   void initState() {
     super.initState();
-    _loadPosts();
+    _initializeDatabase();  // Initialize the database first
+  }
+  Future<void> _initializeDatabase() async {
+    try {
+      // Ensure the database is initialized first
+      //await userService.init(); 
+
+      // Now that the database is initialized, load posts
+      await _loadPosts();  
+    } catch (e) {
+      logger.e("Error initializing database: $e");
+      setState(() {
+        isLoading = false;  // Set loading to false if there is an error initializing
+      });
+    }
   }
 
   // Fetch posts from the database
@@ -97,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         alignment: Alignment.center,
                         child: Text(
                           'Try following some users',
-                          style: TextStyle(fontSize: 30),
+                          style: TextStyle(fontSize: 24),
                         ),
                       ),
                   ],

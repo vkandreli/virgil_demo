@@ -9,15 +9,27 @@ import 'package:virgil_demo/models/review.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/services/book_service.dart';
 import 'package:virgil_demo/services/user_service.dart';
+import 'package:logger/logger.dart'; // Import logger package
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+
+// Create a logger instance
+final logger = Logger();
 
 class SQLService {
   static Database? _database;
 
   // Singleton pattern to get the database instance
   static Future<Database> get database async {
-    if (_database != null) return _database!;
+    if (_database != null) {
+      logger.d('Returning existing database instance');
+      return _database!;
+    }
 
     // Delete the old database every time before opening a new one
+    logger.d('Initializing fresh database');
     await deleteDatabaseFile();  // Delete the old database
 
     _database = await _initDatabase();  // Initialize a fresh database
@@ -30,23 +42,31 @@ class SQLService {
       Directory documentsDirectory = await getApplicationDocumentsDirectory();
       String path = join(documentsDirectory.path, 'app.db');
       await deleteDatabase(path);  // Delete the old database
-      print('Database deleted.');
+      logger.i('Database deleted at path: $path');
     } catch (e) {
-      print('Error deleting database: $e');
+      logger.e('Error deleting database: $e');
     }
   }
 
   // Initialize the database
   static Future<Database> _initDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, 'app.db');
+    try {
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      String path = join(documentsDirectory.path, 'app.db');
+      logger.d('Opening database at path: $path');
     
-    // Open the database and call onCreate if it's a new database
-    return await openDatabase(path, version: 1, onCreate: _onCreate);
+      // Open the database and call onCreate if it's a new database
+      return await openDatabase(path, version: 1, onCreate: _onCreate);
+    } catch (e) {
+      logger.e('Error initializing database: $e');
+      rethrow;
+    }
   }
 
   // Create tables when the DB is first created
   static Future<void> _onCreate(Database db, int version) async {
+    logger.d('Creating tables in the database');
+    try {
     // Create Users Table
     await db.execute('''
     CREATE TABLE users (
@@ -61,7 +81,7 @@ class SQLService {
       isReadListPrivate INTEGER
     );
     ''');
-
+logger.i('Users table created');
     // Create Books Table
     await db.execute('''
     CREATE TABLE books (
@@ -81,7 +101,7 @@ class SQLService {
       reviews TEXT
     );
     ''');
-
+logger.i('Books table created');
     // Create the Posts Table
     await db.execute('''
     CREATE TABLE posts (
@@ -98,7 +118,7 @@ class SQLService {
       FOREIGN KEY (bookId) REFERENCES books(id)
     );
     ''');
-
+logger.i('Posts table created');
     // Create the Reviews Table
     await db.execute('''
     CREATE TABLE reviews (
@@ -112,7 +132,7 @@ class SQLService {
       FOREIGN KEY (username) REFERENCES users(username)
     );
     ''');
-
+logger.i('Reviews table created');
     // Create the user_books table
     await db.execute('''
     CREATE TABLE user_books (
@@ -124,7 +144,7 @@ class SQLService {
       FOREIGN KEY (bookId) REFERENCES books(id)
     );
     ''');
-
+logger.i('user_books table created');
     // Create the Packs Table
     await db.execute('''
     CREATE TABLE packs (
@@ -137,6 +157,7 @@ class SQLService {
       FOREIGN KEY (creatorId) REFERENCES users(username)
     );
     ''');
+logger.i('packs table created');
 
     // Create Achievements Table
     await db.execute('''
@@ -148,6 +169,7 @@ class SQLService {
       requirement TEXT NOT NULL
     );
     ''');
+logger.i('achievements table created');
 
     // Create User Achievements Table
     await db.execute('''
@@ -160,6 +182,7 @@ class SQLService {
       FOREIGN KEY (achievementId) REFERENCES achievements(id)
     );
     ''');
+logger.i('user_achievements table created');
 
     // Create Followed Users Table
     await db.execute('''
@@ -171,6 +194,7 @@ class SQLService {
       FOREIGN KEY (followedUserId) REFERENCES users(id)
     );
     ''');
+logger.i('followed_users table created');
 
     // Create User Posts Table
     await db.execute('''
@@ -182,6 +206,7 @@ class SQLService {
       FOREIGN KEY (postId) REFERENCES posts(id)
     );
     ''');
+logger.i('user_posts table created');
 
     // Create User Reviews Table
     await db.execute('''
@@ -193,6 +218,7 @@ class SQLService {
       FOREIGN KEY (reviewId) REFERENCES reviews(id)
     );
     ''');
+logger.i('user_reviews table created');
 
     // Create User Packs Table
     await db.execute('''
@@ -204,6 +230,7 @@ class SQLService {
       FOREIGN KEY (packId) REFERENCES packs(title)
     );
     ''');
+logger.i('user_packs table created');
 
     // Create Pages Per Day Table
     await db.execute('''
@@ -215,6 +242,7 @@ class SQLService {
       FOREIGN KEY (userId) REFERENCES users(id)
     );
     ''');
+logger.i('pages table created');
 
     // Create Badges Table
     await db.execute('''
@@ -226,6 +254,7 @@ class SQLService {
       FOREIGN KEY (userId) REFERENCES users(id)
     );
     ''');
+logger.i('bades table created');
 
     // Create Goals Table
     await db.execute('''
@@ -238,9 +267,15 @@ class SQLService {
       FOREIGN KEY (userId) REFERENCES users(id)
     );
     ''');
-        await _populateDatabaseWithPlaceholderData(db);
-  }
+    logger.i('goals table created');
 
+        await _populateDatabaseWithPlaceholderData(db);
+  
+      
+    } catch (e) {
+      logger.e('Error creating tables: $e');
+    }
+  }
  // Populate the database with some placeholder data (users, books, posts, etc.)
   static Future<void> _populateDatabaseWithPlaceholderData(Database db) async {
     try {

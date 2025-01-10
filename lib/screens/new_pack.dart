@@ -207,7 +207,8 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
                           books: selectedBooks ?? [], // Ensure non-null list
                         );
                         widget.currentUser.postPack(pack);
-
+setState(() {
+                    });
                         Navigator.pop(context);
                       }
                     : null,

@@ -115,17 +115,19 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         IconButton(
-            icon: Icon(Icons.add_circle_outline),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddToPack(
-                          currentUser: widget.currentUser,
-                          selectedBook: widget.book,
-                        )), 
-              );
-            }),
+                      icon: Icon(Icons.add_circle_outline),
+                      onPressed: () {
+                        logger.i("Adding to pack");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddToPack(
+                                    currentUser: widget.currentUser,
+                                    selectedBook: widget.book,
+                                  )), //book: widget.post.book,
+                        );
+                      },
+                    ),
         SizedBox(height: 10),
         IconButton(
           icon: Icon(

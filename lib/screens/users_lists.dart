@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
+import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
@@ -169,14 +170,28 @@ class UserReadListScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child:  ElevatedButton(
-                    onPressed: () {                                         
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BookSearchScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: () async {
+                          // Navigate to BookSearchScreen and await the result
+                          final Book? selectedBook = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookSearchScreen(),
+                            ),
+                          );
+
+                          // If a Book was returned, navigate to BookDetailScreen
+                          if (selectedBook != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookDetailScreen(
+                                  book: selectedBook,
+                                  currentUser: currentUser,
+                                ),
+                              ),
+                            );
+                          }
+                        },
                     style: ElevatedButton.styleFrom(
                       //fixedSize: Size(100, 40), 
                       shape: RoundedRectangleBorder(
