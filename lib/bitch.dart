@@ -1,91 +1,119 @@
 import 'package:virgil_demo/SQLService.dart';
 
-// Get the book associated with a post
-Future<Book?> getBooksForPost(int postId) async {
+Future<List<Book>> getBooksForPack(int packId) async {
   final db = await database;
 
-  // Query to get the book_id for the specific post
+  // Query to find the book with the specific bookId
   final List<Map<String, dynamic>> maps = await db.query(
-    'posts',
-    where: 'id = ?',  // Find the post by its ID
-    whereArgs: [postId],
+    'packs',
+    where: 'id = ?',  // Filter by the book's ID
+    whereArgs: [packId],  // Pass the bookId to the query
   );
 
   if (maps.isNotEmpty) {
-    final bookId = maps.first['book_id'];
+    // If a book is found, return the first book (there should only be one with the same ID)
+    return List.generate(maps.length, (i) {
+    return Book.fromMap(maps[i]);
+    });  } else {
+    // If no book is found, return a default empty book or handle the case appropriately
+    throw Exception("Pack not found with ID $packId");
+  }
+}
 
-    // Now query the 'books' table to get the book details
-    final bookMaps = await db.query(
+ Future<List<Book>> getBooksForUser(int userId) async {
+
+    final db = await database;
+
+    // Query to join 'user_books' and 'books' tables to get books for the user
+    final List<Map<String, dynamic>> maps = await db.query(
       'books',
-      where: 'id = ?',
-      whereArgs: [bookId],
+        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ?)',
+        whereArgs: [userId],
     );
 
-    if (bookMaps.isNotEmpty) {
-      return Book.fromMap(bookMaps.first);
-    }
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return Book.fromMap(maps[i]);
+    });
   }
 
-  return null; // Return null if no book found
-}
-
-// Get the original poster for a post
-Future<User?> getPosterForPost(int postId) async {
+Future<User> getUserForPack(int packId) async {
   final db = await database;
 
-  // Query to get the originalPoster_id for the specific post
   final List<Map<String, dynamic>> maps = await db.query(
-    'posts',
-    where: 'id = ?',  // Find the post by its ID
-    whereArgs: [postId],
+    'packs',
+    where: 'id = ?', 
+    whereArgs: [packId], 
   );
 
   if (maps.isNotEmpty) {
-    final posterId = maps.first['originalPoster_id'];
-
-    // Now query the 'users' table to get the user details
-    final userMaps = await db.query(
-      'users',
-      where: 'id = ?',
-      whereArgs: [posterId],
-    );
-
-    if (userMaps.isNotEmpty) {
-      return User.fromMap(userMaps.first);
-    }
+    return User.fromMap(maps.first);
+  } else {
+    throw Exception("Pack not found with ID $packId");
   }
-
-  return null; // Return null if no user found
 }
 
-// Get the reblogger for a post (this can be null)
-Future<User?> getRebloggerForPost(int postId) async {
+////////////////////////////////////////////
+
+
+Future<Book> getBookForReview(int bookId) async {
   final db = await database;
 
-  // Query to get the reblogger_id for the specific post
+  // Query to find the book with the specific bookId
   final List<Map<String, dynamic>> maps = await db.query(
-    'posts',
-    where: 'id = ?',  // Find the post by its ID
-    whereArgs: [postId],
+    'books',
+    where: 'id = ?',  // Filter by the book's ID
+    whereArgs: [bookId],  // Pass the bookId to the query
   );
 
   if (maps.isNotEmpty) {
-    final rebloggerId = maps.first['reblogger_id'];
-
-    if (rebloggerId != null) {
-      // If there's a reblogger, query the 'users' table to get the user details
-      final userMaps = await db.query(
-        'users',
-        where: 'id = ?',
-        whereArgs: [rebloggerId],
-      );
-
-      if (userMaps.isNotEmpty) {
-        return User.fromMap(userMaps.first);
-      }
-    }
+    // If a book is found, return the first book (there should only be one with the same ID)
+    return Book.fromMap(maps.first);
+  } else {
+    // If no book is found, return a default empty book or handle the case appropriately
+    throw Exception("Book not found with ID $bookId");
   }
-
-  return null; // Return null if no reblogger or user found
 }
 
+Future<User> getUserForReview(int userId) async {
+  final db = await database;
+
+  // Query to find the book with the specific bookId
+  final List<Map<String, dynamic>> maps = await db.query(
+    'users',
+    where: 'id = ?', 
+    whereArgs: [userId], 
+  );
+
+  if (maps.isNotEmpty) {
+    return User.fromMap(maps.first);
+  } else {
+    throw Exception("Book not found with ID $userId");
+  }
+}
+
+
+
+
+
+  static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";//"https://via.placeholder.com/150?text=Profile+Image";
+  User.empty()
+      : id='',
+      username = '',
+        email = '',
+        profileImage = '',
+        status = '',
+        isPacksPrivate = false,
+        isReviewsPrivate = false,
+        isReadListPrivate = false,
+        password = "",
+        followedUsers =  [],
+        usersPosts = [],
+       usersReviews = [],
+        usersPacks = [],
+        completedList = [],
+        currentList = [],
+        readingList = [],
+       pagesPerDay= [],
+        badges= [],
+       goals = [];

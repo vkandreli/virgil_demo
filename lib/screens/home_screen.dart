@@ -38,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   Future<void> _initializeDatabase() async {
     try {
-
       // Now that the database is initialized, load posts
       await _loadPosts();  
+      await _loadUsers();
     } catch (e) {
       logger.e("Error initializing database: $e");
       setState(() {
@@ -75,25 +75,22 @@ Future<void> _loadPosts() async {
 
 Future<void> _loadUsers() async {
   try { 
-        List<User> fetchedPosts = await SQLService().getAllPosts();
-    if (fetchedPosts == null) {
-      logger.e("Error: Fetched posts is null.");
-    } else if (fetchedPosts.isEmpty) {
-      logger.w("Warning: No posts found.");
+        List<User> fetchedUsers = await SQLService().getAllUsers();
+    if (fetchedUsers == null) {
+      logger.e("Error: Fetched users is null.");
+    } else if (fetchedUsers.isEmpty) {
+      logger.w("Warning: No users found.");
     } else {
-      logger.d("Fetched ${fetchedPosts.length} posts from the database.");
+      logger.d("Fetched ${fetchedUsers.length} users from the database.");
     }
 
     setState(() {
-      posts = fetchedPosts;
-      isLoading = false;
+      users = fetchedUsers;
     });
+
   } catch (e, stackTrace) {
-    logger.e("Error loading posts: $e");
+    logger.e("Error loading users: $e");
     logger.e("Stack Trace: $stackTrace");
-    setState(() {
-      isLoading = false;
-    });
   }
 }
 
@@ -110,14 +107,14 @@ Future<void> _loadUsers() async {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: placeholderUsers.map((user) {
+                  children: users.map((user) {
                     return GestureDetector(
                       onTap: () {
                         // Navigate to the selected user's profile
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OtherProfileScreen(user: user, currentUser: currentUser,),
+                            builder: (context) => OtherProfileScreen(user: user, currentUser: widget.currentUser,),
                           ),
                         );
                       },
@@ -125,7 +122,7 @@ Future<void> _loadUsers() async {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: CircleAvatar(
                           radius: 30,
-                          backgroundImage: NetworkImage(user.profileImage ?? 'https://via.placeholder.com/150?text=Profile+Image',)
+                          backgroundImage: NetworkImage(user.profileImage ?? User.defaultProfileImage,)
                         ),
                       ),
                     );
@@ -151,7 +148,7 @@ Future<void> _loadUsers() async {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProfileSearchScreen(currentUser: currentUser,),
+                          builder: (context) => ProfileSearchScreen(currentUser: widget.currentUser,),
                         ),
                       );
                     },
@@ -180,7 +177,7 @@ Future<void> _loadUsers() async {
               child: ListView.builder(
                 itemCount: placeholderPosts.length,
                 itemBuilder: (context, index) {
-                  return PostWidget(post: placeholderPosts[index], currentUser: currentUser, isInOwnProfile: false,);
+                  return PostWidget(post: placeholderPosts[index], currentUser: widget.currentUser, isInOwnProfile: false,);
                 },
               ),
             ),
@@ -192,7 +189,7 @@ Future<void> _loadUsers() async {
           // Navigate to the screen to create a new post
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreatePostScreen(currentUser: currentUser,)),
+            MaterialPageRoute(builder: (context) => CreatePostScreen(currentUser: widget.currentUser,)),
           );
         },
         backgroundColor: AppColors.darkBrown,
@@ -200,7 +197,7 @@ Future<void> _loadUsers() async {
         child: Icon(Icons.add, color: AppColors.lightBrown,),
       ),
 
-  bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
+  bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
   );
   }
 }
