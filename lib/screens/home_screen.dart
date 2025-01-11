@@ -5,6 +5,7 @@ import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/new_post.dart';
 import 'package:virgil_demo/screens/profile_search_scene.dart';
+import 'package:virgil_demo/services/post_service.dart';
 import 'package:virgil_demo/services/user_service.dart';
 import 'package:virgil_demo/sqlbyvoulina.dart';
 import 'own_profile_screen.dart';
@@ -37,8 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   Future<void> _initializeDatabase() async {
     try {
-      // Ensure the database is initialized first
-      //await userService.init(); 
 
       // Now that the database is initialized, load posts
       await _loadPosts();  
@@ -50,21 +49,46 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Fetch posts from the database
-  Future<void> _loadPosts() async {
-    try {
-      List<Post> fetchedPosts = await SQLService.getAllPosts();
-      setState(() {
-        posts = fetchedPosts;
-        isLoading = false; // Set loading to false once the posts are fetched
-      });
-    } catch (e) {
-      logger.e("Error loading posts: $e");
-      setState(() {
-        isLoading = false;
-      });
-    }
+    // Fetch posts from the database
+Future<void> _loadPosts() async {
+  try {
+    PostService postService = PostService();
+
+    // Initialize the database
+    await postService.init();  // Ensure init() is called to initialize _db
+
+    // Fetch posts after the database is initialized
+    List<Post> fetchedPosts = await postService.getAllPosts();
+
+    setState(() {
+      posts = fetchedPosts;
+      isLoading = false; // Set loading to false once the posts are fetched
+    });
+  } catch (e) {
+    logger.e("Error loading posts: $e");
+    setState(() {
+      isLoading = false;
+    });
   }
+}
+
+
+
+  // // Fetch posts from the database
+  // Future<void> _loadPosts() async {
+  //   try {
+  //     List<Post> fetchedPosts = await SQLService.getAllPosts();
+  //     setState(() {
+  //       posts = fetchedPosts;
+  //       isLoading = false; // Set loading to false once the posts are fetched
+  //     });
+  //   } catch (e) {
+  //     logger.e("Error loading posts: $e");
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -33,7 +33,7 @@ class PackService {
 
     for (var map in packMaps) {
       User creator = allUsers.firstWhere((user) => user.username == map['creatorId']);
-      List<Book> packBooks = map['books'].map<Book>((bookId) => allBooks.firstWhere((book) => book.id == bookId)).toList();
+    //  List<Book> packBooks = map['books'].map<Book>((bookId) => allBooks.firstWhere((book) => book.id == bookId)).toList();
       
       packs.add(Pack.fromMap(map, allBooks, creator));
     }
@@ -55,7 +55,7 @@ class PackService {
     if (packMaps.isNotEmpty) {
       Map<String, dynamic> map = packMaps.first;
       User creator = allUsers.firstWhere((user) => user.username == map['creatorId']);
-      List<Book> packBooks = map['books'].map<Book>((bookId) => allBooks.firstWhere((book) => book.id == bookId)).toList();
+    //  List<Book> packBooks = map['books'].map<Book>((bookId) => allBooks.firstWhere((book) => book.id == bookId)).toList();
 
       return Pack.fromMap(map, allBooks, creator);
     }

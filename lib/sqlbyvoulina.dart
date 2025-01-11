@@ -276,6 +276,7 @@ logger.i('bades table created');
       logger.e('Error creating tables: $e');
     }
   }
+ 
  // Populate the database with some placeholder data (users, books, posts, etc.)
   static Future<void> _populateDatabaseWithPlaceholderData(Database db) async {
     try {
@@ -356,6 +357,49 @@ logger.i('bades table created');
     if (oldVersion < 2) {
       // Add new tables or make other schema changes as needed
     }
+  }
+
+  Future<List<User>> getAllUsers() async {
+      final userService = UserService();
+return userService.getAllUsers();
+    // await _checkDbInitialized(); // Ensure database is initialized
+
+    // final List<Map<String, dynamic>> userMaps = await _db!.query('users');
+    // List<User> users = [];
+
+    // for (var userMap in userMaps) {
+    //   final userId = userMap['id'];
+    //   final List<Map<String, dynamic>> userBooks = await _db!.rawQuery('''
+    //     SELECT books.*, user_books.status
+    //     FROM books
+    //     JOIN user_books ON books.id = user_books.bookId
+    //     WHERE user_books.userId = ?
+    //   ''', [userId]);
+
+    //   List<Book> readingList = [];
+    //   List<Book> completedList = [];
+    //   List<Book> currentList = [];
+
+    //   for (var map in userBooks) {
+    //     Book book = Book.fromMap(map);
+
+    //     switch (map['status']) {
+    //       case 'reading':
+    //         readingList.add(book);
+    //         break;
+    //       case 'completed':
+    //         completedList.add(book);
+    //         break;
+    //       case 'current':
+    //         currentList.add(book);
+    //         break;
+    //     }
+    //   }
+
+    //   users.add(User.fromMap(userMap, readingList, completedList, currentList));
+    // }
+
+    // return users;
   }
 
   // Insert Book
