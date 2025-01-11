@@ -30,6 +30,12 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
     return text != null && stars != null;
   }
 
+
+    Future<void> addReview(review) async {
+   await SQLService().insertReview(review);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,16 +114,16 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                     ? () {
                         // Create the Review object
                         Review review = Review(
-                          user: widget
-                              .currentUser, // Use the current user as the reviewer
+                          user_id: widget
+                              .currentUser.id, // Use the current user as the reviewer
                           reviewDate: DateTime.now().toString().split(' ')[0],
                           text: text ?? "No text",
-                          book: selectedBook,
+                          book_id: selectedBook.id,
                           stars: stars ?? 0,
                         );
 
                         // Add the review to the current user's reviews
-                        selectedBook.addReview(widget.currentUser, review);
+                        addReview(review.id);
                         setState(() {});
                         // Navigate back to the Profile screen
                         Navigator.pop(context);

@@ -1342,8 +1342,8 @@ class Post {
 
 class Review {
   final int? id;
-  final int book_id; 
-  final int user_id; 
+  final int? book_id; 
+  final int? user_id; 
   final String text;
   final String reviewDate;
   final int stars;
@@ -1351,8 +1351,8 @@ class Review {
 
   Review({
     this.id,
-    required this.book_id,
-    required this.user_id,
+    this.book_id,
+    this.user_id,
     required this.text,
     required this.reviewDate,
     required this.stars,
