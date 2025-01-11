@@ -15,6 +15,9 @@ class CreatePackScreen extends StatefulWidget {
   final User currentUser;
   CreatePackScreen({required this.currentUser});
 
+
+
+
   @override
   _CreatePackScreenState createState() => _CreatePackScreenState();
 }
@@ -48,6 +51,13 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
         descriptionText != null &&
         selectedImagePath != null;
   }
+
+
+  Future<void> addPack(Pack) async {
+   await SQLService().insertPack(Pack);
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -200,14 +210,15 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
                 onPressed: _canCreatePack()
                     ? () {
                         Pack pack = Pack(
-                          packImage: 'https://tse3.mm.bing.net/th?id=OIP.SGiCm8refU69stH376qy6QHaHU&pid=Api', //selectedImagePath ?? "https://tse3.mm.bing.net/th?id=OIP.SGiCm8refU69stH376qy6QHaHU&pid=Api",
-                          publicationDate: DateTime.now().toString(),
+                          creator_id: widget.currentUser.id,
                           title: titleText ?? "",
-                          creator: widget.currentUser,
+                           publicationDate: DateTime.now().toString(),
+                          packImage: 'https://tse3.mm.bing.net/th?id=OIP.SGiCm8refU69stH376qy6QHaHU&pid=Api', //selectedImagePath ?? "https://tse3.mm.bing.net/th?id=OIP.SGiCm8refU69stH376qy6QHaHU&pid=Api",
                           description: descriptionText ?? "",
-                          books: selectedBooks ?? [], // Ensure non-null list
+ //                         books: selectedBooks ?? [], // Ensure non-null list
                         );
-                        widget.currentUser.postPack(pack);
+                        addPack(pack);
+                        addPackSelectedBooks(selectedBooks);
 
                         Navigator.pop(context);
                       }
