@@ -25,17 +25,16 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
   bool isReadListPrivate = true;
 
   // Filtered posts list
-  List<Post> userPosts = [];
+  late List<Post> userPosts, posts;  
+
+  Future<void> _getPosts() async {
+    userPosts = await SQLService().getPostsForUser(widget.currentUser.id);
+  }
 
   @override
   void initState() {
     super.initState();
-    // Initialize userPosts after widget is fully initialized
-    userPosts = placeholderPosts.where((post) {
-      return post.originalPoster == widget.currentUser || post.reblogger == widget.currentUser;
-    }).toList();
-
-    userPosts =  (widget.currentUser.usersPosts)+userPosts ;
+        _getPosts();  
   }
 
   void togglePrivacy(String section) {
