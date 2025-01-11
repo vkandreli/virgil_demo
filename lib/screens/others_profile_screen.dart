@@ -4,7 +4,7 @@ import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/screens/users_lists.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 ////import 'package:virgil_demo/models/user.dart';  
-import 'package:virgil_demo/assets/placeholders.dart';
+//import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/widgets/profile_pane.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';  // Import the custom bottom navigation bar
 
@@ -23,7 +23,7 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
   void initState() {
     super.initState();
     userPosts = placeholderPosts.where((post) {
-      return post.originalPoster == widget.user || post.reblogger == widget.user;
+      return post.originalPoster_id == widget.user || post.reblogger_id == widget.user;
     }).toList();
   }
 

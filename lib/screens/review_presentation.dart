@@ -24,7 +24,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
 
   Future<void> _getResources() async {
   reviewsBook = await SQLService().getBookForReview(widget.review.id);
-reviewsUser = await SQLService().getUserForReview(widget.review.id); 
+  reviewsUser = await SQLService().getUserForReview(widget.review.id); 
 
   }
 

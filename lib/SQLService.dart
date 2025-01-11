@@ -353,7 +353,7 @@ Future<User> getUserForPack(int packId) async {
 
 
 
-Future<Book> getBookForReview(int reviewId) async {
+Future<Book> getBookForReview(int? reviewId) async {
   final db = await database;
 
   final List<Map<String, dynamic>> reviewMaps = await db.query(
@@ -382,7 +382,7 @@ Future<Book> getBookForReview(int reviewId) async {
 }
 
 
-Future<User> getUserForReview(int reviewId) async {
+Future<User> getUserForReview(int? reviewId) async {
   final db = await database;
 
   // Query to find the review with the specific reviewId and get its user_id
