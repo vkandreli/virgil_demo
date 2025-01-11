@@ -764,7 +764,7 @@ Future<UserBook?> getUserBook(int userId, int bookId) async {
 
 
 // Get the book associated with a post
-Future<Book?> getBooksForPost(int postId) async {
+Future<Book> getBooksForPost(int postId) async {
   final db = await database;
 
   // Query to get the book_id for the specific post
@@ -788,10 +788,11 @@ Future<Book?> getBooksForPost(int postId) async {
       return Book.fromMap(bookMaps.first);
     }
   }
+  return Book.empty();
 }
 
 // Get the original poster for a post
-Future<User?> getPosterForPost(int postId) async {
+Future<User> getPosterForPost(int postId) async {
   final db = await database;
 
   // Query to get the originalPoster_id for the specific post
@@ -816,11 +817,11 @@ Future<User?> getPosterForPost(int postId) async {
     }
   }
 
-  return null; // Return null if no user found
+  return User.empty(); // Return null if no user found
 }
 
 // Get the reblogger for a post (this can be null)
-Future<User?> getRebloggerForPost(int postId) async {
+Future<User> getRebloggerForPost(int postId) async {
   final db = await database;
 
   // Query to get the reblogger_id for the specific post
@@ -847,7 +848,7 @@ Future<User?> getRebloggerForPost(int postId) async {
     }
   }
 
-  return null; // Return null if no reblogger or user found
+  return User.empty(); // Return null if no reblogger or user found
 }
 
 
