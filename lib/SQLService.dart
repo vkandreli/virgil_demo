@@ -452,6 +452,22 @@ Future<void> insertReview(Review review) async {
     );
   }
 
+ Future<List<User>> getReviewsForUser(int userId) async {
+
+    final db = await database;
+
+   
+    final List<Map<String, dynamic>> maps = await db.query(
+      'reviews',
+        where: 'creator_id = ?',
+        whereArgs: [userId],
+    );
+
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return User.fromMap(maps[i]);
+    });
+  }
 
 
 //*******     Pack Setters      ********/
@@ -558,6 +574,21 @@ Future<void> insertPack(Pack pack) async {
     return Book.fromMap(maps[i]);
     });
   }
+
+
+Future<List<String, dynamic>?> getUserBook(int userId, int bookId) async {
+  final db = await SQLService().database;
+  
+  final List<Map<String, dynamic>> result = await db.query(
+    'user_books',
+    where: 'user_id = ? AND book_id = ?',
+    whereArgs: [userId, bookId],
+  );
+
+  // Return the first result or null if no match found
+  return result.isNotEmpty ? result.first : null;
+}
+
 
    Future<List<Book>> getBooksCompletedForUser(int? userId) async {
 
@@ -826,7 +857,7 @@ class User {
   }
 
   // Method to toggle the privacy status of the packs
-  void togglePacksPrivacy() {
+  /**void togglePacksPrivacy() {
     isPacksPrivate = !isPacksPrivate;
   }
 
@@ -929,7 +960,7 @@ class User {
       // If the book is not found, return 0 or an appropriate default value
       return 0;
     }
-  }
+  }*/
 }
 
 
@@ -1006,6 +1037,7 @@ class Book {
       genre: '',
       posterUrl: 'https://tse3.mm.bing.net/th?id=OIP.0fb3mN86pTUI9jvsDmkqgwHaJl&pid=Api',
       totalPages: 0,
+ //     currentPage: 0,
       publicationDate: "",
       publisher: "",
       author: "",
