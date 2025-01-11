@@ -58,6 +58,10 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
 
   }
 
+  Future<void> addPackSelectedBooks(books) async {
+   await SQLService().insertPackBooks(Pack);
+
+  }
 
   @override
   Widget build(BuildContext context) {
