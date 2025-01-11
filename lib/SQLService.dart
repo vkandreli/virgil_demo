@@ -576,17 +576,17 @@ Future<void> insertPack(Pack pack) async {
   }
 
 
-Future<UserBook> getUserBook(int userId, int bookId) async {
-  final db = await SQLService().database;
-  
-  final List<Map<String, dynamic>> result = await db.query(
-    'user_books',
-    where: 'user_id = ? AND book_id = ?',
-    whereArgs: [userId, bookId],
-  );
+Future<UserBook?> getUserBook(int userId, int bookId) async {
+  final db = await SQLService().database; // Access the database
 
-  // Return the first result or null if no match found
-  return result.isNotEmpty ? result.first : null;
+  // Perform the query
+  final List<Map<String, dynamic>> result = await db.query(
+    'user_books', // Assuming your table is named 'user_books'
+    where: 'user_id = ? AND book_id = ?', // Match both user_id and book_id
+    whereArgs: [userId, bookId], // Provide values for the placeholders
+    limit: 1, // Since only one UserBook can exist for a user-book pair
+  );
+    return UserBook.fromMap(result.first); // Convert the first result into a UserBook
 }
 
 
@@ -754,7 +754,7 @@ Future<void> updateUserBook(UserBook userBook) async {
       'user_books',                // Table name
       userBook.toMap(),             // Data to update (converted to map)
       where: 'user_id = ? AND book_id = ?',  // WHERE clause (matching user_id and book_id)
-      whereArgs: [userBook.userId, userBook.bookId], // Arguments to replace the placeholders
+      whereArgs: [userBook.user_id, userBook.book_id], // Arguments to replace the placeholders
     );
 }                                                       
 
@@ -1086,6 +1086,24 @@ class Post {
  ///   'comments': comments.join(',')
     };
   }
+
+    factory Post.fromMap(Map<String, dynamic> map) {
+    return Post(
+      id: map['id'],
+      originalPoster_id: map['originalPoster_id'],
+      reblogger_id: map['reblogger_id'] != null ? User.fromMap(map['reblogger_id']) : null,
+      imageUrl: map['imageUrl'],
+      quote: map['quote'],
+      book_id: map['book_id'],
+      timePosted: map['timePosted'],
+      likes: map['likes'],
+      reblogs: map['reblogs'],
+    );
+  }
+
+
+
+
 }
 
 
@@ -1192,14 +1210,13 @@ class UserBook {
     };
   }
 
-   factory UserBook.fromMap(Map<String, dynamic> map) {
+
+  factory UserBook.fromMap(Map<String, dynamic> map) {
     return UserBook(
-      id: map['id'] as int?, // Nullable field
-      book_id: map['book_id'] as int,
-      user_id: map['user_id'] as int,
-      text: map['text'] as String,
-      reviewDate: map['reviewDate'] as String,
-      stars: map['stars'] as int,
+      user_id: map['user_id'],
+      book_id: map['book_id'],
+      listCategory: map['listCategory'],
+      currentPage: map['currentPage'],
     );
   }
 }
