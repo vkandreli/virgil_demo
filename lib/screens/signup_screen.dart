@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/main.dart';
 import 'login_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:virgil_demo/SQLService.dart';
@@ -70,15 +71,25 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+                        Text(
+              "Username",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
+            ),
             TextField(
               controller: _usernameController,
               decoration: InputDecoration(labelText: 'Username'),
     //          keyboardType: TextInputType.emailAddress,
+            ),            Text(
+              "Password",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
             ),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
+            ),            Text(
+              "Confirm Password",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
             ),
             TextField(
               controller: _confirmPasswordController,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/main.dart';
 //import 'package:virgil_demo/assets/placeholders.dart';
 import 'signup_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -81,10 +82,19 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            
+            Text(
+              "Username",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
+            ),
             TextField(
               controller: _usernameController,
               decoration: InputDecoration(labelText: 'Username'),
  //             keyboardType: TextInputType.emailAddress,
+            ),
+                        Text(
+              "Password",
+              style: TextStyle(color: AppColors.darkBrown, fontSize: 24),
             ),
             TextField(
               controller: _passwordController,
