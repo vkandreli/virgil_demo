@@ -250,7 +250,7 @@ Future<void> printTable(String tableName) async {
 
 
 
- /**   static Future<User> getUserByUsername(String username) async {
+  Future<User> getUserByUsername(String username) async {
     final db = await database;
 
     // Query the user from the users table where the username matches
@@ -260,7 +260,7 @@ Future<void> printTable(String tableName) async {
       whereArgs: [username],
     );
 return User.fromMap(maps.first);
-  }*/
+  }
 
 
 
