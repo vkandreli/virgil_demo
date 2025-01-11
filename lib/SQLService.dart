@@ -690,8 +690,12 @@ Future<void> insertPack(Pack pack) async {
 
   // Query to find all reviews made by the specific user
   final List<Map<String, dynamic>> maps = await db.query(
-    'reviews JOIN books on book_id',
-    where: 'author = ?',
+    '''
+    SELECT reviews.* 
+    FROM reviews
+    INNER JOIN books ON reviews.book_id = books.id
+    WHERE books.author = ?
+    ''',
     whereArgs: [Author],
   );
   // Convert the maps to a list of Review objects
