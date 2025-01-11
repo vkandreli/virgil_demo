@@ -35,7 +35,6 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
 usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
 bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
-
   }
 
 
@@ -117,7 +116,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
         logger.i("Finished book: ${widget.book.title}");
       } else {
         setState(() {
-          SQLService.
+          SQLService.currentPage(newPage);
           widget.currentUser.currentPage =
               newPage; // Directly update the book's currentPage
         });
@@ -239,7 +238,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
             children: [
               ElevatedButton(
                 onPressed: () async {
-                  if (!widget.currentUser.usersReviews.any((review) =>
+                  if (!usersReviews.any((review) =>
                       review.user == widget.currentUser && review.book == widget.book)) {
                     logger.i("Reviewing book: ${widget.book.title}");
                     
@@ -366,13 +365,13 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                   ),
                 ),
                 SizedBox(height: 8),
-                if (widget.book.reviews?.isNotEmpty ?? false) ...[
+                if (usersReviews.isNotEmpty) ...[
                   reviewScroll("${widget.book.title}'s reviews",
-                      widget.book.reviews ?? placeholderReviews,
+                      usersReviews,
                       currentUser: widget.currentUser),
                 ],
 
-                if (widget.book.reviews?.isEmpty ?? true) ...[
+                if (usersReviews.isEmpty ) ...[
                   Text(
                     " Users have not rated this book",
                     style: TextStyle(fontSize: 18),
