@@ -788,8 +788,6 @@ Future<Book?> getBooksForPost(int postId) async {
       return Book.fromMap(bookMaps.first);
     }
   }
-
-  return null; // Return null if no book found
 }
 
 // Get the original poster for a post

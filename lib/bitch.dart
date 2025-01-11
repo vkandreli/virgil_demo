@@ -1,7 +1,7 @@
 import 'package:virgil_demo/SQLService.dart';
 
 // Get the book associated with a post
-Future<Book?> getBooksForPost(int postId) async {
+Future<Book> getBooksForPost(int postId) async {
   final db = await database;
 
   // Query to get the book_id for the specific post
