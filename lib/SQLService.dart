@@ -916,6 +916,8 @@ class User {
   bool isReviewsPrivate;
   bool isReadListPrivate;
 
+  static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";
+
   // User collections
   List<User> followedUsers = [];
   List<Post> usersPosts = [];
