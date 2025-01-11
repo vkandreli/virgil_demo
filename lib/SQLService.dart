@@ -461,23 +461,7 @@ Future<void> insertReview(Review review) async {
     );
   }
 
- Future<List<Review>> getReviewsForUser(int userId) async {
-
-    final db = await database;
-
-   
-    final List<Map<String, dynamic>> maps = await db.query(
-      'reviews',
-        where: 'creator_id = ?',
-        whereArgs: [userId],
-    );
-
-   //Choose the form of the list that is returned by the table
-    return List.generate(maps.length, (i) {
-    return Review.fromMap(maps[i]);
-    });
-  }
-
+ 
 
 //*******     Pack Setters      ********/
 
@@ -865,6 +849,18 @@ class User {
       isReadListPrivate: map['isReadListPrivate'] == 1,
     );
   }
+
+   User.empty()
+      :
+        id = null,
+        username = '',
+        email = '',
+        profileImage = '',
+        status = '',
+        isPacksPrivate = false,
+        isReviewsPrivate = false,
+        isReadListPrivate = false;
+
 
   // Method to toggle the privacy status of the packs
   /**void togglePacksPrivacy() {
