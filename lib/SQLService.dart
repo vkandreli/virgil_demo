@@ -54,7 +54,7 @@ class SQLService {
       );
       await  db.execute(
       '''CREATE TABLE user_books(user_id INTEGER,book_id INTEGER, list_category INTEGER CHECK(list_category >= 1 AND list_category <= 3),
-       pages_read INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+       current_page INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
          FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (user_id, book_id)
       )
       ''',
@@ -498,6 +498,22 @@ Future<void> insertPack(Pack pack) async {
     );
   }
 
+ Future<List<User>> getPacksForUser(int userId) async {
+
+    final db = await database;
+
+   
+    final List<Map<String, dynamic>> maps = await db.query(
+      'packs',
+        where: 'creator_id = ?',
+        whereArgs: [userId],
+    );
+
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return User.fromMap(maps[i]);
+    });
+  }
 
 
 //*************    User's Library     ******************/
@@ -986,13 +1002,13 @@ class UserBook {
   final int? userId;
   final int? bookId;
   final int? listCategory;  // e.g., 1: Reading, 2: Completed, 3: Want to Read
-  final int? pagesRead;
+  final int? currentPage;
 
   UserBook({
     this.userId,
     this.bookId,
     this.listCategory,
-    this.pagesRead,
+    this.currentPage,
   });
 
   // Convert the UserBook object to a Map for database operations
@@ -1001,7 +1017,7 @@ class UserBook {
       'user_id': userId,           // The ID of the user
       'book_id': bookId,           // The ID of the book
       'list_category': listCategory, // The category of the book (e.g., Reading, Completed, etc.)
-      'pages_read': pagesRead,      // The number of pages the user has read in the book
+      'current_page': currentPage,      // The number of pages the user has read in the book
     };
   }
 }
