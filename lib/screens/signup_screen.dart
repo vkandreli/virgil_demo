@@ -30,7 +30,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     if (password != confirmPassword) {
-      await SQLService().printTable('user_books');
+      await SQLService().printTable('packs');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Passwords do not match')),
       );
