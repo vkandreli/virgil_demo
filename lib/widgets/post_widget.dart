@@ -24,14 +24,27 @@ class _PostWidgetState extends State<PostWidget> {
   bool isLiked = false;
   bool isShared = false;
   late bool isInReadingList;
-  TextEditingController _commentController =
-      TextEditingController(); // Controller for comment input
+  TextEditingController _commentController = TextEditingController(); // Controller for comment input
   final Logger logger = Logger();
+
+  late Book postsBook= Book.empty();
+  late User originalPoster, reblogger = User.empty();
+
+  Future<void> _getResources() async {
+  postsBook = await SQLService().getBooksForPost(widget.post.id);
+  originalPoster = await SQLService().getPosterForPost(widget.post.id); 
+  reblogger = await SQLService().getRebloggerForPost(widget.post.id); 
+
+ }
+
+
+
   @override
   void initState() {
     super.initState();
-    // Check if the book is already in the reading list
-    isInReadingList = widget.currentUser.readingList.contains(widget.post.book);
+    _getResources();
+        isInReadingList = widget.currentUser.readingList.contains(postsBook);
+
   }
 
   @override
@@ -51,7 +64,7 @@ class _PostWidgetState extends State<PostWidget> {
                 IconButton(
                   icon: CircleAvatar(
                     backgroundImage: NetworkImage(
-                      widget.post.originalPoster.profileImage ??
+                      originalPoster.profileImage ??
                           User.defaultProfileImage,
                     ),
                   ),
@@ -60,7 +73,7 @@ class _PostWidgetState extends State<PostWidget> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => OtherProfileScreen(
-                          user: widget.post.originalPoster,
+                          user: originalPoster,
                           currentUser: widget.currentUser,
                         ),
                       ),
@@ -68,16 +81,16 @@ class _PostWidgetState extends State<PostWidget> {
                   },
                 ),
                 SizedBox(width: 4),
-                Text(widget.post.originalPoster.username,
+                Text(originalPoster.username,
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 // Conditionally display the reblogger's information
-                if (widget.post.reblogger != null) ...[
+                if (reblogger != User.empty()) ...[
                   SizedBox(width: 4),
                   Icon(Icons.replay), // Reblog icon
                   IconButton(
                     icon: CircleAvatar(
                       backgroundImage: NetworkImage(
-                        widget.post.reblogger?.profileImage ??
+                        reblogger.profileImage ??
                             User.defaultProfileImage,
                       ),
                     ),
@@ -86,7 +99,7 @@ class _PostWidgetState extends State<PostWidget> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => OtherProfileScreen(
-                            user: widget.post.reblogger ?? widget.currentUser,
+                            user: reblogger ?? widget.currentUser,
                             currentUser: widget.currentUser,
                           ),
                         ),
@@ -94,7 +107,7 @@ class _PostWidgetState extends State<PostWidget> {
                     },
                   ),
                   SizedBox(width: 4),
-                  Text(widget.post.reblogger?.username ?? "",
+                  Text(reblogger.username ?? "",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   SizedBox(width: 4),
                 ],
@@ -177,7 +190,7 @@ class _PostWidgetState extends State<PostWidget> {
                           isLiked = !isLiked; // Toggle the like state
                         });
                         logger.i(
-                            "Liked/unliked post by ${widget.post.originalPoster.username}");
+                            "Liked/unliked post by ${originalPoster.username}");
                       },
                     ),
                     // Display like count
@@ -207,7 +220,7 @@ class _PostWidgetState extends State<PostWidget> {
                           }
                         });
                         logger.i(
-                            "Reblogged post by ${widget.post.originalPoster.username}");
+                            "Reblogged post by ${originalPoster.username}");
                       },
                     ),
                     // Display reblog count
@@ -342,65 +355,4 @@ class _PostWidgetState extends State<PostWidget> {
       },
     );
   }
-
-  //   void _showCommentBottomSheet() {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     builder: (context) {
-  //       return GestureDetector(
-  //         onTap: () {
-  //           // Close the bottom sheet when tapping outside of it
-  //           Navigator.of(context).pop();
-  //         },
-  //         child: Container(
-  //           color: Colors.white,
-  //           child: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               // Comment section
-  //               Padding(
-  //                 padding: const EdgeInsets.all(16.0),
-  //                 child: Text("Comments", style: TextStyle(fontSize: 24)),
-  //               ),
-  //               ListView.builder(
-  //                 shrinkWrap: true,
-  //                 itemCount: widget.post.comments.length,
-  //                 itemBuilder: (context, index) {
-  //                   return ListTile(
-  //                     title: Text(widget.post.comments[index]),
-  //                   );
-  //                 },
-  //               ),
-  //               Padding(
-  //                 padding: const EdgeInsets.all(16.0),
-  //                 child: TextField(
-  //                   controller: _commentController,
-  //                   decoration: InputDecoration(
-  //                     labelText: "Add a comment",
-  //                     border: OutlineInputBorder(),
-  //                   ),
-  //                   onSubmitted: (value) {
-  //                     setState(() {
-  //                       widget.post.comments.add(value);
-  //                       _commentController.clear();
-  //                     });
-  //                   },
-  //                 ),
-  //               ),
-  //               ElevatedButton(
-  //                 onPressed: () {
-  //                   setState(() {
-  //                     widget.post.comments.add(_commentController.text);
-  //                     _commentController.clear();
-  //                   });
-  //                 },
-  //                 child: Text("Post Comment"),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 }

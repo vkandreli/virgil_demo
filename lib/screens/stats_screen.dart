@@ -18,14 +18,6 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
-  int _currentIndex = 0;  // Bottom navigation index
-
-  // Function to handle tab taps for bottom navigation
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
   // Helper method to get pages read this week
   List<Map<DateTime, int>> getPagesReadThisWeek(
       List<Map<DateTime, int>> pagesPerDay) {
