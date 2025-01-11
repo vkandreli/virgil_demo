@@ -58,8 +58,8 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
 
   }
 
-  Future<void> addPackSelectedBooks(books) async {
-   await SQLService().insertPackBooks(Pack);
+  Future<void> addPackSelectedBooks(packId, books) async {
+   await SQLService().addBooktoPack(packId, books);
 
   }
 
