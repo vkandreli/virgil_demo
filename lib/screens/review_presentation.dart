@@ -99,7 +99,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => OtherProfileScreen(user: reviewsUser, currentUser: placeholderSelf),
+                        builder: (context) => OtherProfileScreen(user: reviewsUser, currentUser: widget.currentUser),
                       ),
                     );
                   },
@@ -107,7 +107,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                     children: [
                       CircleAvatar(
                         radius: 24,
-                        backgroundImage: NetworkImage(reviewsUser.profileImage ?? 'https://via.placeholder.com/150'),
+                        backgroundImage: NetworkImage(reviewsUser.profileImage ?? User.defaultProfileImage),
                       ),
                       SizedBox(width: 12),
                       Text(
