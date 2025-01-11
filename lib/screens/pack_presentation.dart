@@ -8,10 +8,32 @@ import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/others_profile_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
-class PackDetailScreen extends StatelessWidget {
+class PackDetailScreen extends StatefulWidget {
   final Pack pack;
   final User currentUser;
   const PackDetailScreen({Key? key, required this.pack, required this.currentUser}) : super(key: key);
+
+  @override
+  _PackDetailScreenState createState() => _PackDetailScreenState();
+}
+
+class _PackDetailScreenState extends State<PackDetailScreen> {
+  late Book packsBook= Book.empty();
+  late User packsUser= User.empty();
+
+  Future<void> _getResources() async {
+  packsBook = await SQLService().getBookForReview(widget.review.id);
+packsUser = await SQLService().getUserForReview(widget.review.id); 
+
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getResources();
+  }
 
   @override
   Widget build(BuildContext context) {

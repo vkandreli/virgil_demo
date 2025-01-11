@@ -19,7 +19,6 @@ class ReviewDetailScreen extends StatefulWidget {
 }
 
 class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
-  int _currentIndex = 0;  
   late Book reviewsBook= Book.empty();
   late User reviewsUser= User.empty();
 
