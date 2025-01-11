@@ -32,10 +32,15 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
     final query = _searchController.text.trim();
     if (query.isNotEmpty) {
       // Fetch users from the db
-      final users = placeholderUsers;
+      final users = await SQLService().getUserByUsername(query);
       setState(() {
         filteredProfiles = users;
       });
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a username')),
+      );
     }
   }
 
