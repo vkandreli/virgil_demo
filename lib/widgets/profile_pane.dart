@@ -6,8 +6,30 @@ import 'package:virgil_demo/screens/stats_screen.dart';
 class ProfilePane extends StatelessWidget {
   final User currentUser;
   final User user;
-  ProfilePane({required this.user, required this.currentUser});  
-  
+  // ProfilePane({required this.user, required this.currentUser});  
+
+
+
+  const ProfilePane(
+      {Key? key, required this.user, required this.currentUser})
+      : super(key: key);
+
+  @override
+  _ProfilePaneState createState() => _ProfilePaneState();
+}
+
+class _ProfilePaneState extends State<ProfilePane> {
+    late List<Book> completedBooks;
+
+  Future<void> _getCurrent() async {
+  completedBooks = await SQLService().getBooksCompletedForUser(widget.user.id);
+
+  }
+  @override
+  void initState() {
+    super.initState();
+    _getCurrent();  // Initialize the database first
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -37,9 +59,9 @@ class ProfilePane extends StatelessWidget {
                       icon: CircleAvatar(
                         radius: 40,  // This controls the size of the CircleAvatar (should be half of the IconButton size)
                         backgroundImage: NetworkImage(
-                          user == currentUser? 
-                          currentUser.profileImage ?? SQLService.defaultProfileImage:
-                          user.profileImage ?? SQLService.defaultProfileImage,
+                          widget.user == widget.currentUser? 
+                          widget.currentUser.profileImage ?? SQLService.defaultProfileImage:
+                          widget.user.profileImage ?? SQLService.defaultProfileImage,
                         ),
                       ),
                       onPressed: () {
@@ -59,7 +81,7 @@ class ProfilePane extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        user.username,
+                        widget.user.username,
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 16,
@@ -67,7 +89,7 @@ class ProfilePane extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       Text(
-                        user.status ?? 'No status available',
+                        widget.user.status ?? 'No status available',
                         style: TextStyle(
                           color: Color(0xFFE4E0E1),
                           fontSize: 15,
@@ -76,7 +98,7 @@ class ProfilePane extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (user != currentUser) ...[
+                if (widget.user != widget.currentUser) ...[
                 ElevatedButton(
                   onPressed: () {},
                   child: Text('Follow'),
@@ -90,14 +112,14 @@ class ProfilePane extends StatelessWidget {
                   ),
                 ),
                 ],
-                if (user == currentUser) ...[
+                if (widget.user == widget.currentUser) ...[
                   Column(children: [
                 ElevatedButton(
                   onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => StatsScreen(currentUser: currentUser,),
+                            builder: (context) => StatsScreen(currentUser: widget.currentUser,),
                           ),
                         );  
                     
@@ -117,7 +139,7 @@ class ProfilePane extends StatelessWidget {
                     Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => UserSettingsScreen(currentUser: currentUser,),
+                            builder: (context) => UserSettingsScreen(currentUser: widget.currentUser,),
                           ),
                         );                    
                   },
@@ -140,9 +162,9 @@ class ProfilePane extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatColumn((await SQLService().getBooksCompletedForUser(user.id)).length.toString(), 'Books'),
+                _buildStatColumn((completedBooks).length.toString(), 'Books'),
                 _buildStatColumn(
-                    user.completedList
+widget.user.completedList
                         .where((book) {
                           return book.dateCompleted?.year == DateTime.now().year;
                         })
@@ -150,7 +172,7 @@ class ProfilePane extends StatelessWidget {
                         .length
                         .toString(),
                     'This year'),
-                _buildStatColumn(user.usersPacks.length.toString(), 'Packs'),
+                _buildStatColumn(widget.user.usersPacks.length.toString(), 'Packs'),
               ],
             ),
           ],
