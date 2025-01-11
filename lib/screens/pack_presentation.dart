@@ -18,11 +18,11 @@ class PackDetailScreen extends StatefulWidget {
 }
 
 class _PackDetailScreenState extends State<PackDetailScreen> {
-  late List<Book> packsBook= [];
+  late List<Book> packsBooks= [];
   late User creator = User.empty();
 
   Future<void> _getResources() async {
-  packsBook = await SQLService().getBooksForPack(widget.pack.id);
+  packsBooks = await SQLService().getBooksForPack(widget.pack.id);
   creator = await SQLService().getUserForPack(widget.pack.id); 
 
   }
@@ -66,7 +66,7 @@ class _PackDetailScreenState extends State<PackDetailScreen> {
                   ),
                 ),
                 SizedBox(height: 16),
-                bookScroll("Books in pack", widget.pack.books, currentUser: widget.currentUser),
+                bookScroll("Books in pack", packsBooks, currentUser: widget.currentUser),
                 
                 // Created by section with clickable username
                 Row(
