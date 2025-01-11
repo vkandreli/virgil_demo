@@ -264,61 +264,61 @@ List<UserBook> dummyUserBooks = [
     userId: 1,
     bookId: 1,  // Assuming this book exists in the 'books' table with id = 1
     listCategory: 1,  // Reading
-    pagesRead: 50,
+    currentPage: 50,
   ),
   UserBook(
     userId: 1,
     bookId: 2,  // Assuming this book exists in the 'books' table with id = 2
     listCategory: 2,  // Completed
-    pagesRead: 255,
+    currentPage: 255,
   ),
   UserBook(
     userId: 1,
     bookId: 3,  // Assuming this book exists in the 'books' table with id = 3
     listCategory: 1,  // Reading
-    pagesRead: 120,
+    currentPage: 120,
   ),
   UserBook(
     userId: 1,
     bookId: 4,  // Assuming this book exists in the 'books' table with id = 4
     listCategory: 3,  // Wishlist
-    pagesRead: 0,
+    currentPage: 0,
   ),
   UserBook(
     userId: 1,
     bookId: 5,  // Assuming this book exists in the 'books' table with id = 5
     listCategory: 2,  // Completed
-    pagesRead: 230,
+    currentPage: 230,
   ),
   UserBook(
     userId: 1,
     bookId: 6,  // Assuming this book exists in the 'books' table with id = 6
     listCategory: 1,  // Reading
-    pagesRead: 30,
+    currentPage: 30,
   ),
   UserBook(
     userId: 1,
     bookId: 7,  // Assuming this book exists in the 'books' table with id = 7
     listCategory: 3,  // Wishlist
-    pagesRead: 0,
+    currentPage: 0,
   ),
   UserBook(
     userId: 1,
     bookId: 8,  // Assuming this book exists in the 'books' table with id = 8
     listCategory: 2,  // Completed
-    pagesRead: 150,
+    currentPage: 150,
   ),
   UserBook(
     userId: 1,
     bookId: 9,  // Assuming this book exists in the 'books' table with id = 9
     listCategory: 1,  // Reading
-    pagesRead: 75,
+    currentPage: 75,
   ),
   UserBook(
     userId: 1,
     bookId: 10,  // Assuming this book exists in the 'books' table with id = 10
     listCategory: 3,  // Wishlist
-    pagesRead: 0,
+    currentPage: 0,
   ),
 ];
 
