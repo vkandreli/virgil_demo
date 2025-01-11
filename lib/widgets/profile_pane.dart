@@ -3,7 +3,7 @@ import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/screens/settings.dart';
 import 'package:virgil_demo/screens/stats_screen.dart';  
 
-class ProfilePane extends StatelessWidget {
+class ProfilePane extends StatefulWidget {
   final User currentUser;
   final User user;
   // ProfilePane({required this.user, required this.currentUser});  
