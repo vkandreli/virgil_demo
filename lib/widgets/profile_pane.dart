@@ -30,7 +30,7 @@ class _ProfilePaneState extends State<ProfilePane> {
     super.initState();
     _getCurrent();  // Initialize the database first
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -162,9 +162,9 @@ class _ProfilePaneState extends State<ProfilePane> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatColumn((completedBooks).length.toString(), 'Books'),
+                _buildStatColumn(completedBooks.length.toString(), 'Books'),
                 _buildStatColumn(
-widget.user.completedList
+                completedBooks
                         .where((book) {
                           return book.dateCompleted?.year == DateTime.now().year;
                         })
