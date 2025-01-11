@@ -17,18 +17,20 @@ class OtherProfileScreen extends StatefulWidget {
 }
 
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
-  late List<Post> userPosts;  
+  late List<Post> userPosts, posts;  
 
   Future<void> _getPosts() async {
-  userPosts = await SQLService().getPostsForUser(widget.user.id);
+    userPosts = await SQLService().getPostsForUser(widget.user.id);
+  }
 
 
   @override
   void initState() {
     super.initState();
-    userPosts = placeholderPosts.where((post) {
-      return post.originalPoster_id == widget.user || post.reblogger_id == widget.user;
-    }).toList();
+    _getPosts();
+    // userPosts = placeholderPosts.where((post) {
+    //   return post.originalPoster_id == widget.user || post.reblogger_id == widget.user;
+    // }).toList();
   }
 
   // Navigate to the corresponding screen (methods for privacy box navigation)
@@ -59,7 +61,36 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
     }
   }
 
-
+  // Privacy box widget for navigation (using user privacy states)
+  Widget _privacyBox(String label, bool isPrivate, VoidCallback onTapBox) {
+    return GestureDetector(
+      onTap: () {
+        if (!isPrivate) {
+          onTapBox(); // Only navigate if not private
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        child: Row(
+          children: [
+            Text(
+              label,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 8),
+            Icon(
+              isPrivate ? Icons.lock : Icons.lock_open,  // Show lock or unlocked based on privacy state
+              color: isPrivate ? Colors.grey : Colors.green,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,34 +142,5 @@ class _OtherProfileScreenState extends State<OtherProfileScreen> {
     );
   }
 
-  // Privacy box widget for navigation (using user privacy states)
-  Widget _privacyBox(String label, bool isPrivate, VoidCallback onTapBox) {
-    return GestureDetector(
-      onTap: () {
-        if (!isPrivate) {
-          onTapBox(); // Only navigate if not private
-        }
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(width: 8),
-            Icon(
-              isPrivate ? Icons.lock : Icons.lock_open,  // Show lock or unlocked based on privacy state
-              color: isPrivate ? Colors.grey : Colors.green,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 }

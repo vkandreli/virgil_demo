@@ -1,5 +1,23 @@
 import 'package:virgil_demo/SQLService.dart';
 
+
+Future<List<Post>> getPostsForUser(int? userId) async {
+  final db = await database;
+
+  // Query to find all posts made by the given user (originalPoster_id)
+  final List<Map<String, dynamic>> maps = await db.query(
+    'posts',
+    where: 'originalPoster_id = ?',
+    whereArgs: [userId],
+  );
+
+  // If we have matching posts, map them to a list of Post objects
+  return List.generate(maps.length, (i) {
+    return Post.fromMap(maps[i]);
+  });
+}
+
+///////////////////////////
 Future<List<Book>> getBooksForPack(int packId) async {
   final db = await database;
 
