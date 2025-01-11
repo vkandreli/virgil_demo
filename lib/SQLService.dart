@@ -741,6 +741,39 @@ Future<List<Review>> getReviewsByDate() async {
    );
   }
 
+  Future<void> addBookToReadingList(int? bookId, int? userId) async {
+    UserBook NewUserBook =  UserBook(
+    user_id: userId,
+    book_id: bookId,  
+    listCategory: 1,  //Reading
+    currentPage: 1,
+    );
+    
+    await insertUserBook(NewUserBook);
+  }
+
+  Future<void> addBookToCompletedList(int? bookId, int? userId) async {
+    UserBook NewUserBook =  UserBook(
+    user_id: userId,
+    book_id: bookId,  
+    listCategory: 2,  //Completed
+    currentPage: 1,
+    );
+    
+    await insertUserBook(NewUserBook);
+  }
+
+  Future<void> addBookToWishlist(int? bookId, int? userId) async {
+    UserBook NewUserBook =  UserBook(
+    user_id: userId,
+    book_id: bookId,  
+    listCategory: 3,  //Wishlist
+    currentPage: 1,
+    );
+    
+    await insertUserBook(NewUserBook);
+  }
+
 
    Future<List<Book>> getBooksForUser(int userId) async {
 
@@ -1081,6 +1114,12 @@ Future<List<Post>> getAllPosts() async {
 }
 
 
+Future<void> ReblogPost(Post post, int? rebloggerId) async {
+    final db = await database;
+  post.reblogger_id = rebloggerId;
+  CreatePost(post);
+}
+
 
 }
 
@@ -1103,13 +1142,13 @@ class User {
   static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";
 
   // User collections
-  List<User> followedUsers = [];
+  /**List<User> followedUsers = [];
   List<Post> usersPosts = [];
   List<Review> usersReviews = [];
   List<Pack> usersPacks = [];
   List<Book> readingList = [];
   List<Book> currentList = [];
-  List<Book> completedList = [];
+  List<Book> completedList = []; */
 
   User({
     this.id,
@@ -1362,7 +1401,7 @@ class Book {
 class Post {
   final int? id;
   final int? originalPoster_id;
-  User? reblogger_id; 
+  int? reblogger_id; 
   String? imageUrl;
   String? quote;
   final int? book_id;
@@ -1387,7 +1426,7 @@ class Post {
   Map<String, Object?> toMap(){
     return {
     'originalPosterId': originalPoster_id,  // User's ID (int)
-    'rebloggerId': reblogger_id?.id,  // User's ID (nullable int)
+    'rebloggerId': reblogger_id,  // User's ID (nullable int)
     'imageUrl': imageUrl,  // String
     'quote': quote,  // String
     'bookId': book_id,  // Book's ID (int)
@@ -1402,7 +1441,7 @@ class Post {
     return Post(
       id: map['id'],
       originalPoster_id: map['originalPoster_id'],
-      reblogger_id: map['reblogger_id'] != null ? User.fromMap(map['reblogger_id']) : null,
+      reblogger_id: map['reblogger_id'],
       imageUrl: map['imageUrl'],
       quote: map['quote'],
       book_id: map['book_id'],

@@ -17,16 +17,22 @@ class ProfilePane extends StatefulWidget {
 
 class _ProfilePaneState extends State<ProfilePane> {
     late List<Book> completedBooks;
+    late List<Pack> userPacks;
 
   Future<void> _getCurrent() async {
   completedBooks = await SQLService().getBooksCompletedForUser(widget.user.id);
+  }
 
+    Future<void> _getPacks() async {
+  userPacks = await SQLService().getPacksForUser(widget.user.id);
   }
   @override
   void initState() {
     super.initState();
     _getCurrent();  // Initialize the database first
+    _getPacks();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +175,7 @@ class _ProfilePaneState extends State<ProfilePane> {
                         .length
                         .toString(),
                     'This year'),
-                _buildStatColumn(widget.user.usersPacks.length.toString(), 'Packs'),
+                _buildStatColumn(userPacks.length.toString(), 'Packs'),
               ],
             ),
           ],

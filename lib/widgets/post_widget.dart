@@ -37,6 +37,9 @@ class _PostWidgetState extends State<PostWidget> {
 
  }
 
+  Future<void> _reblog(Post post, int? userId) async {
+    await  SQLService().ReblogPost(post, userId);
+  }
 
 
   @override
@@ -99,7 +102,7 @@ class _PostWidgetState extends State<PostWidget> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => OtherProfileScreen(
-                            user: reblogger,
+                            user: reblogger ?? widget.currentUser,
                             currentUser: widget.currentUser,
                           ),
                         ),
@@ -183,9 +186,9 @@ class _PostWidgetState extends State<PostWidget> {
                         setState(() {
                           // Toggle like state
                           if (isLiked) {
-                            widget.post.removeLike();
+                            widget.post.likes--;
                           } else {
-                            widget.post.like();
+                            widget.post.likes++;
                           }
                           isLiked = !isLiked; // Toggle the like state
                         });
@@ -206,7 +209,7 @@ class _PostWidgetState extends State<PostWidget> {
                         color: isShared ? Colors.green : Colors.black,
                       ),
                       onPressed: () {
-                        widget.post.reblog(widget.currentUser);
+                      _reblog(widget.post, widget.currentUser.id);
                         setState(() {
                           isShared = true;
                           if (widget.isInOwnProfile){
@@ -254,7 +257,7 @@ class _PostWidgetState extends State<PostWidget> {
                               builder: (context) => AddToPack(
                                     currentUser: widget.currentUser,
                                     selectedBook: postsBook,
-                                  )), //book: widget.post.book,
+                                  )), //book: postsBook,
                         );
                       },
                     ),
@@ -278,7 +281,8 @@ class _PostWidgetState extends State<PostWidget> {
                             logger.i(
                                 "Removed book from reading list: ${postsBook.title}");
                           } else {
-                            widget.currentUser.addToReadingList(postsBook);
+                            widget.currentUser.readingList
+                                .add(postsBook);
                             logger.i(
                                 "Saved book to reading list: ${postsBook.title}");
                           }
