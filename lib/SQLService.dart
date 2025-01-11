@@ -479,6 +479,39 @@ Future<void> insertReview(Review review) async {
   }
 
 
+Future<Book> getBookForReview(int reviewId) async {
+  final db = await database;
+
+  final List<Map<String, dynamic>> maps = await db.query(
+    'reviews',
+    where: 'id = ?',  
+    whereArgs: [reviewId],  
+  );
+
+  if (maps.isNotEmpty) {
+    return Book.fromMap(maps.first);
+  } else {
+    throw Exception("Review not found with ID $reviewId");
+  }
+}
+
+
+Future<User> getUserForReview(int reviewId) async {
+  final db = await database;
+
+  final List<Map<String, dynamic>> maps = await db.query(
+    'reviews',
+    where: 'id = ?', 
+    whereArgs: [reviewId], 
+  );
+
+  if (maps.isNotEmpty) {
+    return User.fromMap(maps.first);
+  } else {
+    throw Exception("Review not found with ID $reviewId");
+  }
+}
+
 //*******     Pack Setters      ********/
 
 
@@ -865,6 +898,18 @@ class User {
       isReadListPrivate: map['isReadListPrivate'] == 1,
     );
   }
+
+   User.empty()
+      :
+        id = null,
+        username = '',
+        email = '',
+        profileImage = '',
+        status = '',
+        isPacksPrivate = false,
+        isReviewsPrivate = false,
+        isReadListPrivate = false;
+
 
   // Method to toggle the privacy status of the packs
   /**void togglePacksPrivacy() {

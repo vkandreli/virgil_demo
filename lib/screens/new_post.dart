@@ -21,6 +21,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   String? selectedImagePath;
   String? quoteText;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
+  Future<void> addPost() async {
+   await SQLService().getBooksCompletedForUser(widget.user.id);
+
+  }
 
   // Function to pick an image
   Future<void> _pickImage() async {
@@ -146,12 +150,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           likes: 0,
                           reblogs: 0,
                         );
-
-
-
-
 // Add the post to the current user's posts
-                        widget.currentUser.addPost(post);
+
+
 
                         // Navigate back to the Profile screen
                         Navigator.pop(context);
