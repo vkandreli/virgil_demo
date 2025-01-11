@@ -1,6 +1,48 @@
 import 'package:virgil_demo/SQLService.dart';
 
 
+Future<List<Review>> getReviewsForUser(int userId) async {
+  final db = await database;
+
+  // Query to find all reviews made by the specific user
+  final List<Map<String, dynamic>> maps = await db.query(
+    'reviews',
+    where: 'user_id = ?',
+    whereArgs: [userId],
+  );
+
+  // Convert the maps to a list of Review objects
+  return List.generate(maps.length, (i) {
+    return Review.fromMap(maps[i]);
+  });
+}
+
+
+Future<List<Review>> getReviewsForBook(int bookId) async {
+  final db = await database;
+
+  // Query to find all reviews for the specific book
+  final List<Map<String, dynamic>> maps = await db.query(
+    'reviews',
+    where: 'book_id = ?',
+    whereArgs: [bookId],
+  );
+
+  // Convert the maps to a list of Review objects
+  return List.generate(maps.length, (i) {
+    return Review.fromMap(maps[i]);
+  });
+}
+
+
+
+
+
+
+
+
+////////////////////////
+
 Future<List<Post>> getPostsForUser(int? userId) async {
   final db = await database;
 
