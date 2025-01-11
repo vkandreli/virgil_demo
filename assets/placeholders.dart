@@ -2,9 +2,9 @@ import 'package:virgil_demo/models/achievement.dart';
 //import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/models/goal.dart';
 //import 'package:virgil_demo/models/user.dart'; 
-import 'package:virgil_demo/models/post.dart';
-import 'package:virgil_demo/models/review.dart';
-import 'package:virgil_demo/models/pack.dart';
+//import 'package:virgil_demo/models/post.dart';
+//import 'package:virgil_demo/models/review.dart';
+//import 'package:virgil_demo/models/pack.dart';
 
 
 List<Book> placeholderBooks = [

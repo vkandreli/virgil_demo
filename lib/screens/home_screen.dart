@@ -9,7 +9,7 @@ import 'package:virgil_demo/screens/profile_search_scene.dart';
 import 'own_profile_screen.dart';  // Profile screen when self is clicked
 import 'others_profile_screen.dart';  // Profile screen when a user is clicked
 import 'package:virgil_demo/assets/placeholders.dart';
-// import 'package:virgil_demo/models/post.dart';
+// //import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 
 class HomeScreen extends StatefulWidget {

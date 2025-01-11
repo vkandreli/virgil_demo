@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:virgil_demo/models/post.dart';
+//import 'package:virgil_demo/models/post.dart';
 //import 'package:virgil_demo/models/user.dart'; 
 //import 'package:virgil_demo/models/book.dart';
-import 'package:virgil_demo/screens/book_search_screen.dart'; // Import the book search screen
+import 'package:virgil_demo/screens/book_search_screen.dart';
+
+import '../SQLService.dart'; // Import the book search screen
 
 class CreatePostScreen extends StatefulWidget {
   final User currentUser;

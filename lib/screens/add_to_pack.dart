@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/main.dart';
-import 'package:virgil_demo/models/pack.dart';
+//import 'package:virgil_demo/models/pack.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'package:virgil_demo/screens/new_pack.dart';
 import 'package:virgil_demo/screens/pack_presentation.dart';

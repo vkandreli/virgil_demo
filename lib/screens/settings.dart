@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:virgil_demo/SQLService.dart';
 //import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 

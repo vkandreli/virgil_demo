@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
-import 'package:virgil_demo/models/pack.dart';
+//import 'package:virgil_demo/models/pack.dart';
 //import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/others_profile_screen.dart';
