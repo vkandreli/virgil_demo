@@ -142,15 +142,14 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           timePosted: DateTime.now(),
                           imageUrl: 'https://tse3.mm.bing.net/th?id=OIP.PgvVbyS2yPLX6TlQ4Wf-iAHaDb&pid=Api',//selectedImagePath, 
                           quote: quoteText,
-                          book: selectedBook!, // Use the full Book object
+                          book_id: selectedBook?.id, // Use the full Book object
                           likes: 0,
                           reblogs: 0,
-                          comments: [],
                         );
 
 
 
-                        
+
 // Add the post to the current user's posts
                         widget.currentUser.addPost(post);
 

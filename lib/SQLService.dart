@@ -321,6 +321,15 @@ Future<dynamic> takeElement(String tableName, String columnName, Map<String, dyn
   
 static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";
 
+
+Future<List<User>> getAllUsers() async {
+  final db = await SQLService().database; 
+
+  final List<Map<String, dynamic>> result = await db.query('users'); 
+
+  return result.map((userMap) => User.fromMap(userMap)).toList();
+}
+
   /*******     Book Setters      ********/
 
 Future<void> insertBook(Book book) async {
@@ -977,6 +986,7 @@ class Book {
   final String publisher;
   final String posterUrl;
   final String description;
+  final String language;
   DateTime? dateAdded;
   DateTime? dateCompleted;
   int totalPages;
@@ -990,6 +1000,7 @@ class Book {
     required this.publisher,
     required this.posterUrl,
     required this.description,
+    required this.language,
     this.dateAdded,
     this.dateCompleted,
     required this.totalPages,
@@ -1007,6 +1018,7 @@ class Book {
       'publisher': publisher,
       'posterUrl': posterUrl,
       'description': description,
+      'language': language,
       'dateAdded': dateAdded?.toIso8601String(),
       'dateCompleted': dateCompleted?.toIso8601String(),
       'totalPages': totalPages,
@@ -1024,6 +1036,7 @@ class Book {
       publisher: map['publisher'],
       posterUrl: map['posterUrl'],
       description: map['description'],
+      language: map['language'],
       dateAdded: map['dateAdded'] != null ? DateTime.parse(map['dateAdded']) : null,
       dateCompleted: map['dateCompleted'] != null ? DateTime.parse(map['dateCompleted']) : null,
       totalPages: map['totalPages'],
@@ -1036,6 +1049,7 @@ class Book {
       title: '',
       description: '',
       genre: '',
+      language:'',
       posterUrl: 'https://tse3.mm.bing.net/th?id=OIP.0fb3mN86pTUI9jvsDmkqgwHaJl&pid=Api',
       totalPages: 0,
  //     currentPage: 0,
@@ -1055,7 +1069,7 @@ class Post {
   User? reblogger_id; 
   String? imageUrl;
   String? quote;
-  final int book_id;
+  final int? book_id;
   String timePosted;
   int likes, reblogs;
  /// List<String> comments; 
@@ -1068,7 +1082,7 @@ class Post {
     this.reblogger_id,  
     this.imageUrl,
     this.quote,
-    required this.book_id,
+    this.book_id,
     this.likes = 0,           // Default value for likes
     this.reblogs = 0,         // Default value for reblogs
  ///   this.comments = const [], // Default empty list for comments   
