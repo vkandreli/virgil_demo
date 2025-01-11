@@ -23,7 +23,7 @@ class _PackDetailScreenState extends State<PackDetailScreen> {
 
   Future<void> _getResources() async {
   packsBook = await SQLService().getBookForReview(widget.pack.id);
-packsUser = await SQLService().getUserForReview(widget.pack.id); 
+  creator = await SQLService().getUserForReview(widget.pack.id); 
 
   }
 

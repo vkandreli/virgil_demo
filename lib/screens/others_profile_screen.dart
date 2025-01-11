@@ -19,6 +19,10 @@ class OtherProfileScreen extends StatefulWidget {
 class _OtherProfileScreenState extends State<OtherProfileScreen> {
   late List<Post> userPosts;  
 
+  Future<void> _getPosts() async {
+  userPosts = await SQLService().getPostsForUser(widget.user.id);
+
+
   @override
   void initState() {
     super.initState();

@@ -896,6 +896,8 @@ Future<List<Post>> getAllPosts() async {
   return result.map((postMap) => Post.fromMap(postMap)).toList();
 }
 
+
+
 }
 
 
