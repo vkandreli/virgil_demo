@@ -12,12 +12,28 @@ import 'package:virgil_demo/screens/review_presentation.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 import 'package:camera/camera.dart';
 
-class UserPacksScreen extends StatelessWidget {
+class UserPacksScreen extends StatefulWidget {
   final User user, currentUser;
   
   const UserPacksScreen({Key? key, required this.user, required this.currentUser}) : super(key: key);
 
+
+    @override
+  UserPacksScreenState createState() => UserPacksScreenState();
+}
+
+class UserPacksScreenState extends State<UserPacksScreen> {
+
+
+  //getreviewsforuser Feature<void> List??
+  late List<Review> userReviews;
+
+
   @override
+  void initState() {
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body:
@@ -29,13 +45,13 @@ class UserPacksScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-                  user == currentUser
+                  widget.user == widget.currentUser
                       ? 'Your Packs' 
-                      : '${user.username}\'s Packs',              
+                      : '${widget.user.username}\'s Packs',              
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
-           if (currentUser.usersPacks.isNotEmpty) ...[
+           if (widget.currentUser.usersPacks.isNotEmpty) ...[
           Expanded(
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -43,18 +59,18 @@ class UserPacksScreen extends StatelessWidget {
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,
               ),
-              itemCount: user.usersPacks.length, // Assuming user.usersPacks contains the list of packs
+              itemCount: widget.user.usersPacks.length, // Assuming user.usersPacks contains the list of packs
               itemBuilder: (context, index) {
-                var pack = user.usersPacks[index];
+                var pack = widget.user.usersPacks[index];
                 return PackCard(
                   pack: pack,
-                  currentUser: currentUser,
+                  currentUser: widget.currentUser,
                 );
               },
             ),
           ),
            ],
-                     if (currentUser.usersPacks.isEmpty) ...[
+                     if (widget.currentUser.usersPacks.isEmpty) ...[
               Text(
                 " Try creating some packs",
                 style: TextStyle(fontSize: 18),
@@ -65,19 +81,40 @@ class UserPacksScreen extends StatelessWidget {
       ),
             bottomNavigationBar: CustomBottomNavBar(
         context: context, 
-        currentUser: currentUser,
+        currentUser: widget.currentUser,
       ),
     );
   }
 }
 
 
-class UserReviewsScreen extends StatelessWidget {
+class UserReviewsScreen extends StatefulWidget {
   final User user, currentUser;
 
   const UserReviewsScreen({Key? key, required this.user, required this.currentUser}) : super(key: key);
 
   @override
+
+  UserReviewsScreenState createState() => UserReviewsScreenState();
+}
+
+class UserReviewsScreenState extends State<UserReviewsScreen> {
+
+
+  //getreviewsforuser Feature<void> List??
+  late List<Review> userReviews;
+
+  Future<void> _UserReviews() async {
+   userReviews = await SQLService().getReviewsForUser(widget.user.id);
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _UserReviews();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea( // Ensures no content overlaps with the status bar or system UI
@@ -87,9 +124,9 @@ class UserReviewsScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(16.0),
                 child: Text(
-                  user == currentUser
+                 widget.user == widget.currentUser
                       ? 'Your Reviews' 
-                      : '${user.username}\'s Reviews',
+                      : '${widget.user.username}\'s Reviews',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
             ),
@@ -100,20 +137,20 @@ class UserReviewsScreen extends StatelessWidget {
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
                 ),
-                itemCount: placeholderReviews.length, // Use user.usersReviews.length if available
+                itemCount: userReviews.length, // Use user.usersReviews.length if available
                 itemBuilder: (context, index) {
-                  var review = placeholderReviews[index]; // Use the actual reviews data
+                  var review = userReviews[index]; // Use the actual reviews data
                   return GestureDetector(
                     onTap: () {
                       // Navigate to ReviewDetailScreen when tapped
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ReviewDetailScreen(review: review, currentUser: currentUser,),
+                          builder: (context) => ReviewDetailScreen(review: review, currentUser: widget.currentUser,),
                         ),
                       );
                     },
-                    child: ReviewCard(review: review, currentUser: currentUser,), // Custom card for the review
+                    child: ReviewCard(review: review, currentUser: widget.currentUser,), // Custom card for the review
                   );
                 },
               ),
@@ -123,7 +160,7 @@ class UserReviewsScreen extends StatelessWidget {
       ),
             bottomNavigationBar: CustomBottomNavBar(
         context: context, 
-        currentUser: currentUser,
+        currentUser: widget.currentUser,
       ),
     );
   }
