@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/SQLService.dart';
-import 'package:virgil_demo/assets/placeholders.dart';
+// import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/achievement.dart';
 //import 'package:virgil_demo/models/book.dart';
@@ -139,12 +139,12 @@ class _BookCard extends StatelessWidget {
   final bool showProgress;
   final bool isCompleted;
   final User currentUser;
-  final bool addRemove;
+  //final bool addRemove;
   const _BookCard({
     this.book,
     this.showProgress = false,
     this.isCompleted = false,
-    this.addRemove = false,
+   // this.addRemove = false,
     required this.currentUser,
   });
 
@@ -282,13 +282,52 @@ class PackCard extends StatelessWidget {
   }
 }
 
-class ReviewCard extends StatelessWidget {
+class ReviewCard extends StatefulWidget {
   final Review review;
   final User currentUser;
+
   const ReviewCard({required this.review, required this.currentUser});
 
   @override
+  _ReviewCardState createState() => _ReviewCardState();
+}
+
+class _ReviewCardState extends State<ReviewCard> {
+  late Book reviewsBook;
+  late User reviewsUser;
+  bool isLoading = true; // To track loading state
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReviewData();
+  }
+
+  // Async method to load the book and user for the review
+  Future<void> _loadReviewData() async {
+    try {
+      // Fetch book and user associated with the review
+      reviewsBook = await SQLService().getBookForReview(widget.review.book_id);
+      reviewsUser = await SQLService().getUserForReview(widget.review.user_id);
+    } catch (e) {
+      // Handle any errors, perhaps show an error message
+      reviewsBook = Book.empty(); // Or handle empty state
+      reviewsUser = User.empty(); // Or handle empty state
+    }
+    
+    // After loading, set isLoading to false to trigger rebuild
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      // Show loading indicator while fetching data
+      return Center(child: CircularProgressIndicator());
+    }
+
     return GestureDetector(
       onTap: () {
         // Navigate to the review detail screen
@@ -296,8 +335,8 @@ class ReviewCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => ReviewDetailScreen(
-              review: review,
-              currentUser: currentUser,
+              review: widget.review,
+              currentUser: widget.currentUser,
             ),
           ),
         );
@@ -319,8 +358,8 @@ class ReviewCard extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => BookDetailScreen(
-                      book: review.book,
-                      currentUser: currentUser,
+                      book: reviewsBook,
+                      currentUser: widget.currentUser,
                     ),
                   ),
                 );
@@ -328,7 +367,7 @@ class ReviewCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  review.book.title,
+                  reviewsBook.title,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis, // Ellipsis for overflow
@@ -342,8 +381,8 @@ class ReviewCard extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => OtherProfileScreen(
-                      user: review.user,
-                      currentUser: placeholderSelf,
+                      user: reviewsUser,
+                      currentUser: widget.currentUser,
                     ),
                   ),
                 );
@@ -351,7 +390,7 @@ class ReviewCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-                  'By: ${review.user.username}',
+                  'By: ${reviewsUser.username}',
                   style: TextStyle(fontSize: 14, color: AppColors.lightBrown),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis, // Ellipsis for overflow
@@ -364,7 +403,7 @@ class ReviewCard extends StatelessWidget {
               child: Row(
                 children: List.generate(5, (index) {
                   // This will generate 5 stars
-                  if (index < review.stars) {
+                  if (index < widget.review.stars) {
                     return Icon(
                       Icons.star,
                       size: 18,
@@ -384,7 +423,7 @@ class ReviewCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                review.text,
+                widget.review.text,
                 style: TextStyle(fontSize: 14),
                 maxLines: 3, // Allow up to 3 lines
                 overflow: TextOverflow.ellipsis, // Ellipsis for overflow
@@ -394,7 +433,7 @@ class ReviewCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                'Reviewed on: ${review.reviewDate}',
+                'Reviewed on: ${widget.review.reviewDate}',
                 style: TextStyle(fontSize: 12, color: AppColors.lightBrown),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis, // Ellipsis for overflow
@@ -406,6 +445,7 @@ class ReviewCard extends StatelessWidget {
     );
   }
 }
+
 
 class BadgeCard extends StatelessWidget {
   final Achievement badge;
