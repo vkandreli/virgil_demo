@@ -1,6 +1,6 @@
 import 'package:virgil_demo/SQLService.dart';
 
-
+/** 
 Future<List<Review>> getReviewsForUser(int userId) async {
   final db = await database;
 
@@ -176,4 +176,4 @@ Future<User> getUserForReview(int userId) async {
         readingList = [],
        pagesPerDay= [],
         badges= [],
-       goals = [];
+       goals = [];*/

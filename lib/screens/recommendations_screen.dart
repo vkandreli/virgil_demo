@@ -20,7 +20,6 @@ final User currentUser;
 }
 
 class _RecommendationsScreenState extends State<RecommendationsScreen> {
-    User currentUser = placeholderSelf;
     String? _currentCity = 'your location';
     Logger logger = Logger();
 
@@ -80,9 +79,9 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
               Expanded(
                 child: ListView(
                 children: [
-                  bookScroll("Popular in ${_currentCity}", placeholderBooks, currentUser: currentUser), 
-                  bookScroll('What your community is reading', placeholderBooks, currentUser: currentUser),
-                  reviewScroll('Hottest reviews', placeholderReviews, currentUser: currentUser), 
+                  bookScroll("Popular in ${_currentCity}", placeholderBooks, currentUser: widget.currentUser), 
+                  bookScroll('What your community is reading', placeholderBooks, currentUser: widget.currentUser),
+                  reviewScroll('Hottest reviews', placeholderReviews, currentUser: widget.currentUser), 
                   SizedBox(height: 12),
                 ],
               ),
@@ -102,7 +101,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
           );
         },
       ),
-        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
+        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
 
     );
   }
