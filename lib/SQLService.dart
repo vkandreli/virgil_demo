@@ -1006,7 +1006,6 @@ class Book {
       genre: '',
       posterUrl: 'https://tse3.mm.bing.net/th?id=OIP.0fb3mN86pTUI9jvsDmkqgwHaJl&pid=Api',
       totalPages: 0,
-      currentPage: 0,
       publicationDate: "",
       publisher: "",
       author: "",

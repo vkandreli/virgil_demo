@@ -112,7 +112,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         logger.i("Finished book: ${widget.book.title}");
       } else {
         setState(() {
-          selected.currentPage =
+          SQLService.
+          widget.currentUser.currentPage =
               newPage; // Directly update the book's currentPage
         });
         logger.i("Reached page: $newPage at ${widget.book.title}");
