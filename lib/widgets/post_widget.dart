@@ -99,7 +99,7 @@ class _PostWidgetState extends State<PostWidget> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => OtherProfileScreen(
-                            user: reblogger ?? widget.currentUser,
+                            user: reblogger,
                             currentUser: widget.currentUser,
                           ),
                         ),
@@ -149,13 +149,13 @@ class _PostWidgetState extends State<PostWidget> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => BookDetailScreen(
-                            book: widget.post.book,
+                            book: postsBook,
                             currentUser: widget.currentUser,
                           )),
                 );
               },
               child: Text(
-                widget.post.book.title,
+                postsBook.title,
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -253,7 +253,7 @@ class _PostWidgetState extends State<PostWidget> {
                           MaterialPageRoute(
                               builder: (context) => AddToPack(
                                     currentUser: widget.currentUser,
-                                    selectedBook: widget.post.book,
+                                    selectedBook: postsBook,
                                   )), //book: widget.post.book,
                         );
                       },
@@ -274,14 +274,13 @@ class _PostWidgetState extends State<PostWidget> {
                         setState(() {
                           if (isInReadingList) {
                             widget.currentUser.readingList
-                                .remove(widget.post.book);
+                                .remove(postsBook);
                             logger.i(
-                                "Removed book from reading list: ${widget.post.book.title}");
+                                "Removed book from reading list: ${postsBook.title}");
                           } else {
-                            widget.currentUser.readingList
-                                .add(widget.post.book);
+                            widget.currentUser.addToReadingList(postsBook);
                             logger.i(
-                                "Saved book to reading list: ${widget.post.book.title}");
+                                "Saved book to reading list: ${postsBook.title}");
                           }
                           // Update the state to reflect the change
                           isInReadingList = !isInReadingList;
