@@ -452,7 +452,7 @@ Future<void> insertReview(Review review) async {
     );
   }
 
- Future<List<User>> getReviewsForUser(int userId) async {
+ Future<List<Review>> getReviewsForUser(int userId) async {
 
     final db = await database;
 
