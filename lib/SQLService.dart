@@ -465,7 +465,7 @@ Future<void> insertReview(Review review) async {
 
    //Choose the form of the list that is returned by the table
     return List.generate(maps.length, (i) {
-    return User.fromMap(maps[i]);
+    return Review.fromMap(maps[i]);
     });
   }
 
@@ -576,7 +576,7 @@ Future<void> insertPack(Pack pack) async {
   }
 
 
-Future<List<String, dynamic>?> getUserBook(int userId, int bookId) async {
+Future<UserBook> getUserBook(int userId, int bookId) async {
   final db = await SQLService().database;
   
   final List<Map<String, dynamic>> result = await db.query(
@@ -1118,9 +1118,22 @@ class Review {
       'stars': stars,
     };
   }
+
+
+
+
+
+  factory Review.fromMap(Map<String, dynamic> map) {
+    return Review(
+      id: map['id'] as int?, // Nullable field
+      book_id: map['book_id'] as int,
+      user_id: map['user_id'] as int,
+      text: map['text'] as String,
+      reviewDate: map['reviewDate'] as String,
+      stars: map['stars'] as int,
+    );
+  }
 }
-
-
 //*********    Pack  **********/
 
 
@@ -1154,17 +1167,17 @@ class Pack {
   }
 }
 
-
+//*********    Userbook  **********/
 
 class UserBook {
-  final int? userId;
-  final int? bookId;
+  final int? user_id;
+  final int? book_id;
   final int? listCategory;  // e.g., 1: Reading, 2: Completed, 3: Want to Read
   final int? currentPage;
 
   UserBook({
-    this.userId,
-    this.bookId,
+    this.user_id,
+    this.book_id,
     this.listCategory,
     this.currentPage,
   });
@@ -1172,11 +1185,22 @@ class UserBook {
   // Convert the UserBook object to a Map for database operations
   Map<String, dynamic> toMap() {
     return {
-      'user_id': userId,           // The ID of the user
-      'book_id': bookId,           // The ID of the book
+      'user_id': user_id,           // The ID of the user
+      'book_id': book_id,           // The ID of the book
       'list_category': listCategory, // The category of the book (e.g., Reading, Completed, etc.)
       'current_page': currentPage,      // The number of pages the user has read in the book
     };
+  }
+
+   factory UserBook.fromMap(Map<String, dynamic> map) {
+    return UserBook(
+      id: map['id'] as int?, // Nullable field
+      book_id: map['book_id'] as int,
+      user_id: map['user_id'] as int,
+      text: map['text'] as String,
+      reviewDate: map['reviewDate'] as String,
+      stars: map['stars'] as int,
+    );
   }
 }
 
