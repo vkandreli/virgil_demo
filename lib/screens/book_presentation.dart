@@ -38,6 +38,15 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   }
 
 
+    Future<void> addToReadList(int? bookId, int? userId) async {
+    await  SQLService().addBookToReadingList(bookId, userId);
+  }
+
+
+    Future<void> RemoveFromReadList(int? bookId, int? userId) async {
+    await  SQLService().removeBookFromReadingList(bookId, userId);
+  }
+
 
   @override
   void initState() {
@@ -53,10 +62,10 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   void _toggleSaveRemove() {
     setState(() {
       if (isInReadingList) {
-        readingList.remove(widget.book);
+       RemoveFromReadList(widget.book.id, widget.currentUser.id);
         logger.i("Removed book from reading list: ${widget.book.title}");
       } else {
-        readingList.add(widget.book);
+        addToReadList(widget.book.id, widget.currentUser.id);
         logger.i("Saved book to reading list: ${widget.book.title}");
       }
       isInReadingList = !isInReadingList;

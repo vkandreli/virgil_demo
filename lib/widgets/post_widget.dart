@@ -42,8 +42,8 @@ class _PostWidgetState extends State<PostWidget> {
     await  SQLService().ReblogPost(post, userId);
   }
 
-   Future<void> addToReadList(Book book, int? userId) async {
-    await  SQLService().addBookToReadingList(book, userId);
+   Future<void> addToReadList(int? bookId, int? userId) async {
+    await  SQLService().addBookToReadingList(bookId, userId);
   }
 
    Future<void> RemoveFromReadList(int? bookId, int? userId) async {
@@ -288,7 +288,7 @@ class _PostWidgetState extends State<PostWidget> {
                             logger.i(
                                 "Removed book from reading list: ${postsBook.title}");
                           } else {
-                            addToReadList(postsBook, widget.currentUser.id);
+                            addToReadList(postsBook.id, widget.currentUser.id);
                             logger.i(
                                 "Saved book to reading list: ${postsBook.title}");
                           }

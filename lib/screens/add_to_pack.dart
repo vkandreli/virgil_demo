@@ -29,7 +29,23 @@ class AddToPack extends StatefulWidget {
 class _AddToPackState extends State<AddToPack> {
   final TextEditingController _searchController = TextEditingController(); // Controller for TextField
 
+  late List<Pack> userPacks;
+
+  Future<void> addBookToPack(int? packId, int? bookId) async {
+    await SQLService().addBooktoPack(packId, bookId);
+  }
+
+  Future<void> getUserPacks(int? userId) async {
+    userPacks = await SQLService().getPacksForUser(userId);
+  }
+
+
   @override
+  void initState() {
+    super.initState();
+    getUserPacks(widget.currentUser.id);
+  }
+
   Widget build(BuildContext context) {
     final Logger logger = Logger();  // Create an instance of the Logger
 
@@ -59,7 +75,7 @@ class _AddToPackState extends State<AddToPack> {
                           // If a pack is selected, proceed with adding the book
                           if (selectedPack != null) {
                             // Add the selected book to the pack
-                            selectedPack.addBookToPack(widget.selectedBook);
+                         addBookToPack(selectedPack.id, widget.selectedBook.id);
 
                             // Pop the current screen and return to the previous one with the updated pack
                             Navigator.pop(context, selectedPack);  // Return the updated pack
@@ -87,7 +103,7 @@ class _AddToPackState extends State<AddToPack> {
             Expanded(
               child: ListView(
                 children: [
-                  packScroll("Existing packs", widget.currentUser.usersPacks, currentUser: widget.currentUser, picking: true),
+                  packScroll("Existing packs", userPacks, currentUser: widget.currentUser, picking: true),
                 ],
               ),
             ),
