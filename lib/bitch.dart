@@ -1,3 +1,5 @@
+import 'package:virgil_demo/SQLService.dart';
+
 Future<Book> getBookForReview(int bookId) async {
   final db = await database;
 
@@ -33,3 +35,25 @@ Future<User> getUserForReview(int userId) async {
     throw Exception("Book not found with ID $userId");
   }
 }
+
+  static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";//"https://via.placeholder.com/150?text=Profile+Image";
+  User.empty()
+      : id='',
+      username = '',
+        email = '',
+        profileImage = '',
+        status = '',
+        isPacksPrivate = false,
+        isReviewsPrivate = false,
+        isReadListPrivate = false,
+        password = "",
+        followedUsers =  [],
+        usersPosts = [],
+       usersReviews = [],
+        usersPacks = [],
+        completedList = [],
+        currentList = [],
+        readingList = [],
+       pagesPerDay= [],
+        badges= [],
+       goals = [];

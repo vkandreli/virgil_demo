@@ -24,6 +24,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Logger logger = Logger();
   late List<Post> posts = []; // This will hold the list of posts
+    late List<User> users = []; // This will hold the list of posts
+
   bool isLoading = true; // To track loading state
 
   // Add an instance of UserService
@@ -70,6 +72,31 @@ Future<void> _loadPosts() async {
     });
   }
 }
+
+Future<void> _loadUsers() async {
+  try { 
+        List<User> fetchedPosts = await SQLService().getAllPosts();
+    if (fetchedPosts == null) {
+      logger.e("Error: Fetched posts is null.");
+    } else if (fetchedPosts.isEmpty) {
+      logger.w("Warning: No posts found.");
+    } else {
+      logger.d("Fetched ${fetchedPosts.length} posts from the database.");
+    }
+
+    setState(() {
+      posts = fetchedPosts;
+      isLoading = false;
+    });
+  } catch (e, stackTrace) {
+    logger.e("Error loading posts: $e");
+    logger.e("Stack Trace: $stackTrace");
+    setState(() {
+      isLoading = false;
+    });
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
