@@ -6,7 +6,7 @@ import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/users_lists.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 import 'package:virgil_demo/screens/new_post.dart';
-import 'package:virgil_demo/models/user.dart';  // Import User model
+////import 'package:virgil_demo/models/user.dart';   // Import User model
 import 'package:virgil_demo/widgets/profile_pane.dart';
 
 class OwnProfileScreen extends StatefulWidget {

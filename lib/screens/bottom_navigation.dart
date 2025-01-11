@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/SQLService.dart';
+// //import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/screens/home_screen.dart';
 import 'package:virgil_demo/screens/library_screen.dart';
 import 'package:virgil_demo/screens/recommendations_screen.dart';
@@ -10,7 +11,7 @@ import 'home_screen.dart';
 import 'library_screen.dart';
 import 'recommendations_screen.dart';
 import 'own_profile_screen.dart';
-import 'package:virgil_demo/models/user.dart';
+// //import 'package:virgil_demo/models/user.dart'; 
 
 class CustomBottomNavBar extends StatelessWidget {
   final BuildContext context;

@@ -4,8 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/pack.dart';
-import 'package:virgil_demo/models/user.dart';
-import 'package:virgil_demo/models/book.dart';
+//import 'package:virgil_demo/models/user.dart'; 
+//import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart'; // Import the book search screen

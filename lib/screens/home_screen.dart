@@ -1,21 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/main.dart';
-import 'package:virgil_demo/models/user.dart';  // Import User model
+////import 'package:virgil_demo/models/user.dart';   // Import User model
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/new_post.dart';  // Import Post model
 import 'package:virgil_demo/screens/profile_search_scene.dart';
 import 'own_profile_screen.dart';  // Profile screen when self is clicked
 import 'others_profile_screen.dart';  // Profile screen when a user is clicked
 import 'package:virgil_demo/assets/placeholders.dart';
-import 'package:virgil_demo/models/post.dart';
+// import 'package:virgil_demo/models/post.dart';
 import 'package:virgil_demo/widgets/post_widget.dart';
 
-class HomeScreen extends StatelessWidget {
-final User currentUser;
-  const HomeScreen({Key? key, required this.currentUser}) : super(key: key);  
+class HomeScreen extends StatefulWidget {
+  final User currentUser;
 
+  HomeScreen({Key? key, required this.currentUser}) : super(key: key);
 
-  
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final Logger logger = Logger();
+  late List<Post> posts = []; // This will hold the list of posts
+  bool isLoading = true; // To track loading state
+
+  // Add an instance of UserService
+  //final UserService userService = UserService(); 
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeDatabase();  // Initialize the database first
+  }
+  Future<void> _initializeDatabase() async {
+    try {
+
+      // Now that the database is initialized, load posts
+      await _loadPosts();  
+    } catch (e) {
+      logger.e("Error initializing database: $e");
+      setState(() {
+        isLoading = false;  // Set loading to false if there is an error initializing
+      });
+    }
+  }
+
+Future<void> _loadPosts() async {
+  try { 
+        List<Post> fetchedPosts = await SQLService().getAllPosts();
+    if (fetchedPosts == null) {
+      logger.e("Error: Fetched posts is null.");
+    } else if (fetchedPosts.isEmpty) {
+      logger.w("Warning: No posts found.");
+    } else {
+      logger.d("Fetched ${fetchedPosts.length} posts from the database.");
+    }
+
+    setState(() {
+      posts = fetchedPosts;
+      isLoading = false;
+    });
+  } catch (e, stackTrace) {
+    logger.e("Error loading posts: $e");
+    logger.e("Stack Trace: $stackTrace");
+    setState(() {
+      isLoading = false;
+    });
+  }
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(

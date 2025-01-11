@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/models/pack.dart';
-import 'package:virgil_demo/models/user.dart';
+//import 'package:virgil_demo/models/user.dart'; 
 
 
 class PackSearchScreen extends StatefulWidget {

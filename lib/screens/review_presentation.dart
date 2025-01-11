@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
-import 'package:virgil_demo/models/user.dart';
+//import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/models/review.dart';
 import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/screens/book_presentation.dart';

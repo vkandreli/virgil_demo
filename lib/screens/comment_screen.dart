@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/models/post.dart';  // Import Post class
-import 'package:virgil_demo/models/user.dart'; // Import User class
+////import 'package:virgil_demo/models/user.dart';  // Import User class
 
 class CommentScreen extends StatefulWidget {
   final Post post;  // The post whose comments we are viewing/adding
