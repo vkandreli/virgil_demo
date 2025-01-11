@@ -783,10 +783,16 @@ Future<void> CreatePost(Post post) async {
     );
   }
 
+ Future<List<Post>> getAllPosts() async {
+  final db = await database;
 
+    // Query to join 'user_books' and 'books' tables to get books for the user
+    final List<Map<String, dynamic>> maps = await db.query(
+      'posts',
+    );
+return  Post.fromMap(maps);
 
-
-
+ }
 
 
 

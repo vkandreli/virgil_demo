@@ -8,11 +8,8 @@ class ProfilePane extends StatelessWidget {
   final User user;
   // ProfilePane({required this.user, required this.currentUser});  
 
-
-
-  const ProfilePane(
-      {Key? key, required this.user, required this.currentUser})
-      : super(key: key);
+  ProfilePane(
+      {Key? key, required this.user, required this.currentUser}) : super(key: key);
 
   @override
   _ProfilePaneState createState() => _ProfilePaneState();

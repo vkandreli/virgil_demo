@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
-import 'package:virgil_demo/models/book.dart';
-import 'package:virgil_demo/models/user.dart';
+//import 'package:virgil_demo/models/book.dart';
+//import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/own_profile_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
+
+import '../SQLService.dart';
 class StatsScreen extends StatefulWidget {
   final User currentUser;
 

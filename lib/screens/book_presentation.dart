@@ -3,12 +3,12 @@ import 'package:logger/logger.dart';
 import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
-// import 'package:virgil_demo/models/book.dart';
+// //import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/screens/add_to_pack.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/new_review.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
-//import 'package:virgil_demo/models/user.dart'; // Assuming we have the User model available
+//////import 'package:virgil_demo/models/user.dart';  // Assuming we have the User model available
 
 class BookDetailScreen extends StatefulWidget {
   final Book book;
@@ -27,20 +27,23 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   final Logger logger = Logger();
   TextEditingController _pageController = TextEditingController();
   late List<Book> completedList, currentList, readingList;
-
-  Future<void> _getBookLists() async {
+  late List<Review> usersReviews, bookReviews;
+  
+  Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
   currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
   readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
+usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
+bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
   }
 
-  
+
 
   @override
   void initState() {
     super.initState();
-    _getBookLists();
+    _getResources();
     // Check if the book is in the reading list of the current user
     isInReadingList = readingList.contains(widget.book); //.readingList.contains(widget.book);
     isInCurrentList = currentList.contains(widget.book);
