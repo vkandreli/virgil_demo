@@ -1,4 +1,4 @@
-//import 'package:virgil_demo/models/user.dart'; 
+import 'package:virgil_demo/models/user.dart'; 
 
 class Achievement {
   final String name;

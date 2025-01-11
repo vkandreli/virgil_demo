@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 //import 'package:virgil_demo/models/book.dart';
 import 'package:http/http.dart' as http;
@@ -122,7 +123,7 @@ Future<List<Book>> fetchBooksFromGoogleAPI(String query) async {
             posterUrl: posterUrl,
             description: description,
             totalPages: totalPages,
-            currentPage: currentPage,
+            // currentPage: currentPage,
             dateAdded: dateAdded,
             dateCompleted: dateCompleted,
           ));
