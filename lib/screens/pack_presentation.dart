@@ -18,12 +18,12 @@ class PackDetailScreen extends StatefulWidget {
 }
 
 class _PackDetailScreenState extends State<PackDetailScreen> {
-  late Book packsBook= Book.empty();
+  late List<Book> packsBook= [];
   late User creator = User.empty();
 
   Future<void> _getResources() async {
-  packsBook = await SQLService().getBookForReview(widget.pack.id);
-  creator = await SQLService().getUserForReview(widget.pack.id); 
+  packsBook = await SQLService().getBooksForPack(widget.pack.id);
+  creator = await SQLService().getUserForPack(widget.pack.id); 
 
   }
 
@@ -81,14 +81,14 @@ class _PackDetailScreenState extends State<PackDetailScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => OtherProfileScreen(
-                              user: widget.pack.creator,
+                              user: creator,
                               currentUser: widget.currentUser,
                             ),
                           ),
                         );
                       },
                       child: Text(
-                        widget.pack.creator.username,
+                        creator.username,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
