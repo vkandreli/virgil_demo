@@ -20,6 +20,25 @@ class ReviewDetailScreen extends StatefulWidget {
 
 class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
   int _currentIndex = 0;  
+  late List<Book> reviewsBooks, currentList, readingList;
+  late List<Review> usersReviews, bookReviews;
+  late Book reviewsBook;
+  late User reviewsUser;
+
+  Future<void> _getResources() async {
+  reviewsBook = await SQLService().getBookForReview(widget.review.id);
+reviewsUser = await SQLService().getUserForReview(widget.review.id); 
+
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getResources();
+
+  }
 
   void _onTabTapped(int index) {
     setState(() {
@@ -42,7 +61,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BookDetailScreen(book: widget.review.book, currentUser: widget.currentUser),
+                        builder: (context) => BookDetailScreen(book: reviewsBook, currentUser: widget.currentUser),
                       ),
                     );
                   },
@@ -51,7 +70,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          widget.review.book.posterUrl.isEmpty? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api" :widget.review.book.posterUrl,
+                          reviewsBook.posterUrl.isEmpty? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api" :reviewsBook.posterUrl,
                           height: 180,
                           width: 120,
                           fit: BoxFit.cover,
@@ -63,14 +82,14 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.review.book.title,
+                              reviewsBook.title,
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
-                              'By: ${widget.review.book.author}',
+                              'By: ${reviewsBook.author}',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.lightBrown,
@@ -89,7 +108,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => OtherProfileScreen(user: widget.review.user, currentUser: placeholderSelf),
+                        builder: (context) => OtherProfileScreen(user: reviewsUser, currentUser: placeholderSelf),
                       ),
                     );
                   },
@@ -97,11 +116,11 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                     children: [
                       CircleAvatar(
                         radius: 24,
-                        backgroundImage: NetworkImage(widget.review.user.profileImage ?? 'https://via.placeholder.com/150'),
+                        backgroundImage: NetworkImage(reviewsUser.profileImage ?? 'https://via.placeholder.com/150'),
                       ),
                       SizedBox(width: 12),
                       Text(
-                        widget.review.user.username,
+                        reviewsUser.username,
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -152,9 +171,9 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                 ),
                 SizedBox(height: 20),
                 // Reviews from the same user, same book, same author
-                reviewScroll("Reviews by the same user", widget.review.user.usersReviews, currentUser: widget.currentUser),
-                reviewScroll("Reviews for the same book", widget.review.user.usersReviews, currentUser: widget.currentUser),
-                reviewScroll("Reviews for the same author", widget.review.user.usersReviews, currentUser: widget.currentUser),
+                reviewScroll("Reviews by the same user", reviewsUser.usersReviews, currentUser: widget.currentUser),
+                reviewScroll("Reviews for the same book",reviewsUser.usersReviews, currentUser: widget.currentUser),
+                reviewScroll("Reviews for the same author", reviewsUser.usersReviews, currentUser: widget.currentUser),
               ],
             ),
           ),
