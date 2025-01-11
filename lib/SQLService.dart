@@ -790,7 +790,7 @@ Future<void> CreatePost(Post post) async {
     final List<Map<String, dynamic>> maps = await db.query(
       'posts',
     );
-return  Post.fromMap(map);
+return  Post.fromMap(maps);
 
  }
 
