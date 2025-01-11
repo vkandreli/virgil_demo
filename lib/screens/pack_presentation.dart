@@ -19,11 +19,11 @@ class PackDetailScreen extends StatefulWidget {
 
 class _PackDetailScreenState extends State<PackDetailScreen> {
   late Book packsBook= Book.empty();
-  late User packsUser= User.empty();
+  late User creator = User.empty();
 
   Future<void> _getResources() async {
-  packsBook = await SQLService().getBookForReview(widget.review.id);
-packsUser = await SQLService().getUserForReview(widget.review.id); 
+  packsBook = await SQLService().getBookForReview(widget.pack.id);
+packsUser = await SQLService().getUserForReview(widget.pack.id); 
 
   }
 
@@ -48,9 +48,9 @@ packsUser = await SQLService().getUserForReview(widget.review.id);
                 // pack poster image
                 Center(
                   child: Image.network(
-                    pack.packImage.isEmpty
+                    widget.pack.packImage.isEmpty
                         ? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api"
-                        : pack.packImage,
+                        : widget.pack.packImage,
                     height: 300,
                     fit: BoxFit.cover,
                   ),
@@ -59,14 +59,14 @@ packsUser = await SQLService().getUserForReview(widget.review.id);
                 
                 // pack Title
                 Text(
-                  pack.title,
+                  widget.pack.title,
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 16),
-                bookScroll("Books in pack", pack.books, currentUser: currentUser),
+                bookScroll("Books in pack", widget.pack.books, currentUser: widget.currentUser),
                 
                 // Created by section with clickable username
                 Row(
@@ -81,14 +81,14 @@ packsUser = await SQLService().getUserForReview(widget.review.id);
                           context,
                           MaterialPageRoute(
                             builder: (context) => OtherProfileScreen(
-                              user: pack.creator,
-                              currentUser: currentUser,
+                              user: widget.pack.creator,
+                              currentUser: widget.currentUser,
                             ),
                           ),
                         );
                       },
                       child: Text(
-                        pack.creator.username,
+                        widget.pack.creator.username,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -105,7 +105,7 @@ packsUser = await SQLService().getUserForReview(widget.review.id);
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  pack.description,
+                  widget.pack.description,
                   style: TextStyle(fontSize: 18),
                 ),
               ],
@@ -115,7 +115,7 @@ packsUser = await SQLService().getUserForReview(widget.review.id);
       ),
       bottomNavigationBar: CustomBottomNavBar(
         context: context, 
-        currentUser: currentUser,
+        currentUser: widget.currentUser,
       ),
     );
   }

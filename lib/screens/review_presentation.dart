@@ -37,12 +37,6 @@ reviewsUser = await SQLService().getUserForReview(widget.review.id);
 
   }
 
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
