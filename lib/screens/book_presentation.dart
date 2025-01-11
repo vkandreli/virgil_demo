@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
-import 'package:virgil_demo/models/book.dart';
+// import 'package:virgil_demo/models/book.dart';
 import 'package:virgil_demo/screens/add_to_pack.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/new_review.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
-import 'package:virgil_demo/models/user.dart'; // Assuming we have the User model available
+//import 'package:virgil_demo/models/user.dart'; // Assuming we have the User model available
 
 class BookDetailScreen extends StatefulWidget {
   final Book book;
@@ -25,24 +26,33 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   late bool isInReadingList, isInCurrentList, isCompleted;
   final Logger logger = Logger();
   TextEditingController _pageController = TextEditingController();
+  late List<Book> completedList, currentList, readingList;
+
+  Future<void> _getBookLists() async {
+  completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
+  currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
+
+  }
 
   @override
   void initState() {
     super.initState();
+    _getBookLists();
     // Check if the book is in the reading list of the current user
-    isInReadingList = widget.currentUser.readingList.contains(widget.book);
-    isInCurrentList = widget.currentUser.currentList.contains(widget.book);
-    isCompleted = widget.currentUser.completedList.contains(widget.book);
+    isInReadingList = readingList.contains(widget.book); //.readingList.contains(widget.book);
+    isInCurrentList = currentList.contains(widget.book);
+    isCompleted = completedList.contains(widget.book);
   }
 
   // Toggle Save/Remove button logic
   void _toggleSaveRemove() {
     setState(() {
       if (isInReadingList) {
-        widget.currentUser.readingList.remove(widget.book);
+        readingList.remove(widget.book);
         logger.i("Removed book from reading list: ${widget.book.title}");
       } else {
-        widget.currentUser.readingList.add(widget.book);
+        readingList.add(widget.book);
         logger.i("Saved book to reading list: ${widget.book.title}");
       }
       isInReadingList = !isInReadingList;

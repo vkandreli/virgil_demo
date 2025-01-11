@@ -751,7 +751,6 @@ Future<void> CreatePost(Post post) async {
 
 //*********    User  **********/
 
-
 class User {
   final int? id;
   final String username;
@@ -761,6 +760,15 @@ class User {
   bool isPacksPrivate;
   bool isReviewsPrivate;
   bool isReadListPrivate;
+
+  // User collections
+  List<User> followedUsers = [];
+  List<Post> usersPosts = [];
+  List<Review> usersReviews = [];
+  List<Pack> usersPacks = [];
+  List<Book> readingList = [];
+  List<Book> currentList = [];
+  List<Book> completedList = [];
 
   User({
     this.id,
@@ -777,32 +785,137 @@ class User {
   // columns in the database.
   Map<String, Object?> toMap() {
     return {
-       'id': id,
+      'id': id,
       'username': username,
       'email': email,
       'profileImage': profileImage,
       'status': status,
       'isPacksPrivate': isPacksPrivate ? 1 : 0,
-      'isReviewsPrivate': isReviewsPrivate ? 1 : 0, 
+      'isReviewsPrivate': isReviewsPrivate ? 1 : 0,
       'isReadListPrivate': isReadListPrivate ? 1 : 0,
     };
   }
- 
 
   static User fromMap(Map<String, dynamic> map) {
     return User(
-       id: map['id'],
+      id: map['id'],
       username: map['username'],
       email: map['email'],
-      profileImage: map['profileImage'], 
-      status: map['status'], 
-      isPacksPrivate: map['isPacksPrivate'] == 1, 
-      isReviewsPrivate: map['isReviewsPrivate'] == 1, 
+      profileImage: map['profileImage'],
+      status: map['status'],
+      isPacksPrivate: map['isPacksPrivate'] == 1,
+      isReviewsPrivate: map['isReviewsPrivate'] == 1,
       isReadListPrivate: map['isReadListPrivate'] == 1,
     );
   }
-  
+
+  // Method to toggle the privacy status of the packs
+  void togglePacksPrivacy() {
+    isPacksPrivate = !isPacksPrivate;
+  }
+
+  // Method to toggle the privacy status of the completed list
+  void toggleReviewsPrivacy() {
+    isReviewsPrivate = !isReviewsPrivate;
+  }
+
+  // Method to toggle the privacy status of the reading list
+  void toggleReadlistPrivacy() {
+    isReadListPrivate = !isReadListPrivate;
+  }
+
+  // Method to follow a user
+  void follow(User user) {
+    if (!followedUsers.contains(user)) {
+      followedUsers.add(user);
+    }
+  }
+
+  // Method to unfollow a user
+  void unfollow(User user) {
+    followedUsers.remove(user);
+  }
+
+  // Method to make a post
+  void makePost(Post post) {
+    usersPosts.add(post);
+  }
+
+  // Method to delete a post
+  void deletePost(Post post) {
+    usersPosts.remove(post);
+  }
+
+  // Method to post a review
+  void postReview(Review review) {
+    usersReviews.add(review);
+  }
+
+  // Method to delete a review
+  void deleteReview(Review review) {
+    usersReviews.remove(review);
+  }
+
+  // Method to post a pack
+  void postPack(Pack pack) {
+    usersPacks.add(pack);
+  }
+
+  // Method to delete a pack
+  void deletePack(Pack pack) {
+    usersPacks.remove(pack);
+  }
+
+  // Method to add a book to the reading list
+  void addBook(Book book) {
+    readingList.add(book);
+    book.dateAdded = DateTime.now();
+  }
+
+  // Method to remove a book from the reading list
+  void removeBook(Book book) {
+    readingList.remove(book);
+    book.dateAdded = null;
+  }
+
+  // Method to add a book to the current reading list
+  void addToCurrent(Book book) {
+    currentList.add(book);
+  }
+
+  // Method to add a book to the completed list
+  void addToCompleted(Book book) {
+    completedList.add(book);
+    readingList.remove(book);
+    book.currentPage = 0;
+    book.dateCompleted = DateTime.now();
+  }
+
+  // Method to change the user's status
+  void changeStatus(String newStatus) {
+    status = newStatus;
+  }
+
+  // Method to add a post to the user's posts list
+  void addPost(Post post) {
+    usersPosts.add(post);
+  }
+
+  // Method to find the page number of a book in the current list
+  int pageOfBook(Book bookSent) {
+    try {
+      // Find the book in the currentList based on the title
+      Book selected = currentList.firstWhere(
+        (book) => book.title == bookSent.title,
+      );
+      return selected.currentPage ?? 0;
+    } catch (e) {
+      // If the book is not found, return 0 or an appropriate default value
+      return 0;
+    }
+  }
 }
+
 
 
 //*********    Book  **********/
@@ -867,6 +980,20 @@ class Book {
       dateCompleted: map['dateCompleted'] != null ? DateTime.parse(map['dateCompleted']) : null,
       totalPages: map['totalPages'],
       genre: map['genre'],
+    );
+  }
+
+  factory Book.empty() {
+    return Book(
+      title: '',
+      description: '',
+      genre: '',
+      posterUrl: 'https://tse3.mm.bing.net/th?id=OIP.0fb3mN86pTUI9jvsDmkqgwHaJl&pid=Api',
+      totalPages: 0,
+      currentPage: 0,
+      publicationDate: "",
+      publisher: "",
+      author: "",
     );
   }
 }
