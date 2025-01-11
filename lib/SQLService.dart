@@ -48,7 +48,7 @@ class SQLService {
       );
       await  db.execute(
       '''CREATE TABLE books(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL,
-        author TEXT NOT NULL, publisher TEXT NOT NULL,  posterUrl TEXT NOT NULL, description TEXT NOT NULL,
+        author TEXT NOT NULL, publisher TEXT NOT NULL, language TEXT NOT NULL, posterUrl TEXT NOT NULL, description TEXT NOT NULL,
         dateAdded TEXT, dateCompleted TEXT, totalPages INTEGER NOT NULL, genre TEXT)
         ''',
       );
