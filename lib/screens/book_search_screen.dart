@@ -113,6 +113,7 @@ Future<List<Book>> fetchBooksFromGoogleAPI(String query) async {
           DateTime? dateCompleted;
           int totalPages = item['volumeInfo']['pageCount'] ?? 0;
           int? currentPage = 0;
+String language = item['volumeInfo']['language'] ?? 'No Language';  
 
           // Create a Book object from the data and add it to the list
           books.add(Book(
@@ -126,6 +127,7 @@ Future<List<Book>> fetchBooksFromGoogleAPI(String query) async {
             // currentPage: currentPage,
             dateAdded: dateAdded,
             dateCompleted: dateCompleted,
+            language: language,
           ));
         }
       }
