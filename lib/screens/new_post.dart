@@ -4,9 +4,9 @@ import 'package:image_picker/image_picker.dart';
 //import 'package:virgil_demo/models/post.dart';
 //import 'package:virgil_demo/models/user.dart'; 
 //import 'package:virgil_demo/models/book.dart';
-import 'package:virgil_demo/screens/book_search_screen.dart';
+import 'package:virgil_demo/screens/book_search_screen.dart';  // Import the book search screen
+import 'package:virgil_demo/SQLService.dart';
 
-import '../SQLService.dart'; // Import the book search screen
 
 class CreatePostScreen extends StatefulWidget {
   final User currentUser;
@@ -138,7 +138,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     ? () {
                         // Create the Post object
                         Post post = Post(
-                          originalPoster: widget.currentUser, // Use the current user as the poster
+                          originalPoster_id: widget.currentUser.id, // Use the current user as the poster
                           timePosted: DateTime.now(),
                           imageUrl: 'https://tse3.mm.bing.net/th?id=OIP.PgvVbyS2yPLX6TlQ4Wf-iAHaDb&pid=Api',//selectedImagePath, 
                           quote: quoteText,
@@ -148,7 +148,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           comments: [],
                         );
 
-                        // Add the post to the current user's posts
+
+
+                        
+// Add the post to the current user's posts
                         widget.currentUser.addPost(post);
 
                         // Navigate back to the Profile screen
