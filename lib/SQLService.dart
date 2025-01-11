@@ -262,6 +262,22 @@ Future<void> printTable(String tableName) async {
   return maps.map((map) => User.fromMap(map)).toList();
   }
 
+Future<String> getUsernameByUserId(int userId) async {
+  final db = await SQLService().database;
+
+  // Query the users table where the user_id matches
+  final List<Map<String, dynamic>> maps = await db.query(
+    'users',
+    where: 'id = ?',
+    whereArgs: [userId],
+  );
+
+  if (maps.isNotEmpty) {
+    return maps.first['username']; 
+  } else {
+    throw Exception('User not found');
+  }
+}
 
 
 
@@ -685,7 +701,17 @@ Future<List<Review>> getReviewsForBook(int? bookId) async {
   });
 }
 
+Future<List<Review>> getReviewsByDate() async {
+  final db = await SQLService().database;
 
+  final List<Map<String, dynamic>> maps = await db.query(
+    'reviews',
+    orderBy: 'reviewDate DESC',
+    limit: 10,
+  );
+
+  return maps.map((reviewMap) => Review.fromMap(reviewMap)).toList();
+}
 
 
 
@@ -799,6 +825,23 @@ Future<UserBook?> getUserBook(int userId, int bookId) async {
     });
   }
 
+
+Future<List<Book>> getCommunityReading(int? currentUserId) async {
+  final db = await SQLService().database;
+
+  final List<Map<String, dynamic>> results = await db.rawQuery('''
+    SELECT books.*, COUNT(user_books.book_id) AS frequency
+    FROM user_books
+    JOIN books ON user_books.book_id = books.id
+    JOIN user_followeduser ON user_books.user_id = user_followeduser.followeduser_id
+    WHERE user_followeduser.user_id = ?
+    GROUP BY user_books.book_id
+    ORDER BY frequency DESC
+    LIMIT 10;
+  ''', [currentUserId]);  
+
+  return results.map((map) => Book.fromMap(map)).toList();
+}
 
 
 // Get the book associated with a post
