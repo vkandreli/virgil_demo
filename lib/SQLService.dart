@@ -905,7 +905,7 @@ Future<void> unfollowUser(int userId, int followedId) async {
 
 
 
-  Future<void> addBooktoPack(int packId, int bookId) async {
+  Future<void> addBooktoPack(int? packId, int? bookId) async {
     final db = await database;
 
     await db.insert(
