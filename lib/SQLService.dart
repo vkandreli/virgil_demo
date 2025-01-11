@@ -819,7 +819,21 @@ Future<User> getPosterForPost(int? postId) async {
 
   return User.empty(); // Return null if no user found
 }
+Future<List<Post>> getPostsForUser(int? userId) async {
+  final db = await database;
 
+  // Query to find all posts made by the given user (originalPoster_id)
+  final List<Map<String, dynamic>> maps = await db.query(
+    'posts',
+    where: 'originalPoster_id = ?',
+    whereArgs: [userId],
+  );
+
+  // If we have matching posts, map them to a list of Post objects
+  return List.generate(maps.length, (i) {
+    return Post.fromMap(maps[i]);
+  });
+}
 // Get the reblogger for a post (this can be null)
 Future<User> getRebloggerForPost(int? postId) async {
   final db = await database;
