@@ -634,7 +634,7 @@ Future<void> insertPack(Pack pack) async {
     );
   }
 
- Future<List<User>> getPacksForUser(int userId) async {
+ Future<List<User>> getPacksForUser(int? userId) async {
 
     final db = await database;
 
@@ -652,7 +652,7 @@ Future<void> insertPack(Pack pack) async {
   }
 
 
-  Future<List<Review>> getReviewsForUser(int userId) async {
+  Future<List<Review>> getReviewsForUser(int? userId) async {
   final db = await database;
 
   // Query to find all reviews made by the specific user
