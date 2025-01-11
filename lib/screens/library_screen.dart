@@ -16,11 +16,41 @@ import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/screens/chatbot_screen.dart'; 
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
-class LibraryScreen extends StatelessWidget {
+class LibraryScreen extends StatefulWidget {
 final User currentUser;
   LibraryScreen({Key? key, required this.currentUser}) : super(key: key); 
   final TextEditingController _searchController = TextEditingController(); // Controller for TextField
+    @override
+  _BookDetailScreenState createState() => _BookDetailScreenState();
+}
+
+class _BookDetailScreenState extends State<BookDetailScreen> {
+  late bool isInReadingList, isInCurrentList, isCompleted;
+  final Logger logger = Logger();
+  TextEditingController _pageController = TextEditingController();
+  late List<Book> completedList, currentList, readingList;
+  late List<Review> usersReviews, bookReviews;
   
+  Future<void> _getResources() async {
+  completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
+  currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
+usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
+bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id); 
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getResources();
+    // Check if the book is in the reading list of the current user
+    isInReadingList = readingList.contains(widget.book); //.readingList.contains(widget.book);
+    isInCurrentList = currentList.contains(widget.book);
+    isCompleted = completedList.contains(widget.book);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Logger logger = Logger();  // Create an instance of the Logger
@@ -94,10 +124,10 @@ final User currentUser;
             Expanded(
               child: ListView(
                 children: [
-                  bookScroll("Books you're reading", placeholderBooks, showProgress: true, currentUser: currentUser),//currentUser.currentList
-                  bookScroll('Your personal Read List',placeholderBooks, currentUser: currentUser ),//currentUser.readingList
-                  packScroll('Packs on your Read List', placeholderPacks, currentUser: currentUser,), //currentUser.usersPacks
-                  bookScroll("Books you've finished", placeholderBooks, isCompleted: true, currentUser: currentUser),//currentUser.completedList
+                  bookScroll("Books you're reading", currentList, showProgress: true, currentUser: currentUser),//currentUser.currentList
+                  bookScroll('Your personal Read List',readingList, currentUser: currentUser ),//currentUser.readingList
+                  packScroll('Packs on your Read List', usersPacks, currentUser: currentUser,), //currentUser.usersPacks
+                  bookScroll("Books you've finished", completedList, isCompleted: true, currentUser: currentUser),//currentUser.completedList
                 ],
               ),
             ),
