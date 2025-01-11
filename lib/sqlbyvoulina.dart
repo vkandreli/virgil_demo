@@ -14,7 +14,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-
+ 
 // Create a logger instance
 final logger = Logger();
 
@@ -22,19 +22,31 @@ class SQLService {
   static Database? _database;
 
   // Singleton pattern to get the database instance
-  static Future<Database> get database async {
+static Future<Database> get database async {
+   // logger.d("SQLService database getter called.");
+
     if (_database != null) {
-      logger.d('Returning existing database instance');
+    //  logger.d('Returning existing database instance');
       return _database!;
     }
 
     // Delete the old database every time before opening a new one
     logger.d('Initializing fresh database');
-    await deleteDatabaseFile();  // Delete the old database
 
-    _database = await _initDatabase();  // Initialize a fresh database
-    return _database!;
+    try {
+      await deleteDatabaseFile();  // Delete the old database
+     // logger.d("Old database deleted.");
+
+      _database = await _initDatabase();  // Initialize a fresh database
+      //logger.d("New database initialized.");
+      
+      return _database!;
+    } catch (e) {
+      //logger.e("Error during database initialization: $e");
+      throw Exception("Failed to initialize the database.");
+    }
   }
+
 
   // Delete the existing database file
   static Future<void> deleteDatabaseFile() async {
@@ -42,9 +54,9 @@ class SQLService {
       Directory documentsDirectory = await getApplicationDocumentsDirectory();
       String path = join(documentsDirectory.path, 'app.db');
       await deleteDatabase(path);  // Delete the old database
-      logger.i('Database deleted at path: $path');
+    //  logger.i('Database deleted at path: $path');
     } catch (e) {
-      logger.e('Error deleting database: $e');
+      //logger.e('Error deleting database: $e');
     }
   }
 
@@ -53,12 +65,12 @@ class SQLService {
     try {
       Directory documentsDirectory = await getApplicationDocumentsDirectory();
       String path = join(documentsDirectory.path, 'app.db');
-      logger.d('Opening database at path: $path');
+    //  logger.d('Opening database at path: $path');
     
       // Open the database and call onCreate if it's a new database
       return await openDatabase(path, version: 1, onCreate: _onCreate);
     } catch (e) {
-      logger.e('Error initializing database: $e');
+     // logger.e('Error initializing database: $e');
       rethrow;
     }
   }
@@ -303,6 +315,17 @@ logger.i('bades table created');
         'isReadListPrivate': 1,
       });
 
+            await db.insert('users', {
+        'username': 'u',
+        'password': 'u',
+        'email': 'jane.u@example.com',
+        'profileImage': 'https://tse1.mm.bing.net/th?id=OIP.qbGUIKPMpi5kfUsaFS9_QQHaFb&pid=Api',
+        'status': 'active',
+        'isPacksPrivate': 1,
+        'isReviewsPrivate': 0,
+        'isReadListPrivate': 1,
+      });
+
       // Insert placeholder books
       await db.insert('books', {
         'id': 'book1',
@@ -331,7 +354,7 @@ logger.i('bades table created');
         'timePosted': '2025-01-10T12:00:00',
         'likes': 10,
         'reblogs': 5,
-        'comments': '[]',
+        'comments': jsonEncode(['comment1', 'comment2']),
       });
 
       await db.insert('posts', {
@@ -343,7 +366,7 @@ logger.i('bades table created');
         'timePosted': '2025-01-10T12:30:00',
         'likes': 15,
         'reblogs': 7,
-        'comments': '[]',
+        'comments': jsonEncode(['comment1', 'comment2']),
       });
 
       print('Placeholder data inserted.');

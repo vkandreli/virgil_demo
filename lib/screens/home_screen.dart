@@ -49,23 +49,31 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-    // Fetch posts from the database
 Future<void> _loadPosts() async {
   try {
     PostService postService = PostService();
+    logger.d("PostService instance created.");
+    
+    await postService.init();
+    logger.d("Database initialization started.");
+    logger.d("Database initialization complete.");
 
-    // Initialize the database
-    await postService.init();  // Ensure init() is called to initialize _db
-
-    // Fetch posts after the database is initialized
     List<Post> fetchedPosts = await postService.getAllPosts();
+    if (fetchedPosts == null) {
+      logger.e("Error: Fetched posts is null.");
+    } else if (fetchedPosts.isEmpty) {
+      logger.w("Warning: No posts found.");
+    } else {
+      logger.d("Fetched ${fetchedPosts.length} posts from the database.");
+    }
 
     setState(() {
       posts = fetchedPosts;
-      isLoading = false; // Set loading to false once the posts are fetched
+      isLoading = false;
     });
-  } catch (e) {
+  } catch (e, stackTrace) {
     logger.e("Error loading posts: $e");
+    logger.e("Stack Trace: $stackTrace");
     setState(() {
       isLoading = false;
     });
