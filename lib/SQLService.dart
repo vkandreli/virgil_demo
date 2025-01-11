@@ -289,7 +289,7 @@ Future<dynamic> takeElement(String tableName, String columnName, Map<String, dyn
   }
 }
 
-Future<List<Book>> getBooksForPack(int packId) async {
+Future<List<Book>> getBooksForPack(int? packId) async {
   final db = await database;
 
   final List<Map<String, dynamic>> maps = await db.query(
@@ -320,7 +320,7 @@ Future<List<Book>> getBooksForPack(int packId) async {
   }
 }
 
-Future<User> getUserForPack(int packId) async {
+Future<User> getUserForPack(int? packId) async {
   final db = await database;
 
   // Query to find the pack with the specific packId and get its creator_id
