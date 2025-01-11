@@ -32,7 +32,7 @@ class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
     final query = _searchController.text.trim();
     if (query.isNotEmpty) {
       // Fetch users from the db
-      final users = await SQLService().getUserByUsername(query);
+      final users = await SQLService().getUsersByUsername(query);
       setState(() {
         filteredProfiles = users;
       });

@@ -250,7 +250,7 @@ Future<void> printTable(String tableName) async {
 
 
 
-  Future<User> getUserByUsername(String username) async {
+  Future<List<User>> getUsersByUsername(String username) async {
     final db = await database;
 
     // Query the user from the users table where the username matches
@@ -259,7 +259,7 @@ Future<void> printTable(String tableName) async {
       where: 'username = ?',
       whereArgs: [username],
     );
-return User.fromMap(maps.first);
+  return maps.map((map) => User.fromMap(map)).toList();
   }
 
 
