@@ -59,7 +59,7 @@ class _AddToPackState extends State<AddToPack> {
                           // If a pack is selected, proceed with adding the book
                           if (selectedPack != null) {
                             // Add the selected book to the pack
-                            selectedPack.addBook(widget.selectedBook);
+                            selectedPack.addBookToPack(widget.selectedBook);
 
                             // Pop the current screen and return to the previous one with the updated pack
                             Navigator.pop(context, selectedPack);  // Return the updated pack
