@@ -27,11 +27,16 @@ class UserPacksScreenState extends State<UserPacksScreen> {
 
   //getreviewsforuser Feature<void> List??
   late List<Review> userReviews;
+  late List<Pack> userPacks;
 
+    Future<void> _getPacks() async {
+  userPacks = await SQLService().getPacksForUser(widget.user.id);
+  }
 
   @override
   void initState() {
     super.initState();
+     _getPacks();
   }
 
   Widget build(BuildContext context) {
@@ -51,7 +56,7 @@ class UserPacksScreenState extends State<UserPacksScreen> {
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
-           if (widget.currentUser.usersPacks.isNotEmpty) ...[
+           if (userPacks.isNotEmpty) ...[
           Expanded(
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -59,9 +64,9 @@ class UserPacksScreenState extends State<UserPacksScreen> {
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,
               ),
-              itemCount: widget.user.usersPacks.length, // Assuming user.usersPacks contains the list of packs
+              itemCount: userPacks.length, // Assuming user.usersPacks contains the list of packs
               itemBuilder: (context, index) {
-                var pack = widget.user.usersPacks[index];
+                var pack = userPacks[index];
                 return PackCard(
                   pack: pack,
                   currentUser: widget.currentUser,
@@ -70,7 +75,7 @@ class UserPacksScreenState extends State<UserPacksScreen> {
             ),
           ),
            ],
-                     if (widget.currentUser.usersPacks.isEmpty) ...[
+                     if (userPacks.isEmpty) ...[
               Text(
                 " Try creating some packs",
                 style: TextStyle(fontSize: 18),
@@ -167,10 +172,30 @@ class UserReviewsScreenState extends State<UserReviewsScreen> {
 }
 
 
-class UserReadListScreen extends StatelessWidget {
+class UserReadListScreen extends StatefulWidget {
   final User user, currentUser;
 
   const UserReadListScreen({Key? key, required this.user, required this.currentUser}) : super(key: key);
+
+
+    @override
+    UserReadListScreenState createState() => UserReadListScreenState();
+}
+
+class UserReadListScreenState extends State<UserReadListScreen> {
+
+  late List<Book> readingList;
+
+  Future<void> _readingList() async {
+    readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  }
+
+
+      @override
+  void initState() {
+    super.initState();
+    _readingList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -226,9 +251,9 @@ class UserReadListScreen extends StatelessWidget {
           Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                user == currentUser
+                widget.user == widget.currentUser
                       ? 'Your Reading List' 
-                      : '${user.username}\'s Reading List',
+                      : '${widget.user.username}\'s Reading List',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
@@ -239,16 +264,16 @@ class UserReadListScreen extends StatelessWidget {
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
                 ),
-                itemCount: user.readingList.length, 
+                itemCount: readingList.length, 
                 itemBuilder: (context, index) {
-                  var book = user.readingList[index];
+                  var book = readingList[index];
                   return GestureDetector(
                     onTap: () {
                       // Navigate to BookDetailScreen when tapped
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BookDetailScreen(book: book, currentUser: currentUser,),
+                          builder: (context) => BookDetailScreen(book: book, currentUser: widget.currentUser,),
                         ),
                       );
                     },
@@ -279,7 +304,7 @@ class UserReadListScreen extends StatelessWidget {
       ),
             bottomNavigationBar: CustomBottomNavBar(
         context: context, 
-        currentUser: currentUser,
+        currentUser: widget.currentUser,
       ),
     );
   }

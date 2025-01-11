@@ -677,12 +677,30 @@ Future<void> insertPack(Pack pack) async {
     where: 'user_id = ?',
     whereArgs: [userId],
   );
-
   // Convert the maps to a list of Review objects
   return List.generate(maps.length, (i) {
     return Review.fromMap(maps[i]);
   });
 }
+
+
+
+  Future<List<Review>> getReviewsForAuthor(String Author) async {
+  final db = await database;
+
+  // Query to find all reviews made by the specific user
+  final List<Map<String, dynamic>> maps = await db.query(
+    'reviews JOIN books on book_id',
+    where: 'author = ?',
+    whereArgs: [Author],
+  );
+  // Convert the maps to a list of Review objects
+  return List.generate(maps.length, (i) {
+    return Review.fromMap(maps[i]);
+  });
+}
+
+
 
 
 Future<List<Review>> getReviewsForBook(int? bookId) async {
@@ -774,7 +792,15 @@ Future<List<Review>> getReviewsByDate() async {
     await insertUserBook(NewUserBook);
   }
 
+  Future<void> removeBookFromReadingList(int? bookId, int? userId) async {
+  final db = await SQLService().database;
 
+  await db.delete(
+    'user_books',
+    where: 'user_id = ? AND book_id = ? AND listCategory = 1', // Condition to match the correct entry
+    whereArgs: [userId, bookId], 
+  );
+}
    Future<List<Book>> getBooksForUser(int userId) async {
 
     final db = await database;

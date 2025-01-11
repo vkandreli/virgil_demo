@@ -29,24 +29,32 @@ class _PostWidgetState extends State<PostWidget> {
 
   late Book postsBook= Book.empty();
   late User originalPoster, reblogger = User.empty();
+  late List<Book> readingList = [];
 
   Future<void> _getResources() async {
   postsBook = await SQLService().getBooksForPost(widget.post.id);
   originalPoster = await SQLService().getPosterForPost(widget.post.id); 
   reblogger = await SQLService().getRebloggerForPost(widget.post.id); 
-
+  readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
  }
 
   Future<void> _reblog(Post post, int? userId) async {
     await  SQLService().ReblogPost(post, userId);
   }
 
+   Future<void> addToReadList(Book book, int? userId) async {
+    await  SQLService().addBookToReadingList(book, userId);
+  }
+
+   Future<void> RemoveFromReadList(int? bookId, int? userId) async {
+    await  SQLService().removeBookFromReadingList(bookId, userId);
+  }
 
   @override
   void initState() {
     super.initState();
     _getResources();
-        isInReadingList = widget.currentUser.readingList.contains(postsBook);
+        isInReadingList = readingList.contains(postsBook);
 
   }
 
@@ -276,13 +284,11 @@ class _PostWidgetState extends State<PostWidget> {
                       onPressed: () {
                         setState(() {
                           if (isInReadingList) {
-                            widget.currentUser.readingList
-                                .remove(postsBook);
+                            RemoveFromReadList(postsBook.id, widget.currentUser.id);
                             logger.i(
                                 "Removed book from reading list: ${postsBook.title}");
                           } else {
-                            widget.currentUser.readingList
-                                .add(postsBook);
+                            addToReadList(postsBook, widget.currentUser.id);
                             logger.i(
                                 "Saved book to reading list: ${postsBook.title}");
                           }

@@ -17,6 +17,13 @@ class PackSearchScreen extends StatefulWidget {
 class _PackSearchScreenState extends State<PackSearchScreen> {
   late TextEditingController _searchController;
   late List<Pack> filteredPacks;
+  late List<Pack> userPacks;
+
+
+
+  Future<void> getUserPacks() async {
+    userPacks = await SQLService().getPacksForUser(widget.currentUser.id);
+  }
 
   @override
   void initState() {
@@ -29,7 +36,7 @@ class _PackSearchScreenState extends State<PackSearchScreen> {
     final query = _searchController.text.trim();
     if (query.isNotEmpty) {
       // Fetch packs from the db
-      final packs = widget.currentUser.usersPacks;
+      final packs = userPacks;
       setState(() {
         filteredPacks = packs;
       });

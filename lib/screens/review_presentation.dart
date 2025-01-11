@@ -21,11 +21,16 @@ class ReviewDetailScreen extends StatefulWidget {
 class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
   late Book reviewsBook= Book.empty();
   late User reviewsUser= User.empty();
+  late List<Review> userReviews;
+  late List<Review> bookReviews;
+  late List<Review> authorReviews;
 
   Future<void> _getResources() async {
   reviewsBook = await SQLService().getBookForReview(widget.review.id);
   reviewsUser = await SQLService().getUserForReview(widget.review.id); 
-
+  userReviews = await SQLService().getReviewsForUser(reviewsUser.id);
+  bookReviews = await SQLService().getReviewsForBook(reviewsBook.id);
+  authorReviews = await SQLService().getReviewsForAuthor(reviewsBook.author);
   }
 
 
@@ -162,9 +167,9 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                 ),
                 SizedBox(height: 20),
                 // Reviews from the same user, same book, same author
-                reviewScroll("Reviews by the same user", reviewsUser.usersReviews, currentUser: widget.currentUser),
-                reviewScroll("Reviews for the same book",reviewsUser.usersReviews, currentUser: widget.currentUser),
-                reviewScroll("Reviews for the same author", reviewsUser.usersReviews, currentUser: widget.currentUser),
+                reviewScroll("Reviews by the same user", userReviews, currentUser: widget.currentUser),
+                reviewScroll("Reviews for the same book",bookReviews, currentUser: widget.currentUser),
+                reviewScroll("Reviews for the same author", authorReviews, currentUser: widget.currentUser),
               ],
             ),
           ),
