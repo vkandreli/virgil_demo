@@ -250,7 +250,7 @@ Future<void> printTable(String tableName) async {
 
 
 
- /**   static Future<User> getUserByUsername(String username) async {
+  Future<User> getUserByUsername(String username) async {
     final db = await database;
 
     // Query the user from the users table where the username matches
@@ -260,7 +260,7 @@ Future<void> printTable(String tableName) async {
       whereArgs: [username],
     );
 return User.fromMap(maps.first);
-  }*/
+  }
 
 
 
@@ -634,7 +634,7 @@ Future<void> insertPack(Pack pack) async {
     );
   }
 
- Future<List<User>> getPacksForUser(int? userId) async {
+ Future<List<Pack>> getPacksForUser(int? userId) async {
 
     final db = await database;
 
@@ -647,7 +647,7 @@ Future<void> insertPack(Pack pack) async {
 
    //Choose the form of the list that is returned by the table
     return List.generate(maps.length, (i) {
-    return User.fromMap(maps[i]);
+    return Pack.fromMap(maps[i]);
     });
   }
 
@@ -1450,6 +1450,18 @@ class Pack {
       'packImage': packImage,
       'description': description,
     };
+  }
+
+
+   factory Pack.fromMap(Map<String, dynamic> map) {
+    return Pack(
+      id: map['id'],
+      title: map['title'],
+      publicationDate: map['publicationDate'],
+      creator_id: map['creator_id'],
+      packImage: map['packImage'],
+      description: map['description'],
+    );
   }
 }
 
