@@ -25,18 +25,18 @@ final User currentUser;
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
-  late bool isInReadingList, isInCurrentList, isCompleted;
   final Logger logger = Logger();
-  TextEditingController _pageController = TextEditingController();
   late List<Book> completedList, currentList, readingList;
   late List<Review> usersReviews, bookReviews;
-  
+    late List<Pack> usersPacks;
+
   Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
   currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
   readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
 usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
 bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id); 
+usersPacks = await SQLService().getPacksForUser(widget.currentUser.id); 
   }
 
 
@@ -45,10 +45,6 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   void initState() {
     super.initState();
     _getResources();
-    // Check if the book is in the reading list of the current user
-    isInReadingList = readingList.contains(widget.book); //.readingList.contains(widget.book);
-    isInCurrentList = currentList.contains(widget.book);
-    isCompleted = completedList.contains(widget.book);
   }
 
   @override
@@ -81,7 +77,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                               MaterialPageRoute(
                                 builder: (context) => BookDetailScreen(
                                   book: selectedBook,
-                                  currentUser: currentUser,
+                                  currentUser: widget.currentUser,
                                 ),
                               ),
                             );
@@ -124,10 +120,10 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
             Expanded(
               child: ListView(
                 children: [
-                  bookScroll("Books you're reading", currentList, showProgress: true, currentUser: currentUser),//currentUser.currentList
-                  bookScroll('Your personal Read List',readingList, currentUser: currentUser ),//currentUser.readingList
-                  packScroll('Packs on your Read List', usersPacks, currentUser: currentUser,), //currentUser.usersPacks
-                  bookScroll("Books you've finished", completedList, isCompleted: true, currentUser: currentUser),//currentUser.completedList
+                  bookScroll("Books you're reading", currentList, showProgress: true, currentUser: widget.currentUser),//currentUser.currentList
+                  bookScroll('Your personal Read List',readingList, currentUser:  widget.currentUser ),//currentUser.readingList
+                  packScroll('Packs on your Read List', usersPacks, currentUser:  widget.currentUser,), //currentUser.usersPacks
+                  bookScroll("Books you've finished", completedList, isCompleted: true, currentUser:  widget.currentUser),//currentUser.completedList
                 ],
               ),
             ),
@@ -146,7 +142,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
         },
         
       ),
-        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: currentUser),    
+        bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
 
     );
   }
