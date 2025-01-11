@@ -1051,7 +1051,7 @@ class Book {
 
 class Post {
   final int? id;
-  final int originalPoster_id;
+  final int? originalPoster_id;
   User? reblogger_id; 
   String? imageUrl;
   String? quote;
