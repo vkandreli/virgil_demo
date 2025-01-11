@@ -175,9 +175,9 @@ Future<void> _loadUsers() async {
                         // Expanded space for posts
             Expanded(
               child: ListView.builder(
-                itemCount: placeholderPosts.length,
+                itemCount: posts.length,
                 itemBuilder: (context, index) {
-                  return PostWidget(post: placeholderPosts[index], currentUser: widget.currentUser, isInOwnProfile: false,);
+                  return PostWidget(post: posts[index], currentUser: widget.currentUser, isInOwnProfile: false,);
                 },
               ),
             ),
