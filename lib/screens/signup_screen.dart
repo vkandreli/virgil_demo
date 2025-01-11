@@ -12,17 +12,17 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   void _signup() async {
     // Implement your signup logic here (e.g., Firebase Auth)
-    String email = _emailController.text;
+    String username = _usernameController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
-    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    if (username.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill out all fields')),
       );
@@ -30,23 +30,25 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     if (password != confirmPassword) {
-      await SQLService().printTable('packs');
+      await SQLService().printTable('users');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Passwords do not match')),
       );
       return;
     }
  
-    await storage.write(key: 'email:$email', value: _emailController.text);
-    await storage.write(key: 'password:$email', value: _passwordController.text);
+    await storage.write(key: 'username:$username', value: _usernameController.text);
+    await storage.write(key: 'password:$username', value: _passwordController.text);
 
+    User currentUser = User(username: username);
+    await SQLService().insertUser(currentUser); 
   
     // Perform signup, navigate to login, etc.
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Signup Successful')),
     );
-       _emailController.clear();
+       _usernameController.clear();
       _passwordController.clear();
       _confirmPasswordController.clear();
     // Navigate to the login screen or home screen
@@ -69,9 +71,9 @@ class _SignupScreenState extends State<SignupScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-              keyboardType: TextInputType.emailAddress,
+              controller: _usernameController,
+              decoration: InputDecoration(labelText: 'Username'),
+    //          keyboardType: TextInputType.emailAddress,
             ),
             TextField(
               controller: _passwordController,

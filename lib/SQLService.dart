@@ -264,6 +264,29 @@ return User.fromMap(maps.first);
 
 
 
+Future<dynamic> takeElement(String tableName, String columnName, Map<String, dynamic> whereClause) async {
+  final db = await SQLService().database; // Access the database instance
+  
+  // Build the WHERE clause dynamically
+  String whereString = whereClause.keys.map((key) => "$key = ?").join(" AND ");
+  List<dynamic> whereArgs = whereClause.values.toList();
+
+  // Query the table
+  final List<Map<String, dynamic>> result = await db.query(
+    tableName,
+    columns: [columnName],
+    where: whereString,
+    whereArgs: whereArgs,
+    limit: 1, // Only return one record
+  );
+
+  // If the result is empty, return null; otherwise, return the desired element
+  if (result.isEmpty) {
+    return null;
+  } else {
+    return result.first[columnName];
+  }
+}
 
 
  
@@ -296,7 +319,7 @@ return User.fromMap(maps.first);
   // Print the list of users (empty).
   print(await users());*/
   
-
+static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";
 
   /*******     Book Setters      ********/
 
@@ -520,6 +543,57 @@ Future<void> insertPack(Pack pack) async {
     });
   }
 
+   Future<List<Book>> getBooksCompletedForUser(int? userId) async {
+
+    final db = await database;
+
+    // Query to join 'user_books' and 'books' tables to get books for the user
+    final List<Map<String, dynamic>> maps = await db.query(
+      'books',
+        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 2)',
+        whereArgs: [userId],
+    );
+
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return Book.fromMap(maps[i]);
+    });
+  }
+
+    Future<List<Book>> getBooksReadingForUser(int? userId) async {
+
+    final db = await database;
+
+    // Query to join 'user_books' and 'books' tables to get books for the user
+    final List<Map<String, dynamic>> maps = await db.query(
+      'books',
+        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 1)',
+        whereArgs: [userId],
+    );
+
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return Book.fromMap(maps[i]);
+    });
+  }
+
+      Future<List<Book>> getBooksWishlistForUser(int? userId) async {
+
+    final db = await database;
+
+    // Query to join 'user_books' and 'books' tables to get books for the user
+    final List<Map<String, dynamic>> maps = await db.query(
+      'books',
+        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 3)',
+        whereArgs: [userId],
+    );
+
+   //Choose the form of the list that is returned by the table
+    return List.generate(maps.length, (i) {
+    return Book.fromMap(maps[i]);
+    });
+  }
+
 
 
 //*************    User Following     ******************/
@@ -676,6 +750,7 @@ Future<void> CreatePost(Post post) async {
 //*************    Classes, Class Mapping     ******************/
 
 //*********    User  **********/
+
 
 class User {
   final int? id;

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:virgil_demo/assets/placeholders.dart';
+//import 'package:virgil_demo/assets/placeholders.dart';
 import 'signup_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'bottom_navigation.dart';
-
+//import 'bottom_navigation.dart';
+import 'package:virgil_demo/models/user.dart';
+import 'home_screen.dart';
 
 final storage = FlutterSecureStorage();
 
@@ -14,20 +15,20 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   void _login() async {
     // Implement your login logic here (e.g., Firebase Auth or local validation)
-    String email = _emailController.text;
+    String username = _usernameController.text;
     String password = _passwordController.text;
 
 
 
      
-    if (email.isEmpty || password.isEmpty) {
+    if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter your email and password')),
+        SnackBar(content: Text('Please enter your username and password')),
       );
       return;
     }
@@ -37,10 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
   
 
     // Check if the entered username exists in storage
-    if (allValues.containsKey('email:$email')  && 
-    allValues['email:$email'] == email &&
-    allValues.containsKey('password:$email') &&
-    allValues['password:$email'] == password) {
+    if (allValues.containsKey('username:$username')  && 
+    allValues['username:$username'] == username &&
+    allValues.containsKey('password:$username') &&
+    allValues['password:$username'] == password) {
       // Perform login, navigate to next screen, etc.
      ScaffoldMessenger.of(context).showSnackBar(
        SnackBar(content: Text('Login Successful')),
@@ -49,14 +50,18 @@ class _LoginScreenState extends State<LoginScreen> {
      await Future.delayed(Duration(seconds: 2));
      // Navigate to the Home screen
 
+     User currentUser = User(
+     username: username,
+     );
+
      Navigator.pushReplacement(
        context,
-       MaterialPageRoute(builder: (context) => CustomBottomNavBar(context: context, currentUser: placeholderSelf,)),
+       MaterialPageRoute(builder: (context) => HomeScreen(currentUser: currentUser,)),
      );
       } else {  
        
        ScaffoldMessenger.of(context).showSnackBar(
-       SnackBar(content: Text('Invalid email or password')),
+       SnackBar(content: Text('Invalid username or password')),
 
         
       );
@@ -77,9 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-              keyboardType: TextInputType.emailAddress,
+              controller: _usernameController,
+              decoration: InputDecoration(labelText: 'Username'),
+ //             keyboardType: TextInputType.emailAddress,
             ),
             TextField(
               controller: _passwordController,

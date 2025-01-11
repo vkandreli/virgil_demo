@@ -7,8 +7,8 @@ import 'book.dart';
 
 class User {
   final String username;
-  final String password;
-  final String email;
+  String? password;
+  String? email;
   String? profileImage;
   String? status;
   List<User> followedUsers;
@@ -30,8 +30,8 @@ class User {
   // Constructor
   User({
     required this.username,
-    required this.password,
-    required this.email,
+    this.password,
+    this.email,
     this.profileImage = defaultProfileImage,
     List<User> followedUsers = const [], // Default empty list
     List<Post> usersPosts = const [],    // Default empty list

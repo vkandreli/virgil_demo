@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:virgil_demo/models/user.dart';
+import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/screens/settings.dart';
 import 'package:virgil_demo/screens/stats_screen.dart';  
 
@@ -7,6 +7,7 @@ class ProfilePane extends StatelessWidget {
   final User currentUser;
   final User user;
   ProfilePane({required this.user, required this.currentUser});  
+  
   
   @override
   Widget build(BuildContext context) {
@@ -37,8 +38,8 @@ class ProfilePane extends StatelessWidget {
                         radius: 40,  // This controls the size of the CircleAvatar (should be half of the IconButton size)
                         backgroundImage: NetworkImage(
                           user == currentUser? 
-                          currentUser.profileImage ?? User.defaultProfileImage:
-                          user.profileImage ?? User.defaultProfileImage,
+                          currentUser.profileImage ?? SQLService.defaultProfileImage:
+                          user.profileImage ?? SQLService.defaultProfileImage,
                         ),
                       ),
                       onPressed: () {
@@ -139,7 +140,7 @@ class ProfilePane extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatColumn(user.completedList.length.toString(), 'Books'),
+                _buildStatColumn((await SQLService().getBooksCompletedForUser(user.id)).length.toString(), 'Books'),
                 _buildStatColumn(
                     user.completedList
                         .where((book) {

@@ -13,6 +13,8 @@ import 'package:virgil_demo/widgets/post_widget.dart';
 class HomeScreen extends StatelessWidget {
 final User currentUser;
   const HomeScreen({Key? key, required this.currentUser}) : super(key: key);  
+
+
   
   @override
   Widget build(BuildContext context) {
