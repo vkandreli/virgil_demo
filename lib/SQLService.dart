@@ -669,7 +669,7 @@ Future<void> insertPack(Pack pack) async {
 }
 
 
-Future<List<Review>> getReviewsForBook(int bookId) async {
+Future<List<Review>> getReviewsForBook(int? bookId) async {
   final db = await database;
 
   // Query to find all reviews for the specific book
