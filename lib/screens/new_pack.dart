@@ -58,8 +58,10 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
 
   }
 
-  Future<void> addPackSelectedBooks(packId, bookIds) async {
-    for (int bookId in bookIds){
+  Future<void> addPackSelectedBooks(int? packId, List<Book> books) async {
+
+    for (Book book in books){
+      int? bookId = book.id;
    await SQLService().addBooktoPack(packId, bookId);
     }
   }
@@ -223,7 +225,7 @@ class _CreatePackScreenState extends State<CreatePackScreen> {
  //                         books: selectedBooks ?? [], // Ensure non-null list
                         );
                         addPack(pack);
-                        addPackSelectedBooks(selectedBooks);
+                        addPackSelectedBooks(pack.id, selectedBooks);
 
                         Navigator.pop(context);
                       }

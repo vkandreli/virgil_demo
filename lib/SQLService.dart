@@ -764,7 +764,7 @@ Future<UserBook?> getUserBook(int userId, int bookId) async {
 
 
 // Get the book associated with a post
-Future<Book> getBooksForPost(int postId) async {
+Future<Book> getBooksForPost(int? postId) async {
   final db = await database;
 
   // Query to get the book_id for the specific post
@@ -792,7 +792,7 @@ Future<Book> getBooksForPost(int postId) async {
 }
 
 // Get the original poster for a post
-Future<User> getPosterForPost(int postId) async {
+Future<User> getPosterForPost(int? postId) async {
   final db = await database;
 
   // Query to get the originalPoster_id for the specific post
@@ -821,7 +821,7 @@ Future<User> getPosterForPost(int postId) async {
 }
 
 // Get the reblogger for a post (this can be null)
-Future<User> getRebloggerForPost(int postId) async {
+Future<User> getRebloggerForPost(int? postId) async {
   final db = await database;
 
   // Query to get the reblogger_id for the specific post
@@ -905,7 +905,7 @@ Future<void> unfollowUser(int userId, int followedId) async {
 
 
 
-  Future<void> addBooktoPack(int packId, int bookId) async {
+  Future<void> addBooktoPack(int? packId, int? bookId) async {
     final db = await database;
 
     await db.insert(
