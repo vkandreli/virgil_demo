@@ -21,8 +21,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   String? selectedImagePath;
   String? quoteText;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
-  Future<void> addPost() async {
-   await SQLService().getBooksCompletedForUser(widget.user.id);
+
+  Future<void> addPost(Post) async {
+   await SQLService().insertPost(Post);
 
   }
 
@@ -143,13 +144,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         // Create the Post object
                         Post post = Post(
                           originalPoster_id: widget.currentUser.id, // Use the current user as the poster
-                          timePosted: DateTime.now(),
+                          timePosted: DateTime.now().toString().split(' ')[0],
                           imageUrl: 'https://tse3.mm.bing.net/th?id=OIP.PgvVbyS2yPLX6TlQ4Wf-iAHaDb&pid=Api',//selectedImagePath, 
                           quote: quoteText,
                           book_id: selectedBook?.id, // Use the full Book object
                           likes: 0,
                           reblogs: 0,
                         );
+
+                         addPost(post);
 // Add the post to the current user's posts
 
 
