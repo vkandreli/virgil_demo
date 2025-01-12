@@ -29,7 +29,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   late List<Book> completedList = [], currentList = [],  readingList = [];
   late List<Review> usersReviews= [], bookReviews= [];
   late int currentPage = 0;
-  late Book loadBook;
+  late Book loadBook = widget.book;
   
   Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);

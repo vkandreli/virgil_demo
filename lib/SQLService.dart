@@ -675,6 +675,10 @@ Future<User> getUserById(int? id) async {
     where: 'title = ? AND author = ? AND totalPages = ?', // Conditions
     whereArgs: [book.title, book.author, book.totalPages], // Parameters
   );
+    if (result.isNotEmpty) {
+      print("Book found! id = ${book.id}" );
+    }
+  
 
   // If the book exists, return it as a Book object; otherwise, return null
   return Book.fromMap(result.first);
