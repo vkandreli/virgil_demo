@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-//import 'package:virgil_demo/models/post.dart';
-//import 'package:virgil_demo/models/user.dart'; 
-//import 'package:virgil_demo/models/book.dart';
-import 'package:virgil_demo/screens/book_search_screen.dart';  // Import the book search screen
+import 'package:path_provider/path_provider.dart';
 import 'package:virgil_demo/SQLService.dart';
-
+// import 'package:virgil_demo/models/post.dart';
+import 'package:virgil_demo/screens/book_search_screen.dart';  // Import the book search screen
+// import 'package:virgil_demo/models/book.dart';
 
 class CreatePostScreen extends StatefulWidget {
   final User currentUser;
@@ -22,9 +21,26 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   String? quoteText;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
 
-  Future<void> addPost(Post) async {
-   await SQLService().insertPost(Post);
+  // Save the picked image to local storage
+  Future<String?> saveImageLocally(XFile imageFile) async {
+    try {
+      // Get the app's documents directory
+      final directory = await getApplicationDocumentsDirectory();
 
+      // Generate a unique file name for the image
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      // Create a file path
+      final filePath = '${directory.path}/$fileName';
+
+      // Copy the picked image to the new file path
+      final File newImage = await File(imageFile.path).copy(filePath);
+
+      return newImage.path;  // Return the local file path (not URL)
+    } catch (e) {
+      print("Error saving image: $e");
+      return null;
+    }
   }
 
   // Function to pick an image
@@ -49,17 +65,33 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return selectedBook != null && (quoteText != null || selectedImagePath != null);
   }
 
+  // Add post to the database
+  Future<void> addPost(Post post) async {
+    if (selectedImagePath != null) {
+      // Save the image to local storage and get the file path
+      String? savedImagePath = await saveImageLocally(XFile(selectedImagePath!));
+
+      if (savedImagePath != null) {
+        // Set the image path in the post object
+        post.imageUrl = savedImagePath;  // Store the local path
+      }
+    }
+
+    // Insert the post into the database
+    await SQLService().insertPost(post);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Create Post')),
-      body: SingleChildScrollView( // Make the body scrollable
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Add Image button (now placed above the search bar)
+              // Add Image button
               selectedImagePath == null
                   ? ElevatedButton(
                       onPressed: _pickImage,
@@ -67,12 +99,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     )
                   : Stack(
                       children: [
-                        // Display the selected image (fit the width of the screen)
+                        // Display the selected image
                         Image.file(
                           File(selectedImagePath!),
-                          width: double.infinity, // Makes the image fit the width
-                          height: 200, // Set a fixed height for the image
-                          fit: BoxFit.cover, // Ensures the image maintains its aspect ratio
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
                         ),
                         Positioned(
                           top: 8,
@@ -86,15 +118,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     ),
               SizedBox(height: 16),
 
-              // Quote field (background always white)
+              // Quote field
               TextField(
-                  textInputAction: TextInputAction.done, 
-  onSubmitted: (value) {
-    FocusScope.of(context).unfocus();
-  },
                 decoration: InputDecoration(
                   labelText: 'Quote',
-                  fillColor: Colors.white, // Set background color to white
+                  fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(),
                 ),
@@ -107,12 +135,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
               SizedBox(height: 16),
 
-              // Search bar for book title (background always white)
+              // Search bar for book title
               TextField(
-                  textInputAction: TextInputAction.done, 
-  onSubmitted: (value) {
-    FocusScope.of(context).unfocus();
-  },
                 decoration: InputDecoration(
                   labelText: selectedBook?.title ?? 'Search Book',
                   fillColor: Colors.white,
@@ -120,14 +144,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   border: OutlineInputBorder(),
                 ),
                 onTap: () async {
-                  // Navigate to the book search screen when tapped
                   final Book? book = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BookSearchScreen(),//query: selectedBook?.title ?? ""
+                      builder: (context) => BookSearchScreen(),
                     ),
                   );
-                  // If a book is selected, update the selectedBook
                   if (book != null) {
                     setState(() {
                       selectedBook = book;
@@ -143,24 +165,22 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     ? () {
                         // Create the Post object
                         Post post = Post(
-                          originalPoster_id: widget.currentUser.id, // Use the current user as the poster
+                          originalPoster_id: widget.currentUser.id,
                           timePosted: DateTime.now().toString().split(' ')[0],
-                          imageUrl: 'https://tse3.mm.bing.net/th?id=OIP.PgvVbyS2yPLX6TlQ4Wf-iAHaDb&pid=Api',//selectedImagePath, 
+                          imageUrl: '', // Image URL will be set later
                           quote: quoteText,
-                          book_id: selectedBook?.id, // Use the full Book object
+                          book_id: selectedBook?.id,
                           likes: 0,
                           reblogs: 0,
                         );
 
-                         addPost(post);
-// Add the post to the current user's posts
+                        // Add the post to the database
+                        addPost(post);
 
-
-
-                        // Navigate back to the Profile screen
+                        // Navigate back
                         Navigator.pop(context);
                       }
-                    : null, // Disable the button if conditions are not met
+                    : null, // Disable button if conditions are not met
                 child: Text('Create Post'),
               ),
             ],
