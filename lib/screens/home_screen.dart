@@ -162,7 +162,7 @@ Padding(
 
               
          
- 
+ if (!isLoading)
             // Vertical list of posts
                         // Expanded space for posts
             Expanded(

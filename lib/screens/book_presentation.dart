@@ -37,6 +37,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
 usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
 bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
+      setState(() {
+          });
   }
 
 

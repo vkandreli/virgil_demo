@@ -1788,16 +1788,24 @@ class Post {
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
-      id: map['id'],
-      originalPoster_id: map['originalPoster_id'],
-      reblogger_id: map['reblogger_id'],
-      imageUrl: map['imageUrl'],
-      quote: map['quote'],
-      book_id: map['book_id'],
-      timePosted: map['timePosted'],
-      likes: map['likes'],
-      reblogs: map['reblogs'],
+      id: _parseInt(map['id']),
+      originalPoster_id: _parseInt(map['originalPoster_id']),
+      reblogger_id: _parseInt(map['reblogger_id']),
+      imageUrl: map['imageUrl'] as String?,
+      quote: map['quote'] as String?,
+      book_id: _parseInt(map['book_id']),
+      timePosted: map['timePosted'] as String,
+      likes: _parseInt(map['likes']) ?? 0,  // Default to 0 if null
+      reblogs: _parseInt(map['reblogs']) ?? 0, // Default to 0 if null
     );
+  }
+
+  // Helper function to safely parse integers
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 }
 
