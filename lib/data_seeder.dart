@@ -103,6 +103,7 @@ class DataSeeder {
     'dateCompleted': null, // You can set this to the current date if needed.
     'totalPages': 255,
     'genre': null, // Can be set to any value.
+    'language': 'en',
   },
 );
 
@@ -119,6 +120,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
   
+    'language': 'en',
     'genre': null,
   },
 );
@@ -136,6 +138,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
     'genre': null,
+    'language': 'en',
   },
 );
 
@@ -152,6 +155,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
     'genre': null,
+    'language': 'en',
   },
 );
 
@@ -168,6 +172,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
     'genre': null,
+    'language': 'en',
   },
 );
 
@@ -184,6 +189,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
     'genre': null,
+    'language': 'en',
   },
 );
 
@@ -200,6 +206,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
     'genre': null,
+    'language': 'en',
   },
 );
 
@@ -218,6 +225,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
     'genre': null,
+    'language': 'en',
   },
 );
 
@@ -236,6 +244,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
     'genre': null,
+    'language': 'en',
   },
 );
 
@@ -253,6 +262,7 @@ await db.insert(
     'dateCompleted': null,
     'totalPages': 255,
     'genre': null,
+    'language': 'gr',
   },
 );
 

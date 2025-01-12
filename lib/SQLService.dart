@@ -32,47 +32,98 @@ final logger = Logger();
 
   // Initialize the database
   Future<Database> _initDB() async {
-  try {
+    try {
     final dbPath = await getDatabasesPath();
-    final database = await openDatabase(
+    return await openDatabase(
       join(dbPath, 'user_database.db'),
       onCreate: (db, version) async {
+        // Create tables when the database is first created
         await db.execute(
           '''CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL, email TEXT, profileImage TEXT, status TEXT, currentCity TEXT, 
-            isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0)''',
+         username TEXT NOT NULL, email TEXT, profileImage TEXT, status TEXT, currentCity TEXT, 
+         isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0)''',
         );
         await db.execute(
           '''CREATE TABLE books(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL,
-            author TEXT NOT NULL, publisher TEXT NOT NULL, language TEXT NOT NULL, posterUrl TEXT NOT NULL, description TEXT NOT NULL,
-            dateAdded TEXT, dateCompleted TEXT, totalPages INTEGER NOT NULL, genre TEXT)
-            ''',
+        author TEXT NOT NULL, publisher TEXT NOT NULL, language TEXT NOT NULL, posterUrl TEXT NOT NULL, description TEXT NOT NULL,
+        dateAdded TEXT, dateCompleted TEXT, totalPages INTEGER NOT NULL, genre TEXT)
+        ''',
         );
         await db.execute(
-          '''CREATE TABLE user_books(user_id INTEGER, book_id INTEGER, list_category INTEGER CHECK(list_category >= 1 AND list_category <= 3),
-            current_page INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (user_id, book_id))''',
+          '''CREATE TABLE user_books(user_id INTEGER,book_id INTEGER, list_category INTEGER CHECK(list_category >= 1 AND list_category <= 3),
+       current_page INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (user_id, book_id)
+      )
+      ''',
+        );
+        db.execute(
+          '''CREATE TABLE user_followeduser(user_id INTEGER,followeduser_id INTEGER,CHECK (user_id != followeduser_id),
+       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, FOREIGN KEY (followeduser_id) REFERENCES users(id)
+        ON DELETE CASCADE, PRIMARY KEY (user_id, followeduser_id)
+      )
+      ''',
         );
         db.execute(
           '''CREATE TABLE posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, originalPoster_id INTEGER, reblogger_id INTEGER, imageUrl TEXT,
-            quote TEXT, book_id INTEGER, timePosted TEXT, likes INTEGER DEFAULT 0, reblogs INTEGER DEFAULT 0,
-            FOREIGN KEY (originalPoster_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (reblogger_id) REFERENCES users(id) ON DELETE SET NULL,
-            FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE)''',
+          id INTEGER PRIMARY KEY AUTOINCREMENT, originalPoster_id INTEGER, reblogger_id INTEGER, imageUrl TEXT,
+          quote TEXT, book_id INTEGER, timePosted TEXT,likes INTEGER DEFAULT 0, reblogs INTEGER DEFAULT 0,
+          FOREIGN KEY (originalPoster_id) REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (reblogger_id) REFERENCES users(id) ON DELETE SET NULL,
+          FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE)''',
         );
-        // Add the rest of your table creation statements here...
+        db.execute('''CREATE TABLE reviews (
+     id INTEGER PRIMARY KEY AUTOINCREMENT, book_id INTEGER NOT NULL, user_id INTEGER NOT NULL,
+     text TEXT NOT NULL, reviewDate TEXT NOT NULL, stars INTEGER CHECK(stars >= 0 AND stars <= 5), 
+     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)''');
+        db.execute('''CREATE TABLE packs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL, creator_id INTEGER NOT NULL, 
+  packImage TEXT NOT NULL, description TEXT NOT NULL, FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE)''');
+        db.execute(
+          '''CREATE TABLE pack_books(pack_id INTEGER,book_id INTEGER, FOREIGN KEY (pack_id) REFERENCES packs(id) ON DELETE CASCADE,
+         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (pack_id, book_id)
+         )
+      ''',
+        );
+        db.execute(
+          '''CREATE TABLE comments(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, post_id INTEGER,
+         FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE)
+      ''',
+        );
+        db.execute(
+          '''CREATE TABLE pagesPerDay(id INTEGER PRIMARY KEY AUTOINCREMENT, pages INTEGER, user_id INTEGER, date TEXT
+         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)
+      ''',
+        );
+        db.execute(
+          '''CREATE TABLE badges (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, 
+  name TEXT NOT NULL,
+  image TEXT NOT NULL,
+  description TEXT,
+  requirement INTEGER NOT NULL
+)''',
+        );
+
+        db.execute(
+          '''CREATE TABLE user_badges (
+  id INTEGER PRIMARY KEY AUTOINCREMENT, 
+  user_id INTEGER NOT NULL,
+  badge_id INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (badge_id) REFERENCES badges(id)
+)''',
+        );
       },
+
+      // Set the version. This executes the onCreate function and provides a
+      // path to perform database upgrades and downgrades.
       version: 1,
     );
-
-    return database;
   } catch (e, stackTrace) {
     logger.e("Error initializing database", e, stackTrace);
     rethrow; // Rethrow exception after logging
   }
-}
-
+  }
 
 //*******     User Setters      ********/
 
