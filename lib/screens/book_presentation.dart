@@ -41,30 +41,37 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
     Future<void> addToReadList(int? bookId, int? userId) async {
     await  SQLService().addBookToReadingList(bookId, userId);
+        setState(() {
           isInReadingList = true;
+          });
   }
 
 
     Future<void> RemoveFromReadList(int? bookId, int? userId) async {
     await  SQLService().removeBookFromReadingList(bookId, userId);
+        setState(() {
           isInReadingList = false;
+          });
   }
 
     Future<void> addToCurrentList(int? bookId, int? userId) async {
     await  SQLService().addBookToCurrentList(bookId, userId);
+    setState(() {
       isInCurrentList = true;
+          });
     }
 
      Future<void> addToCompletedList(int? bookId, int? userId) async {
     await  SQLService().addBookToCompletedList(bookId, userId);
+        setState(() {
           isCompleted = true;
+          });
     }
 
   
   Future<void> getCurrentPage(int? userId,int? bookId) async{
     currentPage =  await SQLService().getCurrentPage(userId, bookId);
-        setState(() {
-          });
+
   }
 
 
