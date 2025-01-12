@@ -1369,16 +1369,32 @@ PagesPerDay pagesPerDay = PagesPerDay(
 }
 
 
-Future<void> updatePagesPerDay(int id, int newPages) async {
+Future<void> updatePagesPerDay(int? id, int newPages) async {
   final db = await SQLService().database;
 
   await db.update(
     'pagesPerDay',             
-    {'pages': newPages},       
+    {'pages': ++newPages},       //Adds new pages to current pages
     where: 'id = ?',           
     whereArgs: [id],           
   );
 }
+
+Future<bool> doesPagesPerDayExist(int? userId, String date) async {
+  final db = await SQLService().database;
+
+  // Query the table for the specific user and date
+  final List<Map<String, dynamic>> result = await db.query(
+    'pagesPerDay',
+    where: 'user_id = ? AND date = ?', // WHERE clause
+    whereArgs: [userId, date],        // Arguments for the placeholders
+    limit: 1,                         // Limit to one record for efficiency
+  );
+
+  // If the result list is not empty, the record exists
+  return result.isNotEmpty;
+}
+
 
 
 
