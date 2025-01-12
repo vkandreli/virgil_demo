@@ -1319,7 +1319,7 @@ Future<List<Review>> getReviewsForAuthor(String Author) async {
 
     await db.update(
       'user_books',
-      {'currentPage': currentPage},
+      {'current_page': currentPage},
       where: 'user_id = ? AND book_id = ?',
       whereArgs: [userId, bookId],
     );

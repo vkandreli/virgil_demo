@@ -28,7 +28,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   TextEditingController _pageController = TextEditingController();
   late List<Book> completedList = [], currentList = [],  readingList = [];
   late List<Review> usersReviews= [], bookReviews= [];
-  late int currentPage = -1;
+  late int currentPage = 0;
   
   Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
@@ -41,24 +41,30 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
     Future<void> addToReadList(int? bookId, int? userId) async {
     await  SQLService().addBookToReadingList(bookId, userId);
+          isInReadingList = true;
   }
 
 
     Future<void> RemoveFromReadList(int? bookId, int? userId) async {
     await  SQLService().removeBookFromReadingList(bookId, userId);
+          isInReadingList = false;
   }
 
     Future<void> addToCurrentList(int? bookId, int? userId) async {
     await  SQLService().addBookToCurrentList(bookId, userId);
+      isInCurrentList = true;
     }
 
      Future<void> addToCompletedList(int? bookId, int? userId) async {
     await  SQLService().addBookToCompletedList(bookId, userId);
+          isCompleted = true;
     }
 
   
   Future<void> getCurrentPage(int? userId,int? bookId) async{
     currentPage =  await SQLService().getCurrentPage(userId, bookId);
+        setState(() {
+          });
   }
 
 
@@ -142,10 +148,6 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
       }*/
 
     CheckAndUpdatePagesPerDay(widget.currentUser.id, newPage, today);
-
-
-
-
 
       if (newPage == selected.totalPages) {
         setState(() {
