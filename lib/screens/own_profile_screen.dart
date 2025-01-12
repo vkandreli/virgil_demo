@@ -37,17 +37,39 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
         _getPosts();  
   }
 
-  void togglePrivacy(String section) {
-    setState(() {
-      if (section == 'packs') {
-        isPacksPrivate = !isPacksPrivate;
-      } else if (section == 'reviews') {
-        isReviewsPrivate = !isReviewsPrivate;
-      } else if (section == 'read list') {
-        isReadListPrivate = !isReadListPrivate;
-      }
-    });
-  }
+ void togglePrivacy(String section) async {
+  setState(() {
+    // Toggle privacy settings based on the section
+    if (section == 'packs') {
+      isPacksPrivate = !isPacksPrivate;
+    } else if (section == 'reviews') {
+      isReviewsPrivate = !isReviewsPrivate;
+    } else if (section == 'read list') {
+      isReadListPrivate = !isReadListPrivate;
+    }
+  });
+
+  // Create a new User object with updated privacy settings
+  User updatedUser = User(
+    id: widget.currentUser.id,  // Keep the current user's ID
+    username: widget.currentUser.username,  // Keep the current username
+    email: widget.currentUser.email,  // Keep the current email
+    profileImage: widget.currentUser.profileImage,  // Keep the current profile image
+    status: widget.currentUser.status,  // Keep the current status
+    currentCity: widget.currentUser.currentCity,  // Keep the current city
+    isPacksPrivate: isPacksPrivate,  // Updated privacy setting for packs
+    isReviewsPrivate: isReviewsPrivate,  // Updated privacy setting for reviews
+    isReadListPrivate: isReadListPrivate,  // Updated privacy setting for the read list
+  );
+
+  // Update the user in the database
+  await SQLService().updateUser(updatedUser);
+
+  // Optionally show a confirmation message or save data to database
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Text('$section privacy setting updated!'),
+  ));
+}
 
   void navigateToUserPacksScreen() {
     Navigator.push(

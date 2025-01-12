@@ -78,8 +78,11 @@ void _saveSettings() async {
     content: Text('Settings saved!'),
   ));
 
-  // Pop the current screen to return to the previous one
-  Navigator.pop(context);
+  // Reload the updated user data after saving and pass it back to the previous screen
+  User updatedUser = await SQLService().getUserById(widget.currentUser.id);
+
+  // Pop the current screen and pass the updated user data back
+  Navigator.pop(context, updatedUser);
 }
 
   
