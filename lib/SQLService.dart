@@ -459,11 +459,11 @@ Future<User> getUserForReview(int? reviewId) async {
   }
 }
 
-Future<void> insertBadge(Badges badge) async {
+Future<void> insertBadge(Badges Badges) async {
   final db = await database; // Get the database instance
   await db.insert(
     'badges',
-    badge.toMap(),
+    Badges.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflict by replacing existing records
   );
 }
@@ -477,10 +477,10 @@ Future<List<Badges>> getBadgesForUser(int? userId) async {
     whereArgs: [userId],
   );
 
-  // Now, fetch badge details from badges table based on the badge_ids
+  // Now, fetch Badges details from badges table based on the badge_ids
   List<Badges> badges = [];
-  for (var badge in badgeIds) {
-    final badgeId = badge['badge_id'];
+  for (var Badges in badgeIds) {
+    final badgeId = Badges['badge_id'];
     final badgeDetails = await db.query(
       'badges',
       where: 'id = ?',
@@ -488,7 +488,7 @@ Future<List<Badges>> getBadgesForUser(int? userId) async {
     );
 
     if (badgeDetails.isNotEmpty) {
-      badges.add(Badges.fromMap(badgeDetails.first)); // Assuming Badge.fromMap exists
+      badges.add(Badges.fromMap(badgeDetails.first)); // Assuming Badges.fromMap exists
     }
   }
 
@@ -504,6 +504,69 @@ Future<void> assignBadgeToUser(UserBadge userBadge) async {
   );
 }
 
+Future<void> addBadgeToUser(int userId, int badgeId) async {
+  final db = await database;
+
+  // Insert a new row into the user_badges table
+  await db.insert(
+    'user_badges',
+    {
+      'user_id': userId,
+      'badge_id': badgeId,
+    },
+    conflictAlgorithm: ConflictAlgorithm.ignore,  // Avoid duplicates
+  );
+}
+Future<List<Badges>> getAllBadges() async {
+  final db = await database;
+
+  // Fetch all badges from the badges table
+  final List<Map<String, dynamic>> badgeMaps = await db.query('badges');
+
+  // Convert the result to a list of Badges objects
+  return List.generate(badgeMaps.length, (i) {
+    return Badges.fromMap(badgeMaps[i]);  // Assuming Badges.fromMap exists
+  });
+}
+Future<bool> hasUserBadge(int userId, int badgeId) async {
+  final db = await database;
+
+  // Query the user_badges table to check if the user has the specific Badges
+  final List<Map<String, dynamic>> result = await db.query(
+    'user_badges',
+    where: 'user_id = ? AND badge_id = ?',
+    whereArgs: [userId, badgeId],
+  );
+
+  // Return true if the result contains a record, otherwise false
+  return result.isNotEmpty;
+}
+Future<void> removeBadgeFromUser(int userId, int badgeId) async {
+  final db = await database;
+
+  // Delete the corresponding Badges entry for the user
+  await db.delete(
+    'user_badges',
+    where: 'user_id = ? AND badge_id = ?',
+    whereArgs: [userId, badgeId],
+  );
+}
+Future<Badges?> getBadgeById(int badgeId) async {
+  final db = await database;
+
+  // Query the badges table to get a Badges by its ID
+  final List<Map<String, dynamic>> badgeData = await db.query(
+    'badges',
+    where: 'id = ?',
+    whereArgs: [badgeId],
+  );
+
+  if (badgeData.isNotEmpty) {
+    return Badges.fromMap(badgeData.first);  // Assuming Badges.fromMap exists
+  } else {
+    return null;
+  }
+}
 
  
   /// Create a User and add it to the users table
@@ -1860,9 +1923,9 @@ class PagesPerDay {
 
 
 //////////////////////////////////
-// Badge class
+// Badges class
 class Badges {
-  final int id;            // Unique identifier for the badge
+  final int id;            // Unique identifier for the Badges
   final String name;
   final String image;
   final String description;
@@ -1876,7 +1939,7 @@ class Badges {
     required this.requirement,
   });
 
-  // Convert Badge object to Map for database operations
+  // Convert Badges object to Map for database operations
   Map<String, dynamic> toMap() {
     return {
       'id': id,               // Include the id field in the map
@@ -1887,7 +1950,7 @@ class Badges {
     };
   }
 
-  // Convert Map to Badge object
+  // Convert Map to Badges object
   factory Badges.fromMap(Map<String, dynamic> map) {
     return Badges(
       id: map['id'],          // Retrieve the id from the map
@@ -1915,7 +1978,7 @@ class UserBadge {
     return {
       'id': id,             // Include the id field in the map
       'user_id': user_id,   // The ID of the user
-      'badge_id': badge_id, // The ID of the badge
+      'badge_id': badge_id, // The ID of the Badges
     };
   }
 
