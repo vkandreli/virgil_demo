@@ -31,6 +31,8 @@ class UserPacksScreenState extends State<UserPacksScreen> {
 
     Future<void> _getPacks() async {
   userPacks = await SQLService().getPacksForUser(widget.user.id);
+         setState(() {
+          });
   }
 
   @override
@@ -111,7 +113,8 @@ class UserReviewsScreenState extends State<UserReviewsScreen> {
 
   Future<void> _UserReviews() async {
    userReviews = await SQLService().getReviewsForUser(widget.user.id);
-
+       setState(() {
+          });
   }
 
   @override
@@ -188,6 +191,8 @@ class UserReadListScreenState extends State<UserReadListScreen> {
 
   Future<void> _readingList() async {
     readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+           setState(() {
+          });
   }
 
 
