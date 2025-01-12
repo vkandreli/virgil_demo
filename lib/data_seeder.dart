@@ -439,7 +439,7 @@ await db.insert('reviews', {
 
 await db.insert('reviews', {
   'book_id': 3,
-  'user_id': 6, // Assuming placeholderSelf corresponds to user 6
+  'user_id': 6, 
   'text': "Not what I expected. The ending was quite disappointing.",
   'reviewDate': "22-01-2024",
   'stars': 2,
@@ -463,7 +463,7 @@ await db.insert('reviews', {
 
 await db.insert('reviews', {
   'book_id': 1,
-  'user_id': 6, // Assuming placeholderSelf corresponds to user 6
+  'user_id': 6,
   'text': "Loved it from start to finish. One of the best books I've read this year.",
   'reviewDate': "20-02-2024",
   'stars': 5,
@@ -473,7 +473,7 @@ await db.insert('reviews', {
 await db.insert('packs', {
   'title': 'Adventure Pack',
   'publicationDate': '2023-01-01',
-  'creator_id': 1, // placeholderUsers[0] is User 1
+  'creator_id': 1,
   'packImage': "https://tse2.mm.bing.net/th?id=OIP.WxuBpk2j4-ugqYvjLb1CLQHaLU&pid=Api",
   'description': 'A collection of thrilling adventure novels.',
 });
