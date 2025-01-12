@@ -133,43 +133,33 @@ Future<void> _loadUsers() async {
               ),
             ),
             // Search Bar
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              //  child: TextField(
-              //   decoration: InputDecoration(
-              //     hintText: 'Search for a profile...',
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(10),
-              //     ),
-              //     prefixIcon: Icon(Icons.search),
-              //   ),
-              // ),
-              child: Expanded(
-              child: ElevatedButton(
-                    onPressed: () {                                         
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfileSearchScreen(currentUser: widget.currentUser,),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      //fixedSize: Size(500, 40), 
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      minimumSize: Size(500,40),
-                      backgroundColor: AppColors.lightBrown,
-                    ),
-                    child: Text(
-                      "Search for a profile...",
-                      style: TextStyle(fontSize: 14, color: AppColors.darkBrown,),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-              ),
-            ),
+            // Search Bar
+Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: ElevatedButton(
+    onPressed: () {                                         
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfileSearchScreen(currentUser: widget.currentUser,),
+        ),
+      );
+    },
+    style: ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      minimumSize: Size(500,40),
+      backgroundColor: AppColors.lightBrown,
+    ),
+    child: Text(
+      "Search for a profile...",
+      style: TextStyle(fontSize: 14, color: AppColors.darkBrown,),
+      textAlign: TextAlign.left,
+    ),
+  ),
+),
+
               
          
  

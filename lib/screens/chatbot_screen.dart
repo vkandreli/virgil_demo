@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:virgil_demo/main.dart';
 
 /// The API key to use when accessing the Gemini API.
 ///
@@ -166,7 +167,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                     },
                     icon: Icon(
                       Icons.send,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: AppColors.darkBrown,
                     ),
                   )
                 else

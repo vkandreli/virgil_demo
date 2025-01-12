@@ -510,7 +510,7 @@ await db.insert('packs', {
     'badges', 
     {
       'name': "Master Reviewer",
-      'image': "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+      'image': "https://tse3.mm.bing.net/th?id=OIP.uMR6f4VkOhn9Y6jkbpJ8oAHaHX&pid=Api",
       'description': "Write 10 thoughtful book reviews.",
       'requirement': 1, // 1 for true
     },
@@ -520,7 +520,7 @@ await db.insert('packs', {
     'badges', 
     {
       'name': "Social Butterfly",
-      'image': "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+      'image': "https://tse1.mm.bing.net/th?id=OIP.SEfZ59BVzJodJsqHhpKs4gHaGp&pid=Api",
       'description': "Follow 20 different users on the platform.",
       'requirement': 1, // 1 for true
     },
@@ -529,19 +529,37 @@ await db.insert('packs', {
   await db.insert(
     'badges', 
     {
-      'name': "Night Owl",
-      'image': "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
-      'description': "Read for 5 hours straight at night.",
+      'name': "Multilingual Reader",
+      'image': "https://tse2.mm.bing.net/th?id=OIP.vJ7Bzis7GH4ceEvfRTxfdAHaHa&pid=Api",
+      'description': "Read books from 3 different languages.",
       'requirement': 1, // 1 for true
     },
   );
-
+  await db.insert(
+    'badges', 
+    {
+      'name': "Polyglot Reader",
+      'image': "https://tse2.mm.bing.net/th?id=OIP.DEMz4ZWMZEHwcTlIt0YrxgHaEK&pid=Api",
+      'description': "Read books from 3 different languages.",
+      'requirement': 1, // 1 for true
+    },
+  );
   await db.insert(
     'badges', 
     {
       'name': "Page Turner",
-      'image': "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+      'image': "https://tse1.mm.bing.net/th?id=OIP.70nZJxmisQMvo6J6nZsujgHaFa&pid=Api",
       'description': "Read 100 pages in a day.",
+      'requirement': 1, // 1 for true
+    },
+  );
+
+    await db.insert(
+    'badges', 
+    {
+      'name': "Book Worm",
+      'image': "https://tse4.mm.bing.net/th?id=OIP.JoticgrnfdRZfJxXj1hI1AHaGM&pid=Api",
+      'description': "Read 500 pages in a day.",
       'requirement': 1, // 1 for true
     },
   );

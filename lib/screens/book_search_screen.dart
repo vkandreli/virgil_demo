@@ -6,6 +6,8 @@ import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:virgil_demo/main.dart';
+
 class BookSearchScreen extends StatefulWidget {
   //final String query;
 
@@ -67,7 +69,7 @@ final Logger logger = Logger();
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: _searchBooks, // Trigger the search when "Go" is pressed
-              child: Text('Search'),
+              child: Text('Search',style: TextStyle( color: AppColors.darkBrown,),),
             ),
             SizedBox(height: 16),
             Expanded(
