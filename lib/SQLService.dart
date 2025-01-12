@@ -1339,7 +1339,7 @@ Future<List<Review>> getReviewsForAuthor(String Author) async {
   Future<void> updateUserBook(
       int? userId, int? bookId, int? currentPage) async {
     final db = await SQLService().database;
-
+   print('userbook updating, page = ${currentPage}');
     await db.update(
       'user_books',
       {'current_page': currentPage},

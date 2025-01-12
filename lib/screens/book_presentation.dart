@@ -79,6 +79,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   
   Future<void> getCurrentPage(int? userId,int? bookId) async{
     currentPage =  await SQLService().getCurrentPage(userId, bookId);
+    print('current page returning as ${currentPage}');
 
   }
 
@@ -136,12 +137,12 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   // Method to add new page
   Future<void> _addPages(int newPage) async {
     // Find the book in the currentList based on the title
-    Book? selected = currentList.firstWhere(
-      (book) => book.title == loadBook.title,
-      orElse: () => Book.empty(), // If the book is not found, return null
-    );
+ //   Book? loadBook = currentList.firstWhere(
+ //     (book) => book.title == loadBook.title,
+ //     orElse: () => Book.empty(), // If the book is not found, return null
+ //   );
 
-    if (selected == Book.empty()) {
+    if (loadBook == Book.empty()) {
       // Handle the case where the book is not found
       logger.e("Book not found in the current list: ${loadBook.title}");
     } else {
@@ -167,11 +168,11 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
     CheckAndUpdatePagesPerDay(widget.currentUser.id, newPage, today);
 
-      if (newPage == selected.totalPages) {
+      if (newPage == loadBook.totalPages) {
         setState(() {
           isCompleted = true;
           
-              addToCompletedList(selected.id, widget.currentUser.id); // Directly update the book
+              addToCompletedList(loadBook.id, widget.currentUser.id); // Directly update the book
         });
         logger.i("Finished book: ${loadBook.title}");
       } else {
@@ -180,7 +181,8 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
           // SQLService.currentPage(newPage);
           // widget.currentUser.currentPage =
           //     newPage; // Directly update the book's currentPage
-                  getCurrentPage(widget.currentUser.id, selected.id);
+                  getCurrentPage(widget.currentUser.id, loadBook.id);
+                  print('changed current page to $newPage');
         });
         logger.i("Reached page: $newPage at ${loadBook.title}");
       }
@@ -257,12 +259,12 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                         // If valid, update the page
                         _addPages(newPage);
 
-                        // Find the selected book
-                        Book? selected =
-                            currentList.firstWhere(
-                          (book) => book.title == loadBook.title,
-                          orElse: () => Book.empty(),
-                        );
+                        // Find the loadBook book
+                    ///    Book? loadBook =
+                  //          currentList.firstWhere(
+                //          (book) => book.title == loadBook.title,
+              //            orElse: () => Book.empty(),
+                     //   );
 
                         logger.i(
                             "Reached page: ${currentPage} at ${loadBook.title}");
