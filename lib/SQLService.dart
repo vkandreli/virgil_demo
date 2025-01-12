@@ -1918,6 +1918,7 @@ class Pack {
     required this.description,
   });
 
+
   Map<String, dynamic> toMap() {
     return {
       'title': title,

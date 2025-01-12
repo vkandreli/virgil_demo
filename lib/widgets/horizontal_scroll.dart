@@ -253,9 +253,8 @@ class PackCard extends StatelessWidget {
         margin: EdgeInsets.only(right: 16),
         child: Stack(
           clipBehavior:
-              Clip.none, // Allow the progress bar to go beyond the image
+              Clip.none,
           children: [
-            // Image with border (only when isCompleted is true)
             Container(
               decoration: BoxDecoration(
                 border: isCompleted
@@ -267,8 +266,7 @@ class PackCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  pack?.packImage ??
-                      "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api",
+                  'https://tse4.mm.bing.net/th?id=OIP.-cRUNKZI1jx5Kh2_3hzCPwHaFj&pid=Api',
                   height: 180, // Fixed height for image
                   width: 120,
                   fit: BoxFit.cover,
