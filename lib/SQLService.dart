@@ -286,6 +286,24 @@ db.execute(
     return maps.map((map) => User.fromMap(map)).toList();
   }
 
+Future<User> getUserByUsername(String username) async {
+  final db = await database;
+
+  // Query the user from the users table where the username matches
+  final List<Map<String, dynamic>> maps = await db.query(
+    'users',
+    where: 'username = ?',
+    whereArgs: [username],
+  );
+
+  // If a user is found, return the first (and only) user, otherwise return null
+  if (maps.isNotEmpty) {
+    return User.fromMap(maps.first);
+  } else {
+    return User.empty();
+  }
+}
+
 Future<User> getUserById(int? id) async {
   final db = await database;
 
