@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
+import 'package:virgil_demo/models/goal.dart';
 //import 'package:virgil_demo/models/book.dart';
 //import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/screens/bottom_navigation.dart';
@@ -43,6 +44,35 @@ usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
 bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id); 
 usersPacks = await SQLService().getPacksForUser(widget.currentUser.id); 
   }
+String _generateGoalProgressText(User user) {
+  // Define the list of goals
+  List<Goal> goals = [
+    Goal(
+      name: 'Read 10 books',
+      requirement: (User user) => completedList.length >= 10,
+      userChoseThis: (User user) => true,//user.selectedGoals.contains('Read 10 books'),
+      getProgress: (User user) => '${completedList.length}/10',
+    ),
+    Goal(
+      name: 'Read 5 Greek books',
+      requirement: (User user) => completedList.where((book) => book.language == 'gr').toList().length >= 5,
+      userChoseThis: (User user) => true,//user.selectedGoals.contains('Read 5 Greek books'),
+      getProgress: (User user) => '${completedList.where((book) => book.language == 'gr').toList().length}/5',
+    ),
+        Goal(
+      name: 'Read 500 pages in a day',
+      requirement: (User user) => widget.currentUser.pagesPerDay >= 500,
+      userChoseThis: (User user) => true,
+      getProgress: (User user) => '${widget.currentUser.pagesPerDay}/500',
+    ),
+  ];
+
+  // Generate the list of progress strings
+  return goals
+      .where((goal) => goal.userChoseThis(user)) // Filter for goals the user chose
+      .map((goal) => '${goal.name} (${goal.getProgress(user)})') // Format the goal with progress
+      .join('\n'); // Join the goals into a single string with newlines
+}
 
 
 
@@ -191,42 +221,45 @@ usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
                     SizedBox(height: 16),
 
                     // Goals Section
-                    GestureDetector(
-                      onTap: () {
-                        // Navigate to Goals screen
-                      },
-                      child: Card(
-                        elevation: 4.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
-                        color: AppColors.lightBrown, 
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Pane Title
-                              Container(
-                                color: AppColors.darkBrown, 
-                                width: double.infinity, 
-                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                child: Text("Goals",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                child: Text(
-                                  widget.currentUser.goals.map((goal) => goal.name).join('\n'),
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                   GestureDetector(
+  onTap: () {
+    // Navigate to Goals screen
+  },
+  child: Card(
+    elevation: 4.0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.zero,
+    ),
+    color: AppColors.lightBrown, 
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Pane Title
+          Container(
+            color: AppColors.darkBrown, 
+            width: double.infinity, 
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            child: Text("Goals",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+          ),
+          // Display the goals with progress
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            child: Text(
+              _generateGoalProgressText(widget.currentUser),
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+),
+
+
                     SizedBox(height: 16),
 
                     // Badges Section
