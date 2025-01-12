@@ -31,6 +31,27 @@ class _StatsScreenState extends State<StatsScreen> {
           date.isBefore(endOfWeek.add(Duration(days: 1)));
     }).toList();
   }
+    late List<Book> completedList, currentList, readingList;
+  late List<Review> usersReviews, bookReviews;
+    late List<Pack> usersPacks;
+
+  Future<void> _getResources() async {
+  completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
+  currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
+usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
+bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id); 
+usersPacks = await SQLService().getPacksForUser(widget.currentUser.id); 
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getResources();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +165,7 @@ class _StatsScreenState extends State<StatsScreen> {
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                               SizedBox(height: 8),
-                              if (widget.currentUser.completedList.isEmpty) ...[
+                              if (completedList.isEmpty) ...[
                               //                              bookScroll(
                               //   '',
                               //   <Book> [virgil],
@@ -154,10 +175,10 @@ class _StatsScreenState extends State<StatsScreen> {
                                     Text("You have not finished any books yet. Try adding pages",
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: AppColors.darkBrown)),
                               ],
-                              if (widget.currentUser.completedList.isNotEmpty) ...[
+                              if (completedList.isNotEmpty) ...[
                               bookScroll(
                                 '',
-                                widget.currentUser.completedList,
+                                completedList,
                                 isCompleted: true,
                                 currentUser: widget.currentUser,
                               ),
