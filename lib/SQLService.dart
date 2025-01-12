@@ -1152,15 +1152,15 @@ Future<void> insertUserBook(UserBook userBook) async {
       conflictAlgorithm: ConflictAlgorithm.replace, 
     );
 }
-Future<void> updateUserBook(UserBook userBook) async {
+Future<void> updateUserBook(int? userId, int? bookId, int? currentPage) async {
   final db = await SQLService().database;
 
   
     await db.update(
-      'user_books',                // Table name
-      userBook.toMap(),             // Data to update (converted to map)
-      where: 'user_id = ? AND book_id = ?',  // WHERE clause (matching user_id and book_id)
-      whereArgs: [userBook.user_id, userBook.book_id], // Arguments to replace the placeholders
+      'user_books',                    
+      {'currentPage': currentPage},  
+      where: 'user_id = ? AND book_id = ?',  
+      whereArgs: [userId, bookId],
     );
 }                                                       
 
