@@ -126,33 +126,41 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               SizedBox(height: 16),
 
               // Search bar for book title (background always white)
-              TextField(
-                  textInputAction: TextInputAction.done, 
-  onSubmitted: (value) {
-    FocusScope.of(context).unfocus();
+  ElevatedButton(
+  onPressed: () async {
+    // Navigate to the book search screen when tapped
+    final Book? book = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookSearchScreen(), // query: selectedBook?.title ?? ""
+      ),
+    );
+    // If a book is selected, update the selectedBook
+    if (book != null) {
+      setState(() {
+        selectedBook = book;
+      });
+    }
   },
-                decoration: InputDecoration(
-                  labelText: selectedBook?.title ?? 'Search Book',
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(),
-                ),
-                onTap: () async {
-                  // Navigate to the book search screen when tapped
-                  final Book? book = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookSearchScreen(),//query: selectedBook?.title ?? ""
-                    ),
-                  );
-                  // If a book is selected, update the selectedBook
-                  if (book != null) {
-                    setState(() {
-                      selectedBook = book;
-                    });
-                  }
-                },
-              ),
+  style: ElevatedButton.styleFrom(
+    padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+    backgroundColor: Colors.white, // Background color
+  ),
+  child: Align(
+    alignment: Alignment.centerLeft, // Align text to the left
+    child: Text(
+      selectedBook?.title ?? 'Search Book',
+      style: TextStyle(
+        color: Colors.black, // Text color
+        fontSize: 16,
+      ),
+    ),
+  ),
+),
+
               SizedBox(height: 16),
 
               ElevatedButton(
@@ -178,6 +186,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
           // Safely navigate back if the context is valid
           if (mounted) {
+            setState(() {
+              
+            });
             Navigator.pop(context); // Navigate back
           }
         }
