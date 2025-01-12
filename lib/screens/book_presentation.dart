@@ -426,14 +426,14 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 ),
                 SizedBox(height: 8),
                 if (usersReviews.isNotEmpty) ...[
-                  reviewScroll("${loadBook.id}'s reviews",
+                  reviewScroll("${loadBook.title}'s reviews",
                       usersReviews,
                       currentUser: widget.currentUser),
                 ],
 
                 if (usersReviews.isEmpty ) ...[
                   Text(
-                    " Users have not rated this book",
+                    " Users have not rated this book ${loadBook.id}",
                     style: TextStyle(fontSize: 18),
                   ),
                 ],
