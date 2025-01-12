@@ -39,7 +39,7 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/window.png"
+  image_path: "assets/V.jpg"
 
 assets:
     - assets/
