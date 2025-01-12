@@ -89,11 +89,16 @@ final logger = Logger();
          FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE)
       ''',
         );
-        db.execute(
-          '''CREATE TABLE pagesPerDay(id INTEGER PRIMARY KEY AUTOINCREMENT, pages INTEGER, user_id INTEGER, date TEXT
-         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)
-      ''',
-        );
+db.execute(
+  '''CREATE TABLE pagesPerDay(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pages INTEGER,
+    user_id INTEGER,
+    date TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )'''
+);
+
         db.execute(
           '''CREATE TABLE badges (
   id INTEGER PRIMARY KEY AUTOINCREMENT, 
