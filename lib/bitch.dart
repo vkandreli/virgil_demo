@@ -1,4 +1,4 @@
-import 'package:virgil_demo/SQLService.dart';
+/**import 'package:virgil_demo/SQLService.dart';
 
 
   late List<Book> completedList, currentList, readingList;
@@ -227,4 +227,4 @@ Future<User> getUserForReview(int userId) async {
         readingList = [],
        pagesPerDay= [],
         badges= [],
-       goals = [];*/
+       goals = [];*/*/

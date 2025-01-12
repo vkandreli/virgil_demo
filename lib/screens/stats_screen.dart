@@ -21,7 +21,7 @@ class StatsScreen extends StatefulWidget {
 
 class _StatsScreenState extends State<StatsScreen> {
   // Helper method to get pages read this week
-  List<Map<DateTime, int>> getPagesReadThisWeek(
+  /**List<Map<DateTime, int>> getPagesReadThisWeek(
       List<Map<DateTime, int>> pagesPerDay) {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
@@ -32,12 +32,14 @@ class _StatsScreenState extends State<StatsScreen> {
       return date.isAfter(startOfWeek.subtract(Duration(days: 1))) &&
           date.isBefore(endOfWeek.add(Duration(days: 1)));
     }).toList();
-  }
+  }*/
   late List<Book> completedList, currentList, readingList;
   late List<Review> usersReviews, bookReviews;
   late List<Pack> usersPacks;
   late List<Badges> usersBadges = [];
   late List<User> followedUsers =[];
+  late int pagesReadToday = 0;
+  late List<Map<DateTime, int>> pagesReadThisWeek;
 
 Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
@@ -48,6 +50,12 @@ Future<void> _getResources() async {
   usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
   usersBadges = await SQLService().getBadgesForUser(widget.currentUser.id);
   followedUsers = await SQLService().getFollowersForUser(widget.currentUser.id);
+  pagesReadToday = await SQLService().getPagesPerDay(widget.currentUser.id, DateTime.now.toString().split(' ')[0]);
+  pagesReadThisWeek = await SQLService().getPagesReadThisWeek(widget.currentUser.id);
+
+ 
+ 
+  
 
   // Fetch all available badges from the database
   final allBadges = await SQLService().getAllBadges();
@@ -77,7 +85,7 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
 
   if (badge.name == "Page Turner") {
     // Check if the user has read 100 pages in a day
-    int pagesReadToday = await SQLService().getPagesReadToday(userId);
+  //  int pagesReadToday = await SQLService().getPagesReadToday(userId);
     return pagesReadToday >= 100;
   }
 
@@ -110,9 +118,9 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
       ),
       Goal(
         name: 'Read 500 pages in a day',
-        requirement: (User user) => widget.currentUser.pagesPerDay >= 500,
+        requirement: (User user) => pagesReadToday >= 500,
         userChoseThis: (User user) => true,
-        getProgress: (User user) => '${widget.currentUser.pagesPerDay}/500',
+        getProgress: (User user) => '${pagesReadToday}/500',
       ),
     ];
 
@@ -134,8 +142,8 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
   @override
   Widget build(BuildContext context) {
     // Get pages read this week
-    final pagesReadThisWeek =
-        getPagesReadThisWeek(widget.currentUser.pagesPerDay);
+ //   final pagesReadThisWeek =
+ //       getPagesReadThisWeek(widget.currentUser.pagesPerDay);
 
     return SafeArea(
       child: Scaffold(

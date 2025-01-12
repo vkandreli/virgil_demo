@@ -1337,6 +1337,35 @@ Future<int> getPagesPerDay(int? userId, String date) async {
 }
 
 
+Future<List<Map<DateTime, int>>> getPagesReadThisWeek(int? userId) async {
+  final db = await SQLService().database;
+
+  // Get the current date and calculate the date 7 days ago
+  final DateTime now = DateTime.now();
+  final DateTime oneWeekAgo = now.subtract(Duration(days: 7));
+
+  // Query the pagesPerDay table for the last 7 days for the given user
+  final List<Map<String, dynamic>> result = await db.query(
+    'pagesPerDay',
+    columns: ['date', 'pages'], // Fetch the date and pages columns
+    where: 'user_id = ? AND date BETWEEN ? AND ?',
+    whereArgs: [
+      userId,
+      oneWeekAgo.toString().split(' ')[0], // Format as YYYY-MM-DD
+      now.toString().split(' ')[0],       // Format as YYYY-MM-DD
+    ],
+    orderBy: 'date ASC', // Order by date in ascending order
+  );
+
+  // Convert the result into a list of DateTime and int pairs
+  return result.map((entry) {
+    return {
+      DateTime.parse(entry['date']): entry['pages'] as int,
+    };
+  }).toList();
+}
+
+
 ///////// Commands that would work if anything worked
 
 
