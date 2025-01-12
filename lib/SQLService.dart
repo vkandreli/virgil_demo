@@ -1727,4 +1727,69 @@ class UserBook {
   }
 }
 
+//////////////////////////////////
+// Badge class
+class Badge {
+  final String name;
+  final String image;
+  final String description;
+  final bool requirement; // Boolean requirement (or you could use a function if needed)
+
+  Badge({
+    required this.name,
+    required this.image,
+    required this.description,
+    required this.requirement,
+  });
+
+  // Convert Badge object to Map for database operations
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'image': image,
+      'description': description,
+      'requirement': requirement ? 1 : 0, // Convert bool to int for database (1 = true, 0 = false)
+    };
+  }
+
+  // Convert Map to Badge object
+  factory Badge.fromMap(Map<String, dynamic> map) {
+    return Badge(
+      name: map['name'],
+      image: map['image'],
+      description: map['description'],
+      requirement: map['requirement'] == 1, // Convert back from int to bool
+    );
+  }
+}
+
+// UserBadge class (represents the relationship between User and Badge)
+class UserBadge {
+  final int? user_id;
+  final int? badge_id;
+
+  UserBadge({
+    this.user_id,
+    this.badge_id,
+  });
+
+  // Convert UserBadge object to Map for database operations
+  Map<String, dynamic> toMap() {
+    return {
+      'user_id': user_id,    // ID of the user
+      'badge_id': badge_id,  // ID of the badge
+    };
+  }
+
+  // Convert Map to UserBadge object
+  factory UserBadge.fromMap(Map<String, dynamic> map) {
+    return UserBadge(
+      user_id: map['user_id'],
+      badge_id: map['badge_id'],
+    );
+  }
+}
+
 /////////
+///
+///
