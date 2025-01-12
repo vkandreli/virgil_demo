@@ -477,10 +477,10 @@ Future<List<Badges>> getBadgesForUser(int? userId) async {
     whereArgs: [userId],
   );
 
-  // Now, fetch Badges details from badges table based on the badge_ids
+  // Now, fetch Badges details from the badges table based on the badge_ids
   List<Badges> badges = [];
-  for (var Badges in badgeIds) {
-    final badgeId = Badges['badge_id'];
+  for (var badgeData in badgeIds) {
+    final badgeId = badgeData['badge_id'];
     final badgeDetails = await db.query(
       'badges',
       where: 'id = ?',
@@ -488,7 +488,7 @@ Future<List<Badges>> getBadgesForUser(int? userId) async {
     );
 
     if (badgeDetails.isNotEmpty) {
-      badges.add(Badges.fromMap(badgeDetails.first)); // Assuming Badges.fromMap exists
+      badges.add(Badges.fromMap(badgeDetails.first)); // Now this should work
     }
   }
 
@@ -2025,26 +2025,25 @@ class Badges {
   });
 
   // Convert Badges object to Map for database operations
-  Map<String, dynamic> toMap() {
+ Map<String, dynamic> toMap() {
     return {
-      'id': id,               // Include the id field in the map
+      'id': id,
       'name': name,
       'image': image,
       'description': description,
-      'requirement': requirement ? 1 : 0, // Convert bool to int for database
+      'requirement': requirement,
     };
   }
-
   // Convert Map to Badges object
-  factory Badges.fromMap(Map<String, dynamic> map) {
+factory Badges.fromMap(Map<String, dynamic> map) {
     return Badges(
-      id: map['id'],          // Retrieve the id from the map
+      id: map['id'],
       name: map['name'],
       image: map['image'],
       description: map['description'],
-      requirement: map['requirement'] == 1, // Convert int to bool
+      requirement: map['requirement'],
     );
-  }
+}
 }
 
 class UserBadge {
