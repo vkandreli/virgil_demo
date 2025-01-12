@@ -1,12 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-//import 'package:virgil_demo/models/post.dart';
-//import 'package:virgil_demo/models/user.dart'; 
-//import 'package:virgil_demo/models/book.dart';
-import 'package:virgil_demo/screens/book_search_screen.dart';  // Import the book search screen
+import 'package:image/image.dart' as img; // Import the image package
+import 'package:virgil_demo/screens/book_search_screen.dart';
 import 'package:virgil_demo/SQLService.dart';
-
 
 class CreatePostScreen extends StatefulWidget {
   final User currentUser;
@@ -22,9 +21,28 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   String? quoteText;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
 
-  Future<void> addPost(Post) async {
-   await SQLService().insertPost(Post);
+  Future<void> addPost(Post post) async {
+    await SQLService().insertPost(post);
+  }
 
+  // Function to compress the image and convert it to Base64
+  Future<String> convertImageToBase64(File image) async {
+    // Read the image file as bytes
+    List<int> imageBytes = await image.readAsBytes();
+
+    // Decode the image to manipulate it
+    img.Image? decodedImage = img.decodeImage(Uint8List.fromList(imageBytes));
+
+    if (decodedImage != null) {
+      // Compress the image (you can adjust the quality parameter as needed)
+      img.Image compressedImage = img.copyResize(decodedImage, width: 600);  // Resize to 600px width
+      List<int> compressedBytes = img.encodeJpg(compressedImage, quality: 85);  // Compress JPEG with 85% quality
+
+      // Convert the compressed image bytes to Base64 string
+      return base64Encode(compressedBytes);
+    } else {
+      throw Exception("Failed to decode image.");
+    }
   }
 
   // Function to pick an image
@@ -137,32 +155,36 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
               SizedBox(height: 16),
 
-              // Create Post button
               ElevatedButton(
-                onPressed: _canCreatePost()
-                    ? () {
-                        // Create the Post object
-                        Post post = Post(
-                          originalPoster_id: widget.currentUser.id, // Use the current user as the poster
-                          timePosted: DateTime.now().toString().split(' ')[0],
-                          imageUrl: 'https://tse3.mm.bing.net/th?id=OIP.PgvVbyS2yPLX6TlQ4Wf-iAHaDb&pid=Api',//selectedImagePath, 
-                          quote: quoteText,
-                          book_id: selectedBook?.id, // Use the full Book object
-                          likes: 0,
-                          reblogs: 0,
-                        );
+  onPressed: _canCreatePost()
+      ? () async {
+          // Convert the image to Base64 before creating the post
+          String base64Image = selectedImagePath != null
+              ? await convertImageToBase64(File(selectedImagePath!))
+              : ''; // Empty string if no image
 
-                         addPost(post);
-// Add the post to the current user's posts
+          // Create the Post object
+          Post post = Post(
+            originalPoster_id: widget.currentUser.id,
+            timePosted: DateTime.now().toString().split(' ')[0],
+            imageUrl: base64Image,  // Use the Base64 image
+            quote: quoteText ?? '',
+            book_id: selectedBook?.id,
+            likes: 0,
+            reblogs: 0,
+          );
 
+          await addPost(post); // Add the post to the database
 
+          // Safely navigate back if the context is valid
+          if (mounted) {
+            Navigator.pop(context); // Navigate back
+          }
+        }
+      : null,
+  child: Text('Create Post'),
+)
 
-                        // Navigate back to the Profile screen
-                        Navigator.pop(context);
-                      }
-                    : null, // Disable the button if conditions are not met
-                child: Text('Create Post'),
-              ),
             ],
           ),
         ),

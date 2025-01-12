@@ -354,71 +354,71 @@ for (var userBook in dummyUserBooks) {
 
 
 
-await db.insert('posts', {
-  'originalPoster_id': 1,
-  'reblogger_id': 2,
-  'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
-  'quote': "This is a quote for Post 1.",
-  'book_id': 1,
-  'timePosted': DateTime.now().toString(),
-  'likes': 0,
-  'reblogs': 0
-});
+// await db.insert('posts', {
+//   'originalPoster_id': 1,
+//   'reblogger_id': 2,
+//   'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
+//   'quote': "This is a quote for Post 1.",
+//   'book_id': 1,
+//   'timePosted': DateTime.now().toString(),
+//   'likes': 0,
+//   'reblogs': 0
+// });
 
-await db.insert('posts', {
-  'originalPoster_id': 2,
-  'reblogger_id': 6,
-  'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
-  'quote': "This is a quote for Post 2.",
-  'book_id': 1,
-  'timePosted': DateTime.now().toString(),
-  'likes': 0,
-  'reblogs': 0
-});
+// await db.insert('posts', {
+//   'originalPoster_id': 2,
+//   'reblogger_id': 6,
+//   'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
+//   'quote': "This is a quote for Post 2.",
+//   'book_id': 1,
+//   'timePosted': DateTime.now().toString(),
+//   'likes': 0,
+//   'reblogs': 0
+// });
 
-await db.insert('posts', {
-  'originalPoster_id': 3,
-  'reblogger_id': '',
-  'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
-  'quote': "This is a quote for Post 3.",
-  'book_id': 1,
-  'timePosted': DateTime.now().toString(),
-  'likes': 0,
-  'reblogs': 0
-});
+// await db.insert('posts', {
+//   'originalPoster_id': 3,
+//   'reblogger_id': '',
+//   'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
+//   'quote': "This is a quote for Post 3.",
+//   'book_id': 1,
+//   'timePosted': DateTime.now().toString(),
+//   'likes': 0,
+//   'reblogs': 0
+// });
 
-await db.insert('posts', {
-  'originalPoster_id': 4,
-  'reblogger_id': 5,
-  'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
-  'quote': "This is a quote for Post 4.",
-  'book_id': 1,
-  'timePosted': DateTime.now().toString(),
-  'likes': 0,
-  'reblogs': 0
-});
+// await db.insert('posts', {
+//   'originalPoster_id': 4,
+//   'reblogger_id': 5,
+//   'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
+//   'quote': "This is a quote for Post 4.",
+//   'book_id': 1,
+//   'timePosted': DateTime.now().toString(),
+//   'likes': 0,
+//   'reblogs': 0
+// });
 
-await db.insert('posts', {
-  'originalPoster_id': 5,
-  'reblogger_id': null,
-  'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
-  'quote': "This is a quote for Post 5.",
-  'book_id': 1,
-  'timePosted': DateTime.now().toString(),
-  'likes': 0,
-  'reblogs': 0
-});
+// await db.insert('posts', {
+//   'originalPoster_id': 5,
+//   'reblogger_id': null,
+//   'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
+//   'quote': "This is a quote for Post 5.",
+//   'book_id': 1,
+//   'timePosted': DateTime.now().toString(),
+//   'likes': 0,
+//   'reblogs': 0
+// });
 
-await db.insert('posts', {
-  'originalPoster_id': 6,
-  'reblogger_id': null,
-  'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
-  'quote': "This is a quote for Post 6.",
-  'book_id': 1,
-  'timePosted': DateTime.now().toString(),
-  'likes': 0,
-  'reblogs': 0
-});
+// await db.insert('posts', {
+//   'originalPoster_id': 6,
+//   'reblogger_id': null,
+//   'imageUrl': "https://tse4.mm.bing.net/th?id=OIP.9Fyq76VnYYseoZr8dCayTgHaFO&pid=Api",
+//   'quote': "This is a quote for Post 6.",
+//   'book_id': 1,
+//   'timePosted': DateTime.now().toString(),
+//   'likes': 0,
+//   'reblogs': 0
+// });
 
 
 await db.insert('reviews', {
