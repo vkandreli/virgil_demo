@@ -55,7 +55,6 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     await  SQLService().addBookToCompletedList(bookId, userId);
     }
 
-
   @override
   void initState() {
     super.initState();
@@ -80,11 +79,6 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     });
   }
 
-  // Handle Add button click
-  void _addToList() {
-    logger.i("Added book to your list: ${widget.book.title}");
-  }
-
   // Handle Start Reading button click
   void _startReading() {
     addToCurrentList(widget.book.id, widget.currentUser.id);
@@ -94,7 +88,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   }
 
   // Method to add new page
-  void _addPages(int newPage) {
+  Future<void> _addPages(int newPage) async {
     // Find the book in the currentList based on the title
     Book? selected = currentList.firstWhere(
       (book) => book.title == widget.book.title,
@@ -133,9 +127,10 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
         logger.i("Finished book: ${widget.book.title}");
       } else {
         setState(() {
-          SQLService.currentPage(newPage);
-          widget.currentUser.currentPage =
-              newPage; // Directly update the book's currentPage
+          SQLService().updateUserBook(widget.currentUser.id, widget.book.id, newPage);
+          // SQLService.currentPage(newPage);
+          // widget.currentUser.currentPage =
+          //     newPage; // Directly update the book's currentPage
         });
         logger.i("Reached page: $newPage at ${widget.book.title}");
       }
