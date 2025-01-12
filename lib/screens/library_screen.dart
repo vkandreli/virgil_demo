@@ -21,10 +21,10 @@ final User currentUser;
   LibraryScreen({Key? key, required this.currentUser}) : super(key: key); 
   final TextEditingController _searchController = TextEditingController(); // Controller for TextField
     @override
-  _BookDetailScreenState createState() => _BookDetailScreenState();
+  _LibraryScreenState createState() => _LibraryScreenState();
 }
 
-class _BookDetailScreenState extends State<BookDetailScreen> {
+class _LibraryScreenState extends State<LibraryScreen> {
   final Logger logger = Logger();
   late List<Book> completedList= [], currentList= [], readingList= [];
   late List<Review> usersReviews= [], bookReviews= [];
