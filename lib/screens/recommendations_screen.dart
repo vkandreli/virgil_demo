@@ -32,14 +32,18 @@ Future<void> _getResources() async {
     cityReads = await SQLService().topBooksByCity(widget.currentUser.currentCity);
 
     }
-
+Future<void> _getAll() async{
+      _getLocationandPermission();
+    _getResources(); 
+         setState(() {
+          });
+}
 
   @override
   void initState() {
     super.initState();
     //_getCurrentLocation();
-    _getLocationandPermission();
-    _getResources(); 
+_getAll();
      }
 
       Future<void> _getLocationandPermission() async {
