@@ -38,6 +38,23 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   }
 
 
+    Future<void> addToReadList(int? bookId, int? userId) async {
+    await  SQLService().addBookToReadingList(bookId, userId);
+  }
+
+
+    Future<void> RemoveFromReadList(int? bookId, int? userId) async {
+    await  SQLService().removeBookFromReadingList(bookId, userId);
+  }
+
+    Future<void> addToCurrentList(int? bookId, int? userId) async {
+    await  SQLService().addBookToCurrentList(bookId, userId);
+    }
+
+     Future<void> addToCompletedList(int? bookId, int? userId) async {
+    await  SQLService().addBookToCompletedList(bookId, userId);
+    }
+
 
   @override
   void initState() {
@@ -53,35 +70,24 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   void _toggleSaveRemove() {
     setState(() {
       if (isInReadingList) {
-        readingList.remove(widget.book);
-        logger.i("Removed book from reading list: ${widget.book.title}");
+       RemoveFromReadList(widget.book.id, widget.currentUser.id);
+        logger.i("Removed book from wishlist: ${widget.book.title}");
       } else {
-        readingList.add(widget.book);
-        logger.i("Saved book to reading list: ${widget.book.title}");
+        addToReadList(widget.book.id, widget.currentUser.id);
+        logger.i("Saved book to wishlist: ${widget.book.title}");
       }
       isInReadingList = !isInReadingList;
     });
   }
 
-void _addToCompletedList(Book book) async {
-  await SQLService().addBookToCompletedList(book.id, widget.currentUser.id);
-  logger.i("Added book to the completed list: ${book.title}");
-}
-
-void _addToCurrentReadingList(Book book) async {
-  await SQLService().addBookToReadingList(book.id, widget.currentUser.id);
-  logger.i("Added book to the current reading list: ${book.title}");
-}
-
-void _addToWishlistList(Book book) async {
-  await SQLService().addBookToWishlist(book.id, widget.currentUser.id);
-  logger.i("Added book to the wishlist list: ${book.title}");
-}
-
+  // Handle Add button click
+  void _addToList() {
+    logger.i("Added book to your list: ${widget.book.title}");
+  }
 
   // Handle Start Reading button click
   void _startReading() {
-    widget.currentUser.addToCurrent(widget.book);
+    addToCurrentList(widget.book.id, widget.currentUser.id);
     logger.i("Started reading: ${widget.book.title}");
     isInCurrentList = currentList.contains(widget.book);
     if (isInCurrentList) logger.i("Is in current list: ${widget.book.title}");
@@ -121,8 +127,8 @@ void _addToWishlistList(Book book) async {
       if (newPage == selected.totalPages) {
         setState(() {
           isCompleted = true;
-         
-              _addToCompletedList(selected); // Directly update the book
+          
+              addToCompletedList(selected.id, widget.currentUser.id); // Directly update the book
         });
         logger.i("Finished book: ${widget.book.title}");
       } else {
@@ -250,7 +256,7 @@ void _addToWishlistList(Book book) async {
               ElevatedButton(
                 onPressed: () async {
                   if (!usersReviews.any((review) =>
-                      review.user == widget.currentUser && review.book == widget.book)) {
+                      review.user_id == widget.currentUser.id && review.book_id == widget.book.id)) {
                     logger.i("Reviewing book: ${widget.book.title}");
                     
                     // Navigate to CreateReviewScreen
@@ -269,8 +275,8 @@ void _addToWishlistList(Book book) async {
                   }
                 },
                 child: Text(
-                  (!widget.currentUser.usersReviews.any((review) =>
-                      review.user == widget.currentUser && review.book == widget.book)
+                  (!usersReviews.any((review) =>
+                      review.user_id == widget.currentUser.id && review.book_id == widget.book.id)
                       ? 'Review book'
                       : "Already reviewed"),
                   style: TextStyle(color: AppColors.darkBrown),

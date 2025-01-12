@@ -91,6 +91,11 @@ class SQLService {
          )
       ''',
     );
+     db.execute(
+      '''CREATE TABLE comments(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, post_id INTEGER,
+         FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE)
+      ''',
+    );
   },
     
     // Set the version. This executes the onCreate function and provides a
@@ -560,6 +565,55 @@ Future<void> insertPost(Post post) async {
     );
   }
 
+  Future<void> addCommentToPost(Comment comment) async {
+  final db = await SQLService().database;
+
+  // Insert the comment into the "comments" table
+  await db.insert(
+    'comments',
+    comment.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+  Future<List<Comment>> getCommentsForPost(int? postId) async {
+  final db = await SQLService().database;
+
+  // Query to get comments for the specified post
+  final List<Map<String, dynamic>> maps = await db.query(
+    'comments',
+    where: 'post_id = ?',
+    whereArgs: [postId],
+  );
+
+  // Convert the list of maps into a list of Comment objects
+  return List.generate(maps.length, (i) {
+    return Comment.fromMap(maps[i]);
+  });
+}
+
+Future<Post?> getPostForComment(int? commentId) async {
+  final db = await SQLService().database;
+
+  // Query to get the post for the specified comment
+  final List<Map<String, dynamic>> maps = await db.rawQuery(
+    '''
+    SELECT posts.* 
+    FROM posts
+    INNER JOIN comments ON posts.id = comments.post_id
+    WHERE comments.id = ?
+    ''',
+    [commentId],
+  );
+
+  // Return the first post if found, otherwise null
+  if (maps.isNotEmpty) {
+    return Post.fromMap(maps.first);
+  }
+  return null;
+}
+
+
 //*******     Review Setters      ********/
 
 
@@ -690,8 +744,12 @@ Future<void> insertPack(Pack pack) async {
 
   // Query to find all reviews made by the specific user
   final List<Map<String, dynamic>> maps = await db.query(
-    'reviews JOIN books on book_id',
-    where: 'author = ?',
+    '''
+    SELECT reviews.* 
+    FROM reviews
+    INNER JOIN books ON reviews.book_id = books.id
+    WHERE books.author = ?
+    ''',
     whereArgs: [Author],
   );
   // Convert the maps to a list of Review objects
@@ -763,7 +821,7 @@ Future<List<Review>> getReviewsByDate() async {
     UserBook NewUserBook =  UserBook(
     user_id: userId,
     book_id: bookId,  
-    listCategory: 1,  //Reading
+    listCategory: 3,  //Wishlist pfff
     currentPage: 1,
     );
     
@@ -781,11 +839,11 @@ Future<List<Review>> getReviewsByDate() async {
     await insertUserBook(NewUserBook);
   }
 
-  Future<void> addBookToWishlist(int? bookId, int? userId) async {
+  Future<void> addBookToCurrentList(int? bookId, int? userId) async {
     UserBook NewUserBook =  UserBook(
     user_id: userId,
     book_id: bookId,  
-    listCategory: 3,  //Wishlist
+    listCategory: 1,  //reading rn
     currentPage: 1,
     );
     
@@ -1542,7 +1600,44 @@ class Review {
       stars: map['stars'] as int,
     );
   }
+
+
 }
+//*******       Comment      ********/
+
+class Comment {
+  final int? id;
+  final String text;
+  final int? post_id;
+
+
+  Comment({
+    this.id,
+    required this.text,
+    this.post_id,
+  });
+
+
+    Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'text': text,
+      'post_id': post_id,
+    };
+  }
+
+  // Create a Comment object from a map (from database query)
+  factory Comment.fromMap(Map<String, dynamic> map) {
+    return Comment(
+      id: map['id'] as int?,
+      text: map['text'] as String,
+      post_id: map['post_id'] as int?,
+    );
+  }
+}
+
+
+
 //*********    Pack  **********/
 
 

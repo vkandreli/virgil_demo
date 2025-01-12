@@ -30,20 +30,29 @@ class _PostWidgetState extends State<PostWidget> {
   late Book postsBook= Book.empty();
   late User originalPoster, reblogger = User.empty();
   late List<Book> readingList = [];
+  late List<Comment> postComments = [];
 
   Future<void> _getResources() async {
   postsBook = await SQLService().getBooksForPost(widget.post.id);
   originalPoster = await SQLService().getPosterForPost(widget.post.id); 
   reblogger = await SQLService().getRebloggerForPost(widget.post.id); 
-  readingList = await SQLService().getBooksCurrentReadingForUser(widget.currentUser.id);
+  readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  postComments = await SQLService().getCommentsForPost(widget.post.id);
  }
-
+  
+  Future<void> addComment(String Text, int? postId) async {
+    final newComment = Comment(
+    text: Text,
+    post_id: postId, 
+  );
+  await SQLService().addCommentToPost(newComment);
+  }
   Future<void> _reblog(Post post, int? userId) async {
     await  SQLService().ReblogPost(post, userId);
   }
 
-   Future<void> addToReadList(Book book, int? userId) async {
-    await  SQLService().addBookToReadingList(book, userId);
+   Future<void> addToReadList(int? bookId, int? userId) async {
+    await  SQLService().addBookToReadingList(bookId, userId);
   }
 
    Future<void> RemoveFromReadList(int? bookId, int? userId) async {
@@ -249,7 +258,7 @@ class _PostWidgetState extends State<PostWidget> {
                       },
                     ),
                     // Display comment count
-                    Text(widget.post.comments.length.toString(),
+                    Text(postComments.length.toString(),
                         style: TextStyle(fontSize: 14)),
                   ],
                 ),
@@ -288,7 +297,7 @@ class _PostWidgetState extends State<PostWidget> {
                             logger.i(
                                 "Removed book from reading list: ${postsBook.title}");
                           } else {
-                            addToReadList(postsBook, widget.currentUser.id);
+                            addToReadList(postsBook.id, widget.currentUser.id);
                             logger.i(
                                 "Saved book to reading list: ${postsBook.title}");
                           }
@@ -322,10 +331,10 @@ class _PostWidgetState extends State<PostWidget> {
               // Display existing comments
               Expanded(
                 child: ListView.builder(
-                  itemCount: widget.post.comments.length,
+                  itemCount: postComments.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(widget.post.comments[index]),
+                      title: Text(postComments[index].text),
                       leading: CircleAvatar(child: Icon(Icons.person)),
                     );
                   },
@@ -349,8 +358,9 @@ class _PostWidgetState extends State<PostWidget> {
                 onPressed: () {
                   if (_commentController.text.isNotEmpty) {
                     setState(() {
-                      widget.post.comments
-                          .add(_commentController.text); // Add the new comment
+                     postComments
+                          .add(Comment (text: _commentController.text, post_id: widget.post.id)); // Add the new comment
+                          addComment(_commentController.text, widget.post.id); //Add comment to the database
                       _commentController.clear(); // Clear the text field
                     });
                     Navigator.pop(context); // Close the bottom sheet
