@@ -29,6 +29,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   late List<Book> completedList = [], currentList = [],  readingList = [];
   late List<Review> usersReviews= [], bookReviews= [];
   late int currentPage = -1;
+  late Book loadBook = widget.book;
   
   Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
@@ -56,6 +57,11 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     await  SQLService().addBookToCompletedList(bookId, userId);
     }
 
+    Future<void> addBookToDatabase(Book book) async {
+      await SQLService().insertBook(book);
+      loadBook = await SQLService().getBookForId(book);
+    }
+
   
   Future<void> getCurrentPage(int? userId,int? bookId) async{
     currentPage =  await SQLService().getCurrentPage(userId, bookId);
@@ -78,24 +84,25 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
   @override
   void initState() {
     super.initState();
+   addBookToDatabase(widget.book);
     _getResources();
     // Check if the book is in the reading list of the current user
-    isInReadingList = readingList.contains(widget.book); //.readingList.contains(widget.book);
-    isInCurrentList = currentList.contains(widget.book);
-    isCompleted = completedList.contains(widget.book);
+    isInReadingList = readingList.contains(loadBook); //.readingList.contains(widget.book);
+    isInCurrentList = currentList.contains(loadBook);
+    isCompleted = completedList.contains(loadBook);
   }
 
   // Toggle Save/Remove button logic
   void _toggleSaveRemove() {
     setState(() {
       if (isInReadingList) {
-       RemoveFromReadList(widget.book.id, widget.currentUser.id);
-       readingList.remove(widget.book);
-        logger.i("Removed book from wishlist: ${widget.book.title}");
+       RemoveFromReadList(loadBook.id, widget.currentUser.id);
+       readingList.remove(loadBook);
+        logger.i("Removed book from wishlist: ${loadBook.title}");
       } else {
-        addToReadList(widget.book.id, widget.currentUser.id);
-        readingList.add(widget.book);
-        logger.i("Saved book to wishlist: ${widget.book.title}");
+        addToReadList(loadBook.id, widget.currentUser.id);
+        readingList.add(loadBook);
+        logger.i("Saved book to wishlist: ${loadBook.title}");
       }
       isInReadingList = !isInReadingList;
     });
@@ -103,23 +110,23 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
   // Handle Start Reading button click
   void _startReading() {
-    addToCurrentList(widget.book.id, widget.currentUser.id);
-    logger.i("Started reading: ${widget.book.title}");
-    isInCurrentList = currentList.contains(widget.book);
-    if (isInCurrentList) logger.i("Is in current list: ${widget.book.title}");
+    addToCurrentList(loadBook.id, widget.currentUser.id);
+    logger.i("Started reading: ${loadBook.title}");
+    isInCurrentList = currentList.contains(loadBook);
+    if (isInCurrentList) logger.i("Is in current list: ${loadBook.title}");
   }
 
   // Method to add new page
   Future<void> _addPages(int newPage) async {
     // Find the book in the currentList based on the title
     Book? selected = currentList.firstWhere(
-      (book) => book.title == widget.book.title,
+      (book) => book.title == loadBook.title,
       orElse: () => Book.empty(), // If the book is not found, return null
     );
 
     if (selected == Book.empty()) {
       // Handle the case where the book is not found
-      logger.e("Book not found in the current list: ${widget.book.title}");
+      logger.e("Book not found in the current list: ${loadBook.title}");
     } else {
       String today = DateTime.now().toString().split(' ')[0];
 
@@ -153,15 +160,15 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
           
               addToCompletedList(selected.id, widget.currentUser.id); // Directly update the book
         });
-        logger.i("Finished book: ${widget.book.title}");
+        logger.i("Finished book: ${loadBook.title}");
       } else {
         setState(() {
-          SQLService().updateUserBook(widget.currentUser.id, widget.book.id, newPage);
+          SQLService().updateUserBook(widget.currentUser.id, loadBook.id, newPage);
           // SQLService.currentPage(newPage);
           // widget.currentUser.currentPage =
           //     newPage; // Directly update the book's currentPage
         });
-        logger.i("Reached page: $newPage at ${widget.book.title}");
+        logger.i("Reached page: $newPage at ${loadBook.title}");
       }
     }
   }
@@ -178,7 +185,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 MaterialPageRoute(
                     builder: (context) => AddToPack(
                           currentUser: widget.currentUser,
-                          selectedBook: widget.book,
+                          selectedBook: loadBook,
                         )), 
               );
             }),
@@ -232,19 +239,19 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                       int newPage = int.tryParse(_pageController.text) ?? 0;
 
                       // Check if the page number is valid (within the total pages of the book)
-                      if (newPage <= widget.book.totalPages && newPage > 0) {
+                      if (newPage <= loadBook.totalPages && newPage > 0) {
                         // If valid, update the page
                         _addPages(newPage);
 
                         // Find the selected book
                         Book? selected =
                             currentList.firstWhere(
-                          (book) => book.title == widget.book.title,
+                          (book) => book.title == loadBook.title,
                           orElse: () => Book.empty(),
                         );
 
                         logger.i(
-                            "Reached page: ${currentPage} at ${widget.book.title}");
+                            "Reached page: ${currentPage} at ${loadBook.title}");
 
                         // Clear the text field
                         _pageController.clear();
@@ -255,7 +262,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                         // Show an error message if the page number is invalid
                         final snackBar = SnackBar(
                           content: Text(
-                              'Invalid page number. Please enter a number between 1 and ${widget.book.totalPages}.'),
+                              'Invalid page number. Please enter a number between 1 and ${loadBook.totalPages}.'),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
@@ -268,7 +275,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 ),
 
                 Text(
-                  'Pages: ${currentPage} / ${widget.book.totalPages}',
+                  'Pages: ${currentPage} / ${loadBook.totalPages}',
                 ),
               ],
             ],
@@ -280,8 +287,8 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
               ElevatedButton(
                 onPressed: () async {
                   if (!usersReviews.any((review) =>
-                      review.user_id == widget.currentUser.id && review.book_id == widget.book.id)) {
-                    logger.i("Reviewing book: ${widget.book.title}");
+                      review.user_id == widget.currentUser.id && review.book_id == loadBook.id)) {
+                    logger.i("Reviewing book: ${loadBook.title}");
                     
                     // Navigate to CreateReviewScreen
                     await Navigator.push(
@@ -289,7 +296,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                       MaterialPageRoute(
                         builder: (context) => CreateReviewScreen(
                           currentUser: widget.currentUser,
-                          selectedBook: widget.book,
+                          selectedBook: loadBook,
                         ),
                       ),
                     );
@@ -300,7 +307,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 },
                 child: Text(
                   (!usersReviews.any((review) =>
-                      review.user_id == widget.currentUser.id && review.book_id == widget.book.id)
+                      review.user_id == widget.currentUser.id && review.book_id == loadBook.id)
                       ? 'Review book'
                       : "Already reviewed"),
                   style: TextStyle(color: AppColors.darkBrown),
@@ -326,7 +333,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
               children: [
                 // Book Title
                 Text(
-                  widget.book.title,
+                  loadBook.title,
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -342,9 +349,9 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(
-                        widget.book.posterUrl.isEmpty
+                        loadBook.posterUrl.isEmpty
                             ? "https://tse3.mm.bing.net/th?id=OIP.n3ng2rUJOu_ceO1NyVChkAHaHa&pid=Api"
-                            : widget.book.posterUrl,
+                            : loadBook.posterUrl,
                         height: 200,
                         width: 150,
                         fit: BoxFit.cover,
@@ -367,7 +374,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 ),
                 SizedBox(height: 8),
                 Text(
-                  widget.book.author,
+                  loadBook.author,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(height: 16),
@@ -382,14 +389,14 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 ),
                 SizedBox(height: 8),
                 Text(
-                  widget.book.description,
+                  loadBook.description,
                   style: TextStyle(fontSize: 18),
                 ),
                 SizedBox(height: 16),
 
                 // Book Genre
                 Text(
-                  'Genre: ${widget.book.genre ?? 'N/A'}',
+                  'Genre: ${loadBook.genre ?? 'N/A'}',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -407,7 +414,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 ),
                 SizedBox(height: 8),
                 if (usersReviews.isNotEmpty) ...[
-                  reviewScroll("${widget.book.title}'s reviews",
+                  reviewScroll("${loadBook.title}'s reviews",
                       usersReviews,
                       currentUser: widget.currentUser),
                 ],
