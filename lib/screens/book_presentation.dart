@@ -28,7 +28,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   TextEditingController _pageController = TextEditingController();
   late List<Book> completedList = [], currentList = [],  readingList = [];
   late List<Review> usersReviews= [], bookReviews= [];
-  late int currentPage = -1;
+  late int currentPage = 0;
   late Book loadBook = widget.book;
   
   Future<void> _getResources() async {
