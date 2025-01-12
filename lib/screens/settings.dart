@@ -65,9 +65,9 @@ void _saveSettings() async {
     profileImage: selectedImagePath, // Updated profile image path
     status: statusController.text, // Updated status
     currentCity: widget.currentUser.currentCity, // Keep the current city
-    isPacksPrivate: isPacksPrivate, // Updated privacy setting for packs
-    isReviewsPrivate: isReviewsPrivate, // Updated privacy setting for reviews
-    isReadListPrivate: isReadListPrivate, // Updated privacy setting for the read list
+    isPacksPrivate:  widget.currentUser.isPacksPrivate, // Updated privacy setting for packs
+    isReviewsPrivate:  widget.currentUser.isReviewsPrivate, // Updated privacy setting for reviews
+    isReadListPrivate:  widget.currentUser.isReadListPrivate, // Updated privacy setting for the read list
   );
 
   // Update the user in the database
@@ -143,34 +143,34 @@ selectedImagePath == null
             ),
             SizedBox(height: 16.0),
 
-            // Privacy Settings Section
-            SwitchListTile(
-              title: Text('Make Packs Private'),
-              value: isPacksPrivate,
-              onChanged: (bool value) {
-                setState(() {
-                  isPacksPrivate = value;
-                });
-              },
-            ),
-            SwitchListTile(
-              title: Text('Make Reviews Private'),
-              value: isReviewsPrivate,
-              onChanged: (bool value) {
-                setState(() {
-                  isReviewsPrivate = value;
-                });
-              },
-            ),
-            SwitchListTile(
-              title: Text('Make Reading List Private'),
-              value: isReadListPrivate,
-              onChanged: (bool value) {
-                setState(() {
-                  isReadListPrivate = value;
-                });
-              },
-            ),
+            // // Privacy Settings Section
+            // SwitchListTile(
+            //   title: Text('Make Packs Private'),
+            //   value: isPacksPrivate,
+            //   onChanged: (bool value) {
+            //     setState(() {
+            //       isPacksPrivate = value;
+            //     });
+            //   },
+            // ),
+            // SwitchListTile(
+            //   title: Text('Make Reviews Private'),
+            //   value: isReviewsPrivate,
+            //   onChanged: (bool value) {
+            //     setState(() {
+            //       isReviewsPrivate = value;
+            //     });
+            //   },
+            // ),
+            // SwitchListTile(
+            //   title: Text('Make Reading List Private'),
+            //   value: isReadListPrivate,
+            //   onChanged: (bool value) {
+            //     setState(() {
+            //       isReadListPrivate = value;
+            //     });
+            //   },
+            // ),
             SizedBox(height: 32.0),
 
             // Save Button
