@@ -31,7 +31,7 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
   }
 
 
-    Future<void> addReview(review) async {
+    Future<void> addReview(Review review) async {
    await SQLService().insertReview(review);
   }
 
@@ -123,7 +123,7 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
                         );
 
                         // Add the review to the current user's reviews
-                        addReview(review.id);
+                        addReview(review);
                         setState(() {});
                         // Navigate back to the Profile screen
                         Navigator.pop(context);
