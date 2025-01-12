@@ -83,6 +83,13 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
   }
 
+    Future<void> updateThings(int? userId,int? bookId, int newPage) async{
+    await  SQLService().updateUserBook(widget.currentUser.id, loadBook.id, newPage);
+    currentPage = newPage;// await SQLService().getCurrentPage(userId, bookId);
+    print('current page returning as ${currentPage}');
+
+  }
+
 
   Future<void> CheckAndUpdatePagesPerDay(int? userId, int pages, String date) async {
 
@@ -109,7 +116,6 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     isInCurrentList = currentList.contains(loadBook);
     isCompleted = completedList.contains(loadBook);
     getCurrentPage(widget.currentUser.id, widget.book.id);
-
   }
 
   // Toggle Save/Remove button logic
@@ -179,11 +185,8 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
         logger.i("Finished book: ${loadBook.title}");
       } else {
         setState(() {
-          SQLService().updateUserBook(widget.currentUser.id, loadBook.id, newPage);
-          // SQLService.currentPage(newPage);
-          // widget.currentUser.currentPage =
-          //     newPage; // Directly update the book's currentPage
-                  getCurrentPage(widget.currentUser.id, loadBook.id);
+          updateThings(widget.currentUser.id, loadBook.id, newPage);
+              //    getCurrentPage(widget.currentUser.id, loadBook.id);
                   print('changed current page to $newPage');
         });
         logger.i("Reached page: $newPage at ${loadBook.title}");

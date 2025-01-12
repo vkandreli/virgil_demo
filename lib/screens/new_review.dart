@@ -112,10 +112,13 @@ class _CreateReviewScreenState extends State<CreateReviewScreen> {
               ElevatedButton(
                 onPressed: _canCreateReview()
                     ? () {
+                      if (widget.currentUser.id == null) {
+  throw Exception("Current user ID cannot be null");
+}
+
                         // Create the Review object
                         Review review = Review(
-                          user_id: widget
-                              .currentUser.id, // Use the current user as the reviewer
+                          user_id: widget.currentUser.id ?? 1, // Use the current user as the reviewer
                           reviewDate: DateTime.now().toString().split(' ')[0],
                           text: text ?? "No text",
                           book_id: selectedBook.id,
