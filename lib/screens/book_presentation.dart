@@ -55,6 +55,19 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     await  SQLService().addBookToCompletedList(bookId, userId);
     }
 
+  Future<void> CheckAndUpdatePage(int? userId, int pages, String date) async {
+
+    final exists = await SQLService().doesPagesPerDayExist(userId, date);
+
+     if (exists) {
+     int  currentPages = await SQLService().getPagesPerDay(userId, date);
+     currentPages = currentPages + pages;
+    SQLService().updatePagesPerDay(userId, currentPages);
+  } else {
+     SQLService().addPagesPerDay(userId, pages, date);
+  }
+}
+
   @override
   void initState() {
     super.initState();
@@ -70,9 +83,11 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     setState(() {
       if (isInReadingList) {
        RemoveFromReadList(widget.book.id, widget.currentUser.id);
+       readingList.remove(widget.book);
         logger.i("Removed book from wishlist: ${widget.book.title}");
       } else {
         addToReadList(widget.book.id, widget.currentUser.id);
+        readingList.add(widget.book);
         logger.i("Saved book to wishlist: ${widget.book.title}");
       }
       isInReadingList = !isInReadingList;
@@ -99,7 +114,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
       // Handle the case where the book is not found
       logger.e("Book not found in the current list: ${widget.book.title}");
     } else {
-      DateTime today = DateTime.now();
+      String today = DateTime.now().toString().split(' ')[0];
 
       // Check if there's already an entry for today's pages in pagesPerDay
       Map<DateTime, int>? todayPagesEntry =

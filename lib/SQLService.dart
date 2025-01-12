@@ -1295,6 +1295,17 @@ Future<void> updateUserBook(int? userId, int? bookId, int? currentPage) async {
     );
 }                                                       
 
+Future<int> getPagesPerDay(int? userId, String date) async {
+  final db = await SQLService().database;
+
+  // Query the database for the specific user_id and date
+  final List<Map<String, dynamic>> result = await db.query(
+    'pagesPerDay',
+    where: 'user_id = ? AND date = ?',
+    whereArgs: [userId, date],
+  );
+    return result.first['pages'] as int;
+}
 
 
 ///////// Commands that would work if anything worked
@@ -1369,12 +1380,12 @@ PagesPerDay pagesPerDay = PagesPerDay(
 }
 
 
-Future<void> updatePagesPerDay(int? id, int newPages) async {
+Future<void> updatePagesPerDay(int? id, int? newPages) async {
   final db = await SQLService().database;
 
   await db.update(
     'pagesPerDay',             
-    {'pages': ++newPages},       //Adds new pages to current pages
+    {'pages': newPages},       //Adds new pages to current pages
     where: 'id = ?',           
     whereArgs: [id],           
   );
