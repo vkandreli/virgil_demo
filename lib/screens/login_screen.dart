@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
   void _login() async {
-    // Implement your login logic here (e.g., Firebase Auth or local validation)
     String username = _usernameController.text;
     String password = _passwordController.text;
     
@@ -41,9 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    Map<String, String> allValues = await storage.readAll();
-
-  
+    Map<String, String> allValues = await storage.readAll();  
 
     // Check if the entered username exists in storage
     if (allValues.containsKey('username:$username')  && 
