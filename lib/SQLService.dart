@@ -1473,6 +1473,7 @@ Future<int> getPagesPerDay(int? userId, String date) async {
       where: 'id = ?',
       whereArgs: [id],
     );
+    print('pages updated');
   }
 
   Future<bool> doesPagesPerDayExist(int? userId, String date) async {

@@ -89,8 +89,10 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     final exists = await SQLService().doesPagesPerDayExist(userId, date);
 
      if (exists) {
+      print('pages per day already exists!');
      int  currentPages = await SQLService().getPagesPerDay(userId, date);
      currentPages = currentPages + pages;
+     print('total pages are: $currentPages');
     SQLService().updatePagesPerDay(userId, currentPages);
   } else {
      SQLService().addPagesPerDay(userId, pages, date);
