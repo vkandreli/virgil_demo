@@ -96,6 +96,11 @@ class SQLService {
          FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE)
       ''',
     );
+         db.execute(
+      '''CREATE TABLE PagesPerDay(id INTEGER PRIMARY KEY AUTOINCREMENT, pages INTEGER, user_id INTEGER, date TEXT
+         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)
+      ''',
+    );
   },
     
     // Set the version. This executes the onCreate function and provides a
@@ -1726,5 +1731,41 @@ class UserBook {
     );
   }
 }
+
+
+class PagesPerDay {
+  final int? id;        // Auto-incrementing primary key
+  final int pages;      // Number of pages
+  final int user_id;     // Foreign key for user
+  final String date;    // Date as a string
+
+  PagesPerDay({
+    this.id,
+    required this.pages,
+    required this.user_id,
+    required this.date,
+  });
+
+  // Convert a PagesPerDay instance to a map
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'pages': pages,
+      'user_id': user_id,
+      'date': date,
+    };
+  }
+
+  // Create a PagesPerDay instance from a map
+  factory PagesPerDay.fromMap(Map<String, dynamic> map) {
+    return PagesPerDay(
+      id: map['id'] as int?,
+      pages: map['pages'] as int,
+      user_id: map['user_id'] as int,
+      date: map['date'] as String,
+    );
+  }
+}
+
 
 /////////
