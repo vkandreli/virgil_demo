@@ -52,9 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
        SnackBar(content: Text('Login Successful')),
       ); 
      // Wait for 2 seconds
-     await Future.delayed(Duration(seconds: 2));
+     ///await Future.delayed(Duration(seconds: 2));
      // Navigate to the Home screen
 
+if (mounted){
      User currentUser = User(
      username: username,
      );
@@ -63,14 +64,15 @@ class _LoginScreenState extends State<LoginScreen> {
        context,
        MaterialPageRoute(builder: (context) => OwnProfileScreen(currentUser: currentUser,)),
      );
+}
       } else {  
-       
+        if (mounted) {
        ScaffoldMessenger.of(context).showSnackBar(
        SnackBar(content: Text('Invalid username or password')),
 
         
       );
-
+        }
     }
     // Navigate to home screen or other pages
   }
@@ -108,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _login,
-              child: Text('Login'),
+              child: Text('Login',style: TextStyle(color: AppColors.darkBrown),)
             ),
             SizedBox(height: 20),
             TextButton(
@@ -120,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(builder: (context) => SignupScreen()),
           );
               },
-              child: Text('Don\'t have an account? Sign up'),
+              child: Text('Don\'t have an account? Sign up', style: TextStyle(color: AppColors.darkBrown),)
             ),
           ],
         ),

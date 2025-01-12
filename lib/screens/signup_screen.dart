@@ -99,7 +99,7 @@ class _SignupScreenState extends State<SignupScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _signup,
-              child: Text('Signup'),
+              child: Text('Signup',style: TextStyle(color: AppColors.darkBrown),)
             ),
             SizedBox(height: 20),
             TextButton(
@@ -110,7 +110,7 @@ class _SignupScreenState extends State<SignupScreen> {
             MaterialPageRoute(builder: (context) => LoginScreen()),
             );
               },
-              child: Text('Already have an account? Login'),
+              child: Text('Already have an account? Login',style: TextStyle(color: AppColors.darkBrown),)
             ),
           ],
         ),

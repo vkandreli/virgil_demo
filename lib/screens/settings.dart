@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:virgil_demo/SQLService.dart';
+import 'package:virgil_demo/main.dart';
 //import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 
@@ -55,19 +56,34 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     });
   }
 
-  void _saveSettings() {
-    setState(() {
-      widget.currentUser.profileImage = selectedImagePath;
-      widget.currentUser.status = statusController.text;
-      widget.currentUser.isPacksPrivate = isPacksPrivate;
-      widget.currentUser.isReviewsPrivate = isReviewsPrivate;
-      widget.currentUser.isReadListPrivate = isReadListPrivate;
-    });
-    // Optionally show a confirmation message or save data to database
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Settings saved!'),
-    ));
-  }
+void _saveSettings() async {
+  // Create a new User object with updated values
+  User currentUser = User(
+    id: widget.currentUser.id, // Keep the current user's ID
+    username: widget.currentUser.username, // Keep the current username
+    email: widget.currentUser.email, // Keep the current email
+    profileImage: selectedImagePath, // Updated profile image path
+    status: statusController.text, // Updated status
+    currentCity: widget.currentUser.currentCity, // Keep the current city
+    isPacksPrivate: isPacksPrivate, // Updated privacy setting for packs
+    isReviewsPrivate: isReviewsPrivate, // Updated privacy setting for reviews
+    isReadListPrivate: isReadListPrivate, // Updated privacy setting for the read list
+  );
+
+  // Update the user in the database
+  await SQLService().updateUser(currentUser);
+
+  // Optionally show a confirmation message or save data to database
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Text('Settings saved!'),
+  ));
+
+  // Pop the current screen to return to the previous one
+  Navigator.pop(context);
+}
+
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +133,9 @@ selectedImagePath == null
               
               controller: statusController,
               decoration: InputDecoration(
-                labelText: 'Status',
-                border: OutlineInputBorder(),
+                labelText: 'Quote',
+                 hintText: 'Enter a new favourite quote...',
+                border: OutlineInputBorder(), labelStyle: TextStyle(color: AppColors.darkBrown),
               ),
             ),
             SizedBox(height: 16.0),
@@ -156,7 +173,7 @@ selectedImagePath == null
             // Save Button
             ElevatedButton(
               onPressed: _saveSettings,
-              child: Text('Save Changes'),
+              child: Text('Save Changes',style: TextStyle(color: AppColors.darkBrown),),
             ),
           ],
         ),
