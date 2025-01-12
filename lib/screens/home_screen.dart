@@ -28,29 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isLoading = true; // To track loading state
 
-  // Add an instance of UserService
-  //final UserService userService = UserService(); 
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeDatabase();  // Initialize the database first
-  }
-
-  Future<void> _initializeDatabase() async {
-    try {
-      // Now that the database is initialized, load posts
-      await _loadPosts();  
-      await _loadUsers();
-      followedUsers = await SQLService().getFollowersForUser( widget.currentUser.id);
-    } catch (e) {
-      logger.e("Error initializing database: $e");
-      setState(() {
-        isLoading = false;  // Set loading to false if there is an error initializing
-      });
-    }
-  }
-
 Future<void> _loadPosts() async {
   try { 
         List<Post> fetchedPosts = await SQLService().getAllPosts();
@@ -96,100 +73,156 @@ Future<void> _loadUsers() async {
   }
 }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Horizontal list of followed users
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: followedUsers.map((user) {
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigate to the selected user's profile
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OtherProfileScreen(user: user, currentUser: widget.currentUser,),
+@override
+void initState() {
+  super.initState();
+  _initializeData(); // Initialize all data at once
+}
+
+Future<void> _initializeData() async {
+  setState(() {
+    isLoading = true; // Set loading state to true
+  });
+
+  try {
+    // Wait for all loading tasks to complete
+    await Future.wait([
+      _loadPosts(),
+      _loadUsers(),
+      _loadFollowedUsers(),
+    ]);
+  } catch (e, stackTrace) {
+    logger.e("Error during initialization: $e");
+    logger.e("Stack Trace: $stackTrace");
+  } finally {
+    setState(() {
+      isLoading = false; // Set loading state to false after all tasks
+    });
+  }
+}
+
+Future<void> _loadFollowedUsers() async {
+  try {
+    followedUsers = await SQLService().getFollowersForUser(widget.currentUser.id);
+    logger.d("Loaded ${followedUsers.length} followed users.");
+  } catch (e, stackTrace) {
+    logger.e("Error loading followed users: $e");
+    logger.e("Stack Trace: $stackTrace");
+  }
+}
+
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: isLoading
+          ? Center(
+              child: CircularProgressIndicator(), // Show loading indicator
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Horizontal list of followed users
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: followedUsers.map((user) {
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to the selected user's profile
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OtherProfileScreen(
+                                  user: user,
+                                  currentUser: widget.currentUser,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: CircleAvatar(
+                              radius: 30,
+                              backgroundImage: NetworkImage(
+                                user.profileImage ?? User.defaultProfileImage,
+                              ),
+                            ),
                           ),
                         );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: NetworkImage(user.profileImage ?? User.defaultProfileImage,)
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                      }).toList(),
+                    ),
+                  ),
                 ),
-              ),
+                // Search Bar
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileSearchScreen(
+                            currentUser: widget.currentUser,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: Size(500, 40),
+                      backgroundColor: AppColors.lightBrown,
+                    ),
+                    child: Text(
+                      "Search for a profile...",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.darkBrown,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ),
+                // Vertical list of posts
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      return PostWidget(
+                        post: posts[index],
+                        currentUser: widget.currentUser,
+                        isInOwnProfile: false,
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-            // Search Bar
-            // Search Bar
-Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: ElevatedButton(
-    onPressed: () {                                         
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProfileSearchScreen(currentUser: widget.currentUser,),
-        ),
-      );
-    },
-    style: ElevatedButton.styleFrom(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      minimumSize: Size(500,40),
-      backgroundColor: AppColors.lightBrown,
     ),
-    child: Text(
-      "Search for a profile...",
-      style: TextStyle(fontSize: 14, color: AppColors.darkBrown,),
-      textAlign: TextAlign.left,
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CreatePostScreen(currentUser: widget.currentUser),
+          ),
+        );
+      },
+      backgroundColor: AppColors.darkBrown,
+      tooltip: 'Create New Post',
+      child: Icon(
+        Icons.add,
+        color: AppColors.lightBrown,
+      ),
     ),
-  ),
-),
-
-              
-         
- if (!isLoading)
-            // Vertical list of posts
-                        // Expanded space for posts
-            Expanded(
-              child: ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  return PostWidget(post: posts[index], currentUser: widget.currentUser, isInOwnProfile: false,);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to the screen to create a new post
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreatePostScreen(currentUser: widget.currentUser,)),
-          );
-        },
-        backgroundColor: AppColors.darkBrown,
-        tooltip: 'Create New Post',
-        child: Icon(Icons.add, color: AppColors.lightBrown,),
-      ),
-
-  bottomNavigationBar: CustomBottomNavBar(context: context, currentUser: widget.currentUser),    
+    bottomNavigationBar: CustomBottomNavBar(
+      context: context,
+      currentUser: widget.currentUser,
+    ),
   );
-  }
+}
 }
