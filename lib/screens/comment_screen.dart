@@ -17,7 +17,31 @@ class CommentScreen extends StatefulWidget {
 class _CommentScreenState extends State<CommentScreen> {
   TextEditingController _commentController = TextEditingController();
 
+  late List<Comment> postComments = [];
+
+
+   Future<void> addComment(String Text, int? postId) async {
+    final newComment = Comment(
+    text: Text,
+    post_id: postId, 
+  );
+  await SQLService().addCommentToPost(newComment);
+  }
+
+
+   Future<void> getComments() async {
+  postComments = await SQLService().getCommentsForPost(widget.post.id);
+   }
+
   @override
+
+ @override
+  void initState() {
+    super.initState();
+    getComments();
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Comments")),
@@ -29,10 +53,10 @@ class _CommentScreenState extends State<CommentScreen> {
             // Display existing comments
             Expanded(
               child: ListView.builder(
-                itemCount: widget.post.comments.length,
+                itemCount: postComments.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(widget.post.comments[index]),
+                    title: Text(postComments[index].text),
                     leading: CircleAvatar(child: Icon(Icons.person)),
                   );
                 },
@@ -53,7 +77,8 @@ class _CommentScreenState extends State<CommentScreen> {
               onPressed: () {
                 if (_commentController.text.isNotEmpty) {
                   setState(() {
-                    widget.post.comments.add(_commentController.text); // Add new comment
+                    postComments.add(Comment (text: _commentController.text, post_id: widget.post.id)); // Add new comment
+                    addComment(_commentController.text, widget.post.id);
                     _commentController.clear(); // Clear the text field
                   });
                   Navigator.pop(context); // Go back to the post page
