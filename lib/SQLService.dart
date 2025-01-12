@@ -285,6 +285,25 @@ db.execute(
     return maps.map((map) => User.fromMap(map)).toList();
   }
 
+  Future<User> getUserByUsername(String username) async {
+  final db = await database;
+
+  // Query the user from the users table where the username matches
+  final List<Map<String, dynamic>> maps = await db.query(
+    'users',
+    where: 'username = ?',
+    whereArgs: [username],
+  );
+
+  // If a user is found, return the first (and only) user, otherwise return null
+  if (maps.isNotEmpty) {
+    return User.fromMap(maps.first);
+  } else {
+    return User.empty();
+  }
+}
+
+
 Future<User> getUserById(int? id) async {
   final db = await database;
 
@@ -1010,12 +1029,13 @@ Future<List<Review>> getReviewsForAuthor(String Author) async {
   Future<void> removeBookFromReadingList(int? bookId, int? userId) async {
     final db = await SQLService().database;
 
-    await db.delete(
+     await db.delete(
       'user_books',
       where:
-          'user_id = ? AND book_id = ? AND listCategory = 1', // Condition to match the correct entry
+          'user_id = ? AND book_id = ? AND listCategory = 3', // Condition to match the correct entry
       whereArgs: [userId, bookId],
     );
+     print('book deleted');
   }
 
   Future<List<Book>> getBooksForUser(int userId) async {
