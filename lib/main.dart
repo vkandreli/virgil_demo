@@ -7,6 +7,10 @@ import 'models/user.dart';
 import 'screens/login_screen.dart';
 import 'SQLService.dart';
 import 'data_seeder.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+
+final storage = FlutterSecureStorage();
 
 class AppConfig {
   static const String apiKey = /** 'AIzaSyAFruL6TGnJ7JQl4mFKUwVYb017K_ANdTc'*/String.fromEnvironment('API_KEY');
@@ -26,6 +30,9 @@ void main() async {
    
   await SQLService().reinitializeDatabase();
   await SQLService().printTables(); 
+
+    await storage.write(key: 'username:apptester', value:'apptester');
+    await storage.write(key: 'password:apptester', value: '1234');
 
   await DataSeeder.seedDummyData();
   runApp(MyApp());
