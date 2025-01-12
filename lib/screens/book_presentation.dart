@@ -28,6 +28,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   TextEditingController _pageController = TextEditingController();
   late List<Book> completedList, currentList, readingList;
   late List<Review> usersReviews, bookReviews;
+  late int currentPage;
   
   Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
@@ -54,6 +55,12 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
      Future<void> addToCompletedList(int? bookId, int? userId) async {
     await  SQLService().addBookToCompletedList(bookId, userId);
     }
+
+  
+  Future<void> getCurrentPage(int? userId,int? bookId) async{
+    currentPage =  await SQLService().getCurrentPage(userId, bookId);
+  }
+
 
   Future<void> CheckAndUpdatePagesPerDay(int? userId, int pages, String date) async {
 
@@ -137,7 +144,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     CheckAndUpdatePagesPerDay(widget.currentUser.id, newPage, today);
 
 
-    
+
 
 
       if (newPage == selected.totalPages) {
@@ -237,7 +244,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                         );
 
                         logger.i(
-                            "Reached page: ${selected.currentPage} at ${widget.book.title}");
+                            "Reached page: ${currentPage} at ${widget.book.title}");
 
                         // Clear the text field
                         _pageController.clear();
@@ -261,7 +268,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 ),
 
                 Text(
-                  'Pages: ${widget.currentUser.pageOfBook(widget.book)} / ${widget.book.totalPages}',
+                  'Pages: ${currentPage} / ${widget.book.totalPages}',
                 ),
               ],
             ],

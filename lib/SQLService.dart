@@ -1022,6 +1022,27 @@ Future<UserBook?> getUserBook(int userId, int bookId) async {
 }
 
 
+Future<int> getCurrentPage(int? userId, int? bookId) async {
+  final db = await SQLService().database;
+
+  // Query the database for the specific userId and bookId
+  final List<Map<String, dynamic>> result = await db.query(
+    'user_books',
+    columns: ['currentPage'], // Only fetch the currentPage column
+    where: 'user_id = ? AND book_id = ?',
+    whereArgs: [userId, bookId],
+  );
+
+  if (result.isNotEmpty) {
+    // Return the currentPage if the record exists
+    return result.first['currentPage'] as int;
+  } else {
+    // Return null if no record is found
+    return 0;
+  }
+}
+
+
    Future<List<Book>> getBooksCompletedForUser(int? userId) async {
 
     final db = await database;
