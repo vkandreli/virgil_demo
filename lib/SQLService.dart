@@ -1198,7 +1198,7 @@ Future<User> getRebloggerForPost(int? postId) async {
 //*************    User Following     ******************/
 
 
-   Future<void> followUser(int userId, int followedId) async {
+   Future<void> followUser(int? userId, int? followedId) async {
     final db = await database;
 
     await db.insert(
@@ -1211,7 +1211,7 @@ Future<User> getRebloggerForPost(int? postId) async {
    );
   }
 
-Future<void> unfollowUser(int userId, int followedId) async {
+Future<void> unfollowUser(int? userId, int? followedId) async {
     final db = await database;
 
     await db.delete(
@@ -1221,7 +1221,7 @@ Future<void> unfollowUser(int userId, int followedId) async {
    );
   }
 
- Future<List<User>> getFollowersForUser(int userId) async {
+ Future<List<User>> getFollowersForUser(int? userId) async {
 
     final db = await database;
 
