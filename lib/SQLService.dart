@@ -145,6 +145,7 @@ db.execute(
     );
   }
 
+
   // A method that retrieves all the users from the users table.
   /**Future<List<User>> users() async {
     // Get a reference to the database.
