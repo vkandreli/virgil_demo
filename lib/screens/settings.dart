@@ -56,21 +56,34 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     });
   }
 
-  void _saveSettings() {
-    setState(() {
-      widget.currentUser.profileImage = selectedImagePath;
-      widget.currentUser.status = statusController.text;
-      widget.currentUser.isPacksPrivate = isPacksPrivate;
-      widget.currentUser.isReviewsPrivate = isReviewsPrivate;
-      widget.currentUser.isReadListPrivate = isReadListPrivate;
-    });
-    // Optionally show a confirmation message or save data to database
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Settings saved!'),
-    ));
-    Navigator.pop(context);
+void _saveSettings() async {
+  // Create a new User object with updated values
+  User currentUser = User(
+    id: widget.currentUser.id, // Keep the current user's ID
+    username: widget.currentUser.username, // Keep the current username
+    email: widget.currentUser.email, // Keep the current email
+    profileImage: selectedImagePath, // Updated profile image path
+    status: statusController.text, // Updated status
+    currentCity: widget.currentUser.currentCity, // Keep the current city
+    isPacksPrivate: isPacksPrivate, // Updated privacy setting for packs
+    isReviewsPrivate: isReviewsPrivate, // Updated privacy setting for reviews
+    isReadListPrivate: isReadListPrivate, // Updated privacy setting for the read list
+  );
 
-  }
+  // Update the user in the database
+  await SQLService().updateUser(currentUser);
+
+  // Optionally show a confirmation message or save data to database
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    content: Text('Settings saved!'),
+  ));
+
+  // Pop the current screen to return to the previous one
+  Navigator.pop(context);
+}
+
+  
+
 
   @override
   Widget build(BuildContext context) {
