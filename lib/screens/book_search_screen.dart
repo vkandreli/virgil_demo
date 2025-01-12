@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/assets/placeholders.dart';
 //import 'package:virgil_demo/models/book.dart';
@@ -17,24 +18,34 @@ class BookSearchScreen extends StatefulWidget {
 class _BookSearchScreenState extends State<BookSearchScreen> {
   late TextEditingController _searchController;
   late List<Book> filteredBooks = [];
-
+final Logger logger = Logger();
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController();//text: widget.query
+    _searchController = TextEditingController(); // text: widget.query
     filteredBooks = [];  // Initialize as empty, we will fetch after pressing "Go"
   }
 
   void _searchBooks() async {
     final query = _searchController.text.trim();
     if (query.isNotEmpty) {
-      // Fetch books from the API
-      final books = await fetchBooksFromGoogleAPI(query);
-      setState(() {
-        filteredBooks = books;
-      });
+      try {
+        // Fetch books from the API
+        final books = await fetchBooksFromGoogleAPI(query);
+        
+        // Only call setState if the widget is still mounted
+        if (mounted) {
+          setState(() {
+            filteredBooks = books;
+          });
+        }
+      } catch (e) {
+        // Handle errors, e.g., show a message to the user
+        logger.e("Error fetching books: $e");
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
