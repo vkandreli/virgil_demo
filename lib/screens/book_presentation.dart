@@ -23,7 +23,7 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
-  late bool isInReadingList, isInCurrentList, isCompleted;
+  late bool isInReadingList = false, isInCurrentList, isCompleted;
   final Logger logger = Logger();
   TextEditingController _pageController = TextEditingController();
   late List<Book> completedList, currentList, readingList;

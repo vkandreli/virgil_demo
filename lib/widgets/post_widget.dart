@@ -19,52 +19,58 @@ class PostWidget extends StatefulWidget {
   @override
   _PostWidgetState createState() => _PostWidgetState();
 }
-
 class _PostWidgetState extends State<PostWidget> {
   bool isLiked = false;
   bool isShared = false;
-  late bool isInReadingList;
+  late bool isInReadingList = false;
   TextEditingController _commentController = TextEditingController(); // Controller for comment input
   final Logger logger = Logger();
 
-  late Book postsBook= Book.empty();
-  late User originalPoster, reblogger = User.empty();
+  late Book postsBook = Book.empty();
+  late User originalPoster= User.empty(), reblogger = User.empty();
   late List<Book> readingList = [];
   late List<Comment> postComments = [];
 
   Future<void> _getResources() async {
-  postsBook = await SQLService().getBooksForPost(widget.post.id);
-  originalPoster = await SQLService().getPosterForPost(widget.post.id); 
-  reblogger = await SQLService().getRebloggerForPost(widget.post.id); 
-  readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
-  postComments = await SQLService().getCommentsForPost(widget.post.id);
- }
-  
-  Future<void> addComment(String Text, int? postId) async {
+    // Fetch resources
+    postsBook = await SQLService().getBooksForPost(widget.post.id);
+    originalPoster = await SQLService().getPosterForPost(widget.post.id);
+    reblogger = await SQLService().getRebloggerForPost(widget.post.id);
+    readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+    postComments = await SQLService().getCommentsForPost(widget.post.id);
+
+    // Once resources are fetched, update the isInReadingList variable
+    setState(() {
+      isInReadingList = readingList.contains(postsBook);
+    });
+  }
+
+  Future<void> addComment(String text, int? postId) async {
     final newComment = Comment(
-    text: Text,
-    post_id: postId, 
-  );
-  await SQLService().addCommentToPost(newComment);
+      text: text,
+      post_id: postId,
+    );
+    await SQLService().addCommentToPost(newComment);
   }
+
   Future<void> _reblog(Post post, int? userId) async {
-    await  SQLService().ReblogPost(post, userId);
+    await SQLService().ReblogPost(post, userId);
   }
 
-   Future<void> addToReadList(int? bookId, int? userId) async {
-    await  SQLService().addBookToReadingList(bookId, userId);
+  Future<void> addToReadList(int? bookId, int? userId) async {
+    await SQLService().addBookToReadingList(bookId, userId);
   }
 
-   Future<void> RemoveFromReadList(int? bookId, int? userId) async {
-    await  SQLService().removeBookFromReadingList(bookId, userId);
+  Future<void> RemoveFromReadList(int? bookId, int? userId) async {
+    await SQLService().removeBookFromReadingList(bookId, userId);
   }
 
   @override
   void initState() {
     super.initState();
-    _getResources();
-        isInReadingList = readingList.contains(postsBook);
+    _getResources(); // Fetch resources asynchronously
 
+    // The initialization of isInReadingList is now handled within _getResources
   }
 
   @override
