@@ -18,18 +18,33 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
+   late List<Book> currentList, completedList;  
+
   // Helper method to get pages read this week
   List<Map<DateTime, int>> getPagesReadThisWeek(
       List<Map<DateTime, int>> pagesPerDay) {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
     final endOfWeek = startOfWeek.add(Duration(days: 6));
-    // Filter pages read this week
+    // Filter pages read this week    
     return pagesPerDay.where((entry) {
       final date = entry.keys.first;
       return date.isAfter(startOfWeek.subtract(Duration(days: 1))) &&
           date.isBefore(endOfWeek.add(Duration(days: 1)));
     }).toList();
+  }
+
+
+  Future<void> _getPosts() async {
+    currentList = await SQLService().getBooksCurrentReadingForUser(widget.currentUser.id);
+        completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+        _getPosts();  
   }
 
   @override
@@ -144,7 +159,7 @@ class _StatsScreenState extends State<StatsScreen> {
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                               ),
                               SizedBox(height: 8),
-                              if (widget.currentUser.completedList.isEmpty) ...[
+                              if (completedList.isEmpty) ...[
                               //                              bookScroll(
                               //   '',
                               //   <Book> [virgil],
@@ -154,10 +169,10 @@ class _StatsScreenState extends State<StatsScreen> {
                                     Text("You have not finished any books yet. Try adding pages",
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: AppColors.darkBrown)),
                               ],
-                              if (widget.currentUser.completedList.isNotEmpty) ...[
+                              if (completedList.isNotEmpty) ...[
                               bookScroll(
                                 '',
-                                widget.currentUser.completedList,
+                                completedList,
                                 isCompleted: true,
                                 currentUser: widget.currentUser,
                               ),

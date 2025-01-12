@@ -908,7 +908,7 @@ Future<UserBook?> getUserBook(int userId, int bookId) async {
     });
   }
 
-    Future<List<Book>> getBooksReadingForUser(int? userId) async {
+    Future<List<Book>> getBooksCurrentReadingForUser(int? userId) async {
 
     final db = await database;
 
@@ -1117,18 +1117,33 @@ Future<void> unfollowUser(int userId, int followedId) async {
 
 
 
-  Future<void> addBooktoPack(int? packId, int? bookId) async {
-    final db = await database;
+Future<int> addBookToPack(int? packId, int? bookId) async {
+  final db = await database;
 
-    await db.insert(
-      'pack_books',
-      {
-        'pack_id': packId,
-        'book_id': bookId,
-      },
-    conflictAlgorithm: ConflictAlgorithm.ignore, 
-   );
+  // First, check if the book is already in the pack
+  final result = await db.query(
+    'pack_books',
+    where: 'pack_id = ? AND book_id = ?',
+    whereArgs: [packId, bookId],
+  );
+
+  // If the result is not empty, return -1 (indicating the book is already added)
+  if (result.isNotEmpty) {
+    return -1;
   }
+
+  // If not already in the pack, proceed to insert the new entry
+  await db.insert(
+    'pack_books',
+    {
+      'pack_id': packId,
+      'book_id': bookId,
+    },
+    conflictAlgorithm: ConflictAlgorithm.ignore,
+  );
+
+  return 1; // Return 1 to indicate successful insertion
+}
 
 Future<void> removeBookfromPack(int packId, int bookId) async {
     final db = await database;

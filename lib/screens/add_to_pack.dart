@@ -20,6 +20,7 @@ import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 class AddToPack extends StatefulWidget {
   final User currentUser;
   final Book selectedBook;
+
   AddToPack({required this.currentUser, required this.selectedBook});
 
   @override
