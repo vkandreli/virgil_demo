@@ -654,14 +654,22 @@ Future<void> insertBook(Book book) async {
 
  //*******       Post Setters      ********/
 
-
-Future<void> insertPost(Post post) async {
-    // Get a reference to the database.
+  Future<void> insertPost(Post post) async {
     final db = await database;
 
+    // Insert the post into the database with the image URL
     await db.insert(
       'posts',
-      post.toMap(),
+      {
+        'originalPoster_id': post.originalPoster_id,
+        'reblogger_id': post.reblogger_id,
+        'imageUrl': post.imageUrl, // Store the local image path here
+        'quote': post.quote,
+        'book_id': post.book_id,
+        'timePosted': post.timePosted,
+        'likes': post.likes,
+        'reblogs': post.reblogs,
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
