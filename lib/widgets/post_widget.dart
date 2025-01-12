@@ -146,7 +146,7 @@ class _PostWidgetState extends State<PostWidget> {
 
             // Conditionally show Image if it exists
             if (widget.post.imageUrl != null &&
-                widget.post.imageUrl!.isNotEmpty)
+                widget.post.imageUrl!.isNotEmpty && widget.post.imageUrl != '')
                 Image.memory(base64Decode(widget.post.imageUrl!), width: double.infinity,
                 height: 250, // Maximum height without clipping
                 fit: BoxFit

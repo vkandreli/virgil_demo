@@ -1407,7 +1407,7 @@ Future<int> getPagesPerDay(int? userId, String date) async {
 
 )*/
 
-  Future<void> CreatePost(Post post) async {
+  Future<void> createPost(Post post) async {
     // Get a reference to the database.
     final db = await database;
 
@@ -1429,7 +1429,7 @@ Future<int> getPagesPerDay(int? userId, String date) async {
   Future<void> ReblogPost(Post post, int? rebloggerId) async {
     final db = await database;
     post.reblogger_id = rebloggerId;
-    CreatePost(post);
+    createPost(post);
   }
 
   Future<List<Book>> topBooksByCity(String? City) async {
@@ -1792,19 +1792,18 @@ class Post {
     ///   this.comments = const [], // Default empty list for comments
   });
 
-  Map<String, Object?> toMap() {
-    return {
-      'originalPosterId': originalPoster_id, // User's ID (int)
-      'rebloggerId': reblogger_id, // User's ID (nullable int)
-      'imageUrl': imageUrl, // String
-      'quote': quote, // String
-      'bookId': book_id, // Book's ID (int)
-      'timePosted': timePosted, // String representation of DateTime
-      'likes': likes, // int
-      'reblogs': reblogs, // int
-      ///   'comments': comments.join(',')
-    };
-  }
+Map<String, Object?> toMap() {
+  return {
+    'originalPoster_id': originalPoster_id, // Corrected key
+    'reblogger_id': reblogger_id, 
+    'imageUrl': imageUrl, 
+    'quote': quote, 
+    'book_id': book_id, // Changed from 'bookId' to 'book_id'
+    'timePosted': timePosted, 
+    'likes': likes, 
+    'reblogs': reblogs, 
+  };
+}
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
