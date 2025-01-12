@@ -43,7 +43,7 @@ class SQLService {
         // Create tables when the database is first created
         await db.execute(
         '''CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT,
-         username TEXT NOT NULL, email TEXT, profileImage TEXT, status TEXT, 
+         username TEXT NOT NULL, email TEXT, profileImage TEXT, status TEXT, currentCity TEXT, 
          isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0)''',
       );
       await  db.execute(
@@ -1204,6 +1204,24 @@ Future<void> ReblogPost(Post post, int? rebloggerId) async {
   CreatePost(post);
 }
 
+Future<List<Book>> topBooksByCity(String? City) async {
+  final db = await SQLService().database;
+
+  final List<Map<String, dynamic>> result = await db.rawQuery('''
+    SELECT books.*
+    FROM books
+    JOIN user_books ON books.id = user_books.book_id
+    JOIN users ON user_books.user_id = users.id
+    WHERE users.currentCity = ?
+    GROUP BY books.id
+    ORDER BY COUNT(users.id) DESC
+    LIMIT 10;
+  ''', [City]);
+
+  return result.map((bookMap) => Book.fromMap(bookMap)).toList();
+}
+
+
 
 }
 
@@ -1217,6 +1235,7 @@ class User {
   final int? id;
   final String username;
   final String? email;
+  String? currentCity;
   String? profileImage;
   String? status;
   bool isPacksPrivate;
@@ -1238,6 +1257,7 @@ class User {
     this.id,
     required this.username,
     this.email,
+    this.currentCity = 'Athens',
     this.profileImage,
     this.status,
     this.isPacksPrivate = false,
@@ -1253,6 +1273,7 @@ class User {
       'username': username,
       'email': email,
       'profileImage': profileImage,
+      'currentCity': currentCity,
       'status': status,
       'isPacksPrivate': isPacksPrivate ? 1 : 0,
       'isReviewsPrivate': isReviewsPrivate ? 1 : 0,
@@ -1266,6 +1287,7 @@ class User {
       username: map['username'],
       email: map['email'],
       profileImage: map['profileImage'],
+      currentCity: map['currentCity'],
       status: map['status'],
       isPacksPrivate: map['isPacksPrivate'] == 1,
       isReviewsPrivate: map['isReviewsPrivate'] == 1,
@@ -1279,6 +1301,7 @@ class User {
         username = '',
         email = '',
         profileImage = '',
+        currentCity = '',
         status = '',
         isPacksPrivate = false,
         isReviewsPrivate = false,

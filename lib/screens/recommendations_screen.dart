@@ -24,14 +24,14 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     Logger logger = Logger();
     late List<Review> hotReviews;
     late List<Book> communityReads;
+    late List<Book> cityReads;
 
-Future<void> _getHotReviews() async {
+Future<void> _getResources() async {
     hotReviews = await SQLService().getReviewsByDate();
-    }
+    communityReads = await SQLService().getCommunityReading( widget.currentUser.id);
+    cityReads = await SQLService().topBooksByCity(widget.currentUser.currentCity);
 
-Future<void> _getCommunityReads() async {
-  communityReads = await SQLService().getCommunityReading( widget.currentUser.id);
-}
+    }
 
 
   @override
@@ -39,8 +39,8 @@ Future<void> _getCommunityReads() async {
     super.initState();
     //_getCurrentLocation();
     _getLocationandPermission();
-    _getHotReviews(); 
-    _getCommunityReads(); }
+    _getResources(); 
+     }
 
       Future<void> _getLocationandPermission() async {
     bool serviceEnabled;
@@ -92,7 +92,7 @@ Future<void> _getCommunityReads() async {
               Expanded(
                 child: ListView(
                 children: [
-                  bookScroll("Popular in ${_currentCity}", placeholderBooks, currentUser: widget.currentUser), 
+                  bookScroll("Popular in ${_currentCity}", cityReads, currentUser: widget.currentUser), 
                   bookScroll('What your community is reading', communityReads, currentUser: widget.currentUser),
                   reviewScroll('Hottest reviews', hotReviews, currentUser: widget.currentUser), 
                   SizedBox(height: 12),
