@@ -97,7 +97,7 @@ class SQLService {
       ''',
     );
          db.execute(
-      '''CREATE TABLE PagesPerDay(id INTEGER PRIMARY KEY AUTOINCREMENT, pages INTEGER, user_id INTEGER, date TEXT
+      '''CREATE TABLE pagesPerDay(id INTEGER PRIMARY KEY AUTOINCREMENT, pages INTEGER, user_id INTEGER, date TEXT
          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)
       ''',
     );
@@ -1262,6 +1262,34 @@ Future<List<Book>> topBooksByCity(String? City) async {
   return result.map((bookMap) => Book.fromMap(bookMap)).toList();
 }
 
+Future<void> addPagesPerDay(int? userId,  int? Pages, String Date) async {
+  final db = await SQLService().database;
+PagesPerDay pagesPerDay = PagesPerDay(
+    user_id: userId,
+    pages: Pages, 
+    date: Date,
+ );
+
+
+  await db.insert(
+    'pagesPerDay',        // Table name
+    pagesPerDay.toMap(),  // Convert the object to a map
+    conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflicts
+  );
+}
+
+
+Future<void> updatePagesPerDay(int id, int newPages) async {
+  final db = await SQLService().database;
+
+  await db.update(
+    'pagesPerDay',             
+    {'pages': newPages},       
+    where: 'id = ?',           
+    whereArgs: [id],           
+  );
+}
+
 
 
 }
@@ -1771,14 +1799,14 @@ class UserBook {
 
 class PagesPerDay {
   final int? id;        // Auto-incrementing primary key
-  final int pages;      // Number of pages
-  final int user_id;     // Foreign key for user
+  final int? pages;      // Number of pages
+  final int? user_id;     // Foreign key for user
   final String date;    // Date as a string
 
   PagesPerDay({
     this.id,
-    required this.pages,
-    required this.user_id,
+    this.pages,
+    this.user_id,
     required this.date,
   });
 
