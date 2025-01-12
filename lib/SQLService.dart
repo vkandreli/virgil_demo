@@ -1035,7 +1035,7 @@ Future<List<Review>> getReviewsForAuthor(String Author) async {
     final List<Map<String, dynamic>> maps = await db.query(
       'books',
       where:
-          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 2)',
+          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND list_category = 2)',
       whereArgs: [userId],
     );
 
@@ -1052,7 +1052,7 @@ Future<List<Review>> getReviewsForAuthor(String Author) async {
     final List<Map<String, dynamic>> maps = await db.query(
       'books',
       where:
-          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 1)',
+          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND list_category = 1)',
       whereArgs: [userId],
     );
 
@@ -1069,7 +1069,7 @@ Future<List<Review>> getReviewsForAuthor(String Author) async {
     final List<Map<String, dynamic>> maps = await db.query(
       'books',
       where:
-          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 3)',
+          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND list_category = 3)',
       whereArgs: [userId],
     );
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/screens/library_screen.dart';
+import 'package:virgil_demo/screens/own_profile_screen.dart';
 import 'package:virgil_demo/screens/recommendations_screen.dart';
 //import 'package:virgil_demo/assets/placeholders.dart';
 import 'signup_screen.dart';
@@ -60,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
      Navigator.pushReplacement(
        context,
-       MaterialPageRoute(builder: (context) => RecommendationsScreen(currentUser: currentUser,)),
+       MaterialPageRoute(builder: (context) => OwnProfileScreen(currentUser: currentUser,)),
      );
       } else {  
        
