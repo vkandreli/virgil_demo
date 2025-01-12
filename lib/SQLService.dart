@@ -101,6 +101,22 @@ class SQLService {
          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)
       ''',
     );
+    db.execute('''CREATE TABLE badges (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Auto-incrementing ID for the badge
+  name TEXT NOT NULL,
+  image TEXT NOT NULL,
+  description TEXT,
+  requirement INTEGER NOT NULL
+)''',);
+
+db.execute('''CREATE TABLE user_badges (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Auto-incrementing ID for the user-badge relationship
+  user_id INTEGER NOT NULL,
+  badge_id INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (badge_id) REFERENCES badges(id)
+)''',);
+
   },
     
     // Set the version. This executes the onCreate function and provides a
@@ -174,6 +190,10 @@ Future<void> reinitializeDatabase() async {
     await db.execute('DROP TABLE IF EXISTS packs');
     await db.execute('DROP TABLE IF EXISTS posts');
     await db.execute('DROP TABLE IF EXISTS reviews');
+    await db.execute('DROP TABLE IF EXISTS comments');
+    await db.execute('DROP TABLE IF EXISTS badges');
+    await db.execute('DROP TABLE IF EXISTS user_badges');
+
 
     print('All tables dropped successfully');
   }
@@ -439,7 +459,23 @@ Future<User> getUserForReview(int? reviewId) async {
   }
 }
 
+Future<void> insertBadge(Badge badge) async {
+  final db = await database; // Get the database instance
+  await db.insert(
+    'badges',
+    badge.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflict by replacing existing records
+  );
+}
 
+Future<void> assignBadgeToUser(UserBadge userBadge) async {
+  final db = await database; // Get the database instance
+  await db.insert(
+    'user_badges',
+    userBadge.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflict by replacing existing records
+  );
+}
 
 
  
@@ -1768,4 +1804,77 @@ class PagesPerDay {
 }
 
 
+//////////////////////////////////
+// Badge class
+class Badge {
+  final int id;            // Unique identifier for the badge
+  final String name;
+  final String image;
+  final String description;
+  final bool requirement;
+
+  Badge({
+    required this.id,      // Add id as a required field
+    required this.name,
+    required this.image,
+    required this.description,
+    required this.requirement,
+  });
+
+  // Convert Badge object to Map for database operations
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,               // Include the id field in the map
+      'name': name,
+      'image': image,
+      'description': description,
+      'requirement': requirement ? 1 : 0, // Convert bool to int for database
+    };
+  }
+
+  // Convert Map to Badge object
+  factory Badge.fromMap(Map<String, dynamic> map) {
+    return Badge(
+      id: map['id'],          // Retrieve the id from the map
+      name: map['name'],
+      image: map['image'],
+      description: map['description'],
+      requirement: map['requirement'] == 1, // Convert int to bool
+    );
+  }
+}
+
+class UserBadge {
+  final int id;           // Unique identifier for the UserBadge relationship
+  final int user_id;
+  final int badge_id;
+
+  UserBadge({
+    required this.id,        // Include the id field here as well
+    required this.user_id,
+    required this.badge_id,
+  });
+
+  // Convert UserBadge object to Map for database operations
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,             // Include the id field in the map
+      'user_id': user_id,   // The ID of the user
+      'badge_id': badge_id, // The ID of the badge
+    };
+  }
+
+  // Convert Map to UserBadge object
+  factory UserBadge.fromMap(Map<String, dynamic> map) {
+    return UserBadge(
+      id: map['id'],         // Retrieve the id from the map
+      user_id: map['user_id'],
+      badge_id: map['badge_id'],
+    );
+  }
+}
+
+
 /////////
+///
+///
