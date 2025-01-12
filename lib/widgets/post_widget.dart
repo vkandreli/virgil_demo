@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:virgil_demo/SQLService.dart';
 import 'package:virgil_demo/main.dart';
@@ -9,7 +10,7 @@ import 'package:virgil_demo/screens/book_presentation.dart';
 import 'package:virgil_demo/screens/comment_screen.dart';
 import 'package:virgil_demo/screens/others_profile_screen.dart';
 import 'package:virgil_demo/screens/own_profile_screen.dart';
-
+import 'dart:typed_data';
 class PostWidget extends StatefulWidget {
   final Post post;
   final User currentUser;
@@ -31,19 +32,21 @@ class _PostWidgetState extends State<PostWidget> {
   late List<Book> readingList = [];
   late List<Comment> postComments = [];
 
-  Future<void> _getResources() async {
-    // Fetch resources
-    postsBook = await SQLService().getBooksForPost(widget.post.id);
-    originalPoster = await SQLService().getPosterForPost(widget.post.id);
-    reblogger = await SQLService().getRebloggerForPost(widget.post.id);
-    readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
-    postComments = await SQLService().getCommentsForPost(widget.post.id);
+ Future<void> _getResources() async {
+  // Fetch resources
+  postsBook = await SQLService().getBooksForPost(widget.post.id);
+  originalPoster = await SQLService().getPosterForPost(widget.post.id);
+  reblogger = await SQLService().getRebloggerForPost(widget.post.id);
+  readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  postComments = await SQLService().getCommentsForPost(widget.post.id);
 
-    // Once resources are fetched, update the isInReadingList variable
+  // Once resources are fetched, update the isInReadingList variable
+  if (mounted) { // Check if the widget is still in the tree
     setState(() {
       isInReadingList = readingList.contains(postsBook);
     });
   }
+}
 
   Future<void> addComment(String text, int? postId) async {
     final newComment = Comment(
@@ -144,13 +147,19 @@ class _PostWidgetState extends State<PostWidget> {
             // Conditionally show Image if it exists
             if (widget.post.imageUrl != null &&
                 widget.post.imageUrl!.isNotEmpty)
-              Image.network(
-                widget.post.imageUrl!,
-                width: double.infinity,
+                Image.memory(base64Decode(widget.post.imageUrl!), width: double.infinity,
                 height: 250, // Maximum height without clipping
                 fit: BoxFit
                     .contain, // Ensure the image scales correctly without clipping
               ),
+
+              // Image.network(
+              //   widget.post.imageUrl!,
+              //   width: double.infinity,
+              //   height: 250, // Maximum height without clipping
+              //   fit: BoxFit
+              //       .contain, // Ensure the image scales correctly without clipping
+              // ),
 
             // Conditionally show Quote if it exists
             if (widget.post.quote != null && widget.post.quote!.isNotEmpty)
