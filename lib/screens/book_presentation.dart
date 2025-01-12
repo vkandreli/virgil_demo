@@ -64,6 +64,9 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
      Future<void> addToCompletedList(int? bookId, int? userId) async {
     await  SQLService().addBookToCompletedList(bookId, userId);
+        setState(() {
+      isCompleted = true;
+          });
     }
 
     Future<void> addBookToDatabase(Book book) async {
@@ -100,6 +103,8 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     isInReadingList = readingList.contains(loadBook); //.readingList.contains(widget.book);
     isInCurrentList = currentList.contains(loadBook);
     isCompleted = completedList.contains(loadBook);
+    getCurrentPage(widget.currentUser.id, widget.book.id);
+
   }
 
   // Toggle Save/Remove button logic
@@ -173,6 +178,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
           // SQLService.currentPage(newPage);
           // widget.currentUser.currentPage =
           //     newPage; // Directly update the book's currentPage
+                  getCurrentPage(widget.currentUser.id, selected.id);
         });
         logger.i("Reached page: $newPage at ${loadBook.title}");
       }
@@ -400,15 +406,15 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 ),
                 SizedBox(height: 16),
 
-                // Book Genre
-                Text(
-                  'Genre: ${loadBook.genre ?? 'N/A'}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 16),
+                // // Book Genre
+                // Text(
+                //   'Genre: ${loadBook.genre ?? 'N/A'}',
+                //   style: TextStyle(
+                //     fontSize: 18,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+                // SizedBox(height: 16),
 
                 // Reviews Scrollable widget
                 Text(

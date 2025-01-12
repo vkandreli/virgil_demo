@@ -24,7 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final Logger logger = Logger();
   late List<Post> posts = []; // This will hold the list of posts
-    late List<User> users = []; // This will hold the list of posts
+    late List<User> users = [],followedUsers = []; // This will hold the list of posts
 
   bool isLoading = true; // To track loading state
 
@@ -36,11 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _initializeDatabase();  // Initialize the database first
   }
+
   Future<void> _initializeDatabase() async {
     try {
       // Now that the database is initialized, load posts
       await _loadPosts();  
       await _loadUsers();
+      followedUsers = await SQLService().getFollowersForUser( widget.currentUser.id);
     } catch (e) {
       logger.e("Error initializing database: $e");
       setState(() {
@@ -107,7 +109,7 @@ Future<void> _loadUsers() async {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: users.map((user) {
+                  children: followedUsers.map((user) {
                     return GestureDetector(
                       onTap: () {
                         // Navigate to the selected user's profile
