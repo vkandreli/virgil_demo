@@ -21,9 +21,9 @@ class ReviewDetailScreen extends StatefulWidget {
 class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
   late Book reviewsBook= Book.empty();
   late User reviewsUser= User.empty();
-  late List<Review> userReviews;
-  late List<Review> bookReviews;
-  late List<Review> authorReviews;
+  late List<Review> userReviews= [];
+  late List<Review> bookReviews= [];
+  late List<Review> authorReviews= [];
 
   Future<void> _getResources() async {
   reviewsBook = await SQLService().getBookForReview(widget.review.id);

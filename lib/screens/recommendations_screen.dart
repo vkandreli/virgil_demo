@@ -22,9 +22,9 @@ final User currentUser;
 class _RecommendationsScreenState extends State<RecommendationsScreen> {
     String? _currentCity = 'your location';
     Logger logger = Logger();
-    late List<Review> hotReviews;
-    late List<Book> communityReads;
-    late List<Book> cityReads;
+    late List<Review> hotReviews= [];
+    late List<Book> communityReads= [];
+    late List<Book> cityReads= [];
 
 Future<void> _getResources() async {
     hotReviews = await SQLService().getReviewsByDate();

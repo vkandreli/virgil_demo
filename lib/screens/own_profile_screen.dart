@@ -25,7 +25,7 @@ class _OwnProfileScreenState extends State<OwnProfileScreen> {
   bool isReadListPrivate = true;
 
   // Filtered posts list
-  late List<Post> userPosts, posts;  
+  late List<Post> userPosts= [], posts= [];  
 
   Future<void> _getPosts() async {
     userPosts = await SQLService().getPostsForUser(widget.currentUser.id);

@@ -26,8 +26,8 @@ class UserPacksScreenState extends State<UserPacksScreen> {
 
 
   //getreviewsforuser Feature<void> List??
-  late List<Review> userReviews;
-  late List<Pack> userPacks;
+  late List<Review> userReviews= [];
+  late List<Pack> userPacks= [];
 
     Future<void> _getPacks() async {
   userPacks = await SQLService().getPacksForUser(widget.user.id);
@@ -107,7 +107,7 @@ class UserReviewsScreenState extends State<UserReviewsScreen> {
 
 
   //getreviewsforuser Feature<void> List??
-  late List<Review> userReviews;
+  late List<Review> userReviews= [];
 
   Future<void> _UserReviews() async {
    userReviews = await SQLService().getReviewsForUser(widget.user.id);
@@ -184,7 +184,7 @@ class UserReadListScreen extends StatefulWidget {
 
 class UserReadListScreenState extends State<UserReadListScreen> {
 
-  late List<Book> readingList;
+  late List<Book> readingList= [];
 
   Future<void> _readingList() async {
     readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);

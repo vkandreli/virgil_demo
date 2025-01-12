@@ -33,13 +33,13 @@ class _StatsScreenState extends State<StatsScreen> {
           date.isBefore(endOfWeek.add(Duration(days: 1)));
     }).toList();
   }*/
-  late List<Book> completedList, currentList, readingList;
-  late List<Review> usersReviews, bookReviews;
-  late List<Pack> usersPacks;
+  late List<Book> completedList= [], currentList= [], readingList= [];
+  late List<Review> usersReviews= [], bookReviews= [];
+  late List<Pack> usersPacks= [];
   late List<Badges> usersBadges = [];
   late List<User> followedUsers =[];
   late int pagesReadToday = 0;
-  late List<Map<DateTime, int>> pagesReadThisWeek;
+  late List<Map<DateTime, int>> pagesReadThisWeek= [];
 
 Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);

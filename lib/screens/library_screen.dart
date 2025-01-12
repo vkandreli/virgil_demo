@@ -26,9 +26,9 @@ final User currentUser;
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
   final Logger logger = Logger();
-  late List<Book> completedList, currentList, readingList;
-  late List<Review> usersReviews, bookReviews;
-    late List<Pack> usersPacks;
+  late List<Book> completedList= [], currentList= [], readingList= [];
+  late List<Review> usersReviews= [], bookReviews= [];
+    late List<Pack> usersPacks= [];
 
   Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);

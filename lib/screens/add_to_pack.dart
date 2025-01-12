@@ -29,7 +29,7 @@ class AddToPack extends StatefulWidget {
 class _AddToPackState extends State<AddToPack> {
   final TextEditingController _searchController = TextEditingController(); // Controller for TextField
 
-  late List<Pack> userPacks;
+  late List<Pack> userPacks = [];
 
   Future<void> addBookToPack(int? packId, int? bookId) async {
     await SQLService().addBooktoPack(packId, bookId);

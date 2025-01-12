@@ -16,9 +16,9 @@ class ProfilePane extends StatefulWidget {
 }
 
 class _ProfilePaneState extends State<ProfilePane> {
-  late List<Book> completedBooks;
-  late List<Pack> userPacks;
-  late List<User> followedUsers;
+  late List<Book> completedBooks= [];
+  late List<Pack> userPacks= [];
+  late List<User> followedUsers= [];
   bool isFollowing = false;
   Future<void> _checkFollowingStatus() async {
     followedUsers =

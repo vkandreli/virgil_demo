@@ -19,7 +19,7 @@ class ProfileSearchScreen extends StatefulWidget {
 
 class _ProfileSearchScreenState extends State<ProfileSearchScreen> {
   late TextEditingController _searchController;
-  late List<User> filteredProfiles;
+  late List<User> filteredProfiles= [];
 
   @override
   void initState() {

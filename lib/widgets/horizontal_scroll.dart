@@ -293,8 +293,8 @@ class ReviewCard extends StatefulWidget {
 }
 
 class _ReviewCardState extends State<ReviewCard> {
-  late Book reviewsBook;
-  late User reviewsUser;
+  late Book reviewsBook = Book.empty();
+  late User reviewsUser = User.empty();
   bool isLoading = true; // To track loading state
 
   @override

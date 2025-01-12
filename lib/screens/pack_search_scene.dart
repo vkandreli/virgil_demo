@@ -16,8 +16,8 @@ class PackSearchScreen extends StatefulWidget {
 
 class _PackSearchScreenState extends State<PackSearchScreen> {
   late TextEditingController _searchController;
-  late List<Pack> filteredPacks;
-  late List<Pack> userPacks;
+  late List<Pack> filteredPacks= [];
+  late List<Pack> userPacks= [];
 
 
 

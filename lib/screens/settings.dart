@@ -17,9 +17,9 @@ class UserSettingsScreen extends StatefulWidget {
 
 class _UserSettingsScreenState extends State<UserSettingsScreen> {
   late TextEditingController statusController;
-  late bool isPacksPrivate;
-  late bool isReviewsPrivate;
-  late bool isReadListPrivate;
+  late bool isPacksPrivate = false;
+  late bool isReviewsPrivate= false;
+  late bool isReadListPrivate= false;
   String? selectedImagePath;
   final ImagePicker _picker = ImagePicker(); // Image picker instance
 

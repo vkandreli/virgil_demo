@@ -23,12 +23,12 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
-  late bool isInReadingList = false, isInCurrentList, isCompleted;
+  late bool isInReadingList = false, isInCurrentList = false, isCompleted = false;
   final Logger logger = Logger();
   TextEditingController _pageController = TextEditingController();
-  late List<Book> completedList, currentList, readingList;
-  late List<Review> usersReviews, bookReviews;
-  late int currentPage;
+  late List<Book> completedList = [], currentList = [],  readingList = [];
+  late List<Review> usersReviews= [], bookReviews= [];
+  late int currentPage = -1;
   
   Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);

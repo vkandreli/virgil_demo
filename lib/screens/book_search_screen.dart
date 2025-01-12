@@ -16,7 +16,7 @@ class BookSearchScreen extends StatefulWidget {
 
 class _BookSearchScreenState extends State<BookSearchScreen> {
   late TextEditingController _searchController;
-  late List<Book> filteredBooks;
+  late List<Book> filteredBooks = [];
 
   @override
   void initState() {
