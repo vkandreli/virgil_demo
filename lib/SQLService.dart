@@ -185,6 +185,10 @@ Future<void> reinitializeDatabase() async {
     await db.execute('DROP TABLE IF EXISTS packs');
     await db.execute('DROP TABLE IF EXISTS posts');
     await db.execute('DROP TABLE IF EXISTS reviews');
+    await db.execute('DROP TABLE IF EXISTS comments');
+    await db.execute('DROP TABLE IF EXISTS badges');
+    await db.execute('DROP TABLE IF EXISTS user_badges');
+
 
     print('All tables dropped successfully');
   }
