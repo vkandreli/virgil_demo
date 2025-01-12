@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:virgil_demo/SQLService.dart';
+import 'package:virgil_demo/main.dart';
 //import 'package:virgil_demo/models/user.dart'; 
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 
@@ -67,6 +68,8 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('Settings saved!'),
     ));
+    Navigator.pop(context);
+
   }
 
   @override
@@ -117,8 +120,9 @@ selectedImagePath == null
               
               controller: statusController,
               decoration: InputDecoration(
-                labelText: 'Status',
-                border: OutlineInputBorder(),
+                labelText: 'Quote',
+                 hintText: 'Enter a new favourite quote...',
+                border: OutlineInputBorder(), labelStyle: TextStyle(color: AppColors.darkBrown),
               ),
             ),
             SizedBox(height: 16.0),
@@ -156,7 +160,7 @@ selectedImagePath == null
             // Save Button
             ElevatedButton(
               onPressed: _saveSettings,
-              child: Text('Save Changes'),
+              child: Text('Save Changes',style: TextStyle(color: AppColors.darkBrown),),
             ),
           ],
         ),

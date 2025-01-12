@@ -1288,17 +1288,25 @@ Future<List<Review>> getReviewsForAuthor(String Author) async {
     );
   }
 
-  Future<int> getPagesPerDay(int? userId, String date) async {
-    final db = await SQLService().database;
+Future<int> getPagesPerDay(int? userId, String date) async {
+  final db = await SQLService().database;
 
-    // Query the database for the specific user_id and date
-    final List<Map<String, dynamic>> result = await db.query(
-      'pagesPerDay',
-      where: 'user_id = ? AND date = ?',
-      whereArgs: [userId, date],
-    );
+  // Query the database for the specific user_id and date
+  final List<Map<String, dynamic>> result = await db.query(
+    'pagesPerDay',
+    where: 'user_id = ? AND date = ?',
+    whereArgs: [userId, date],
+  );
+
+  if (result.isEmpty) {
+    return 0;
+    throw Exception('No data found for user $userId on $date');
+  } else {
+    // Safely access the first element since we checked if the list is not empty
     return result.first['pages'] as int;
   }
+}
+
 
   Future<List<Map<DateTime, int>>> getPagesReadThisWeek(int? userId) async {
     final db = await SQLService().database;
@@ -1971,7 +1979,7 @@ class Badges {
       name: map['name'],
       image: map['image'],
       description: map['description'],
-      requirement: map['requirement'],
+      requirement: map['requirement']  == 1,
     );
   }
 }

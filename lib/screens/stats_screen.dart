@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 // import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/goal.dart';
+import 'package:virgil_demo/screens/book_presentation.dart';
+import 'package:virgil_demo/screens/book_search_screen.dart';
 //import 'package:virgil_demo/models/book.dart';
 //import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
@@ -153,13 +155,21 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
             // Top row for search and profile navigation (Fixed header)
             Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () {
-                    // Search functionality for stats
-                  },
-                ),
-                Spacer(), // To push the profile picture to the right
+//                 IconButton(
+//                   icon: Icon(Icons.search),
+// onPressed: () {
+//   Navigator.push(
+//     context,
+//     MaterialPageRoute(
+//       builder: (context) => BookDetailScreen(
+//         book: BookSearchScreen(), // This seems like it should be a book object, not the screen
+//         currentUser: widget.currentUser, // Pass the currentUser directly from widget
+//       ),
+//     ),
+//   );
+// },
+//                 ),
+                 Spacer(), // To push the profile picture to the right
                 IconButton(
                   icon: CircleAvatar(
                     backgroundImage: NetworkImage(
