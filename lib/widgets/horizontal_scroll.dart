@@ -316,9 +316,12 @@ class _ReviewCardState extends State<ReviewCard> {
     }
     
     // After loading, set isLoading to false to trigger rebuild
-    setState(() {
+    if (mounted) {
+          setState(() {
       isLoading = false;
     });
+    }
+
   }
 
   @override

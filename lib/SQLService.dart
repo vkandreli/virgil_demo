@@ -860,24 +860,26 @@ db.execute(
     });
   }
 
-  Future<List<Review>> getReviewsForAuthor(String Author) async {
-    final db = await database;
+Future<List<Review>> getReviewsForAuthor(String Author) async {
+  final db = await database;
 
-    // Query to find all reviews made by the specific user
-    final List<Map<String, dynamic>> maps = await db.query(
-      '''
+  // Corrected query to find all reviews made by the specific author
+  final List<Map<String, dynamic>> maps = await db.rawQuery(
+    '''
     SELECT reviews.* 
     FROM reviews
     INNER JOIN books ON reviews.book_id = books.id
     WHERE books.author = ?
     ''',
-      whereArgs: [Author],
-    );
-    // Convert the maps to a list of Review objects
-    return List.generate(maps.length, (i) {
-      return Review.fromMap(maps[i]);
-    });
-  }
+    [Author],
+  );
+
+  // Convert the maps to a list of Review objects
+  return List.generate(maps.length, (i) {
+    return Review.fromMap(maps[i]);
+  });
+}
+
 
   Future<List<Review>> getReviewsForBook(int? bookId) async {
     final db = await database;

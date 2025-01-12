@@ -54,7 +54,7 @@ class _SignupScreenState extends State<SignupScreen> {
       _confirmPasswordController.clear();
     // Navigate to the login screen or home screen
     // Wait for 2 seconds
-    await Future.delayed(Duration(seconds: 2));
+    //await Future.delayed(Duration(seconds: 2));
     // Navigate to the Login screen
     Navigator.pushReplacement(
       context,
