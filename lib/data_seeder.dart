@@ -62,7 +62,19 @@ class DataSeeder {
       'isReviewsPrivate': 1,
       'isReadListPrivate': 0,
     });
+   
 
+    await db.insert(
+    'users',
+    {
+      'username': 'apptester',
+      'email': 'reader@hotmail.com',
+      'profileImage': "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api",
+      'status': 'im a reader first and a human second',
+      'isPacksPrivate': 0,
+      'isReviewsPrivate': 1,
+      'isReadListPrivate': 0,
+    });
 
   await db.insert(
     'users',

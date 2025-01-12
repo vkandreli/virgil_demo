@@ -22,12 +22,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+ 
+
+
 
   void _login() async {
     // Implement your login logic here (e.g., Firebase Auth or local validation)
     String username = _usernameController.text;
     String password = _passwordController.text;
-
+    
 
 
      
@@ -56,9 +59,10 @@ class _LoginScreenState extends State<LoginScreen> {
      // Navigate to the Home screen
 
 if (mounted){
-     User currentUser = User(
-     username: username,
-     );
+     User currentUser = await SQLService().getUserByUsername(username);
+
+
+
 
      Navigator.pushReplacement(
        context,
