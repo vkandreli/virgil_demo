@@ -55,7 +55,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     await  SQLService().addBookToCompletedList(bookId, userId);
     }
 
-  Future<void> CheckAndUpdatePage(int? userId, int pages, String date) async {
+  Future<void> CheckAndUpdatePagesPerDay(int? userId, int pages, String date) async {
 
     final exists = await SQLService().doesPagesPerDayExist(userId, date);
 
@@ -117,7 +117,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
       String today = DateTime.now().toString().split(' ')[0];
 
       // Check if there's already an entry for today's pages in pagesPerDay
-      Map<DateTime, int>? todayPagesEntry =
+    /**   Map<DateTime, int>? todayPagesEntry =
           widget.currentUser.pagesPerDay.firstWhere(
         (entry) => entry.containsKey(today),
         orElse: () => {},
@@ -132,7 +132,14 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
             .remove(todayPagesEntry); // Remove the old entry
         widget.currentUser.pagesPerDay.add(
             {today: todayPagesEntry[today]! + newPage}); // Add updated value
-      }
+      }*/
+
+    CheckAndUpdatePagesPerDay(widget.currentUser.id, newPage, today);
+
+
+    
+
+
       if (newPage == selected.totalPages) {
         setState(() {
           isCompleted = true;
