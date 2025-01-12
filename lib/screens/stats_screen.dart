@@ -82,7 +82,7 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
   if (badge.name == "Social Butterfly") {
     // Check if the user has followed 20 users
     int followedUsersCount = followedUsers.length;
-    return followedUsersCount >= 20;
+    return followedUsersCount >= 1;
   }
 
   if (badge.name == "Page Turner") {
@@ -91,7 +91,18 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
     return pagesReadToday >= 100;
   }
 
-  // Add more badge requirements here as needed
+    if (badge.name == "Book Worm") {
+    return pagesReadToday >= 500;
+  }
+
+      if (badge.name == "Multilingual Reader") {
+    return completedList.map((book) => book.language).toSet().length >= 3;
+  }
+
+  
+      if (badge.name == "Polyglot Reader") {
+    return completedList.map((book) => book.language).toSet().length  >= 5;
+  }
   return false;
 }
 
