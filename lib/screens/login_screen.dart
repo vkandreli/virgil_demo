@@ -62,7 +62,7 @@ if (mounted){
 
      Navigator.pushReplacement(
        context,
-       MaterialPageRoute(builder: (context) => OwnProfileScreen(currentUser: currentUser,)),
+       MaterialPageRoute(builder: (context) => HomeScreen(currentUser: currentUser,)),
      );
 }
       } else {  
