@@ -187,7 +187,7 @@ class UserReadListScreenState extends State<UserReadListScreen> {
   late List<Book> readingList;
 
   Future<void> _readingList() async {
-    readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+    readingList = await SQLService().getBooksCurrentReadingForUser(widget.currentUser.id);
   }
 
 

@@ -20,6 +20,7 @@ import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 class AddToPack extends StatefulWidget {
   final User currentUser;
   final Book selectedBook;
+
   AddToPack({required this.currentUser, required this.selectedBook});
 
   @override
@@ -28,6 +29,35 @@ class AddToPack extends StatefulWidget {
 
 class _AddToPackState extends State<AddToPack> {
   final TextEditingController _searchController = TextEditingController(); // Controller for TextField
+  List<Pack> usersPacks = []; // Initialize as an empty list.
+
+  // Fetch packs for the current user
+  Future<void> _getPacks() async {
+    usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
+    setState(() {}); // Make sure to call setState after updating the list.
+  }
+
+Future<void> _addToPack(Book book, Pack pack) async {
+  int result = await SQLService().addBookToPack(pack.id, book.id);
+
+  if (result == -1) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Book is already in pack')),
+    );
+  } else {
+    // 
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(content: Text('Book added to pack successfully')),
+    // );
+  }
+}
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getPacks(); // Initialize the packs when the widget is created.
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +88,9 @@ class _AddToPackState extends State<AddToPack> {
 
                           // If a pack is selected, proceed with adding the book
                           if (selectedPack != null) {
-                            // Add the selected book to the pack
-                            selectedPack.addBookToPack(widget.selectedBook);
+                            // Add the selected book to the 
+                            _addToPack(widget.selectedBook, selectedPack);
+                            //selectedPack.addBookToPack(widget.selectedBook);
 
                             // Pop the current screen and return to the previous one with the updated pack
                             Navigator.pop(context, selectedPack);  // Return the updated pack
@@ -87,7 +118,7 @@ class _AddToPackState extends State<AddToPack> {
             Expanded(
               child: ListView(
                 children: [
-                  packScroll("Existing packs", widget.currentUser.usersPacks, currentUser: widget.currentUser, picking: true),
+                  packScroll("Existing packs", usersPacks, currentUser: widget.currentUser, picking: true),
                 ],
               ),
             ),

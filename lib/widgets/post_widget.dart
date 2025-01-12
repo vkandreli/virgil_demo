@@ -35,7 +35,7 @@ class _PostWidgetState extends State<PostWidget> {
   postsBook = await SQLService().getBooksForPost(widget.post.id);
   originalPoster = await SQLService().getPosterForPost(widget.post.id); 
   reblogger = await SQLService().getRebloggerForPost(widget.post.id); 
-  readingList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  readingList = await SQLService().getBooksCurrentReadingForUser(widget.currentUser.id);
  }
 
   Future<void> _reblog(Post post, int? userId) async {

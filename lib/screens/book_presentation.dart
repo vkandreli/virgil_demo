@@ -31,7 +31,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   
   Future<void> _getResources() async {
   completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
-  currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  currentList = await SQLService().getBooksCurrentReadingForUser(widget.currentUser.id);
   readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
 usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
 bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
@@ -63,23 +63,34 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     });
   }
 
-  // Handle Add button click
-  void _addToList() {
-    logger.i("Added book to the list: ${widget.book.title}");
-  }
+void _addToCompletedList(Book book) async {
+  await SQLService().addBookToCompletedList(book.id, widget.currentUser.id);
+  logger.i("Added book to the completed list: ${book.title}");
+}
+
+void _addToCurrentReadingList(Book book) async {
+  await SQLService().addBookToReadingList(book.id, widget.currentUser.id);
+  logger.i("Added book to the current reading list: ${book.title}");
+}
+
+void _addToWishlistList(Book book) async {
+  await SQLService().addBookToWishlist(book.id, widget.currentUser.id);
+  logger.i("Added book to the wishlist list: ${book.title}");
+}
+
 
   // Handle Start Reading button click
   void _startReading() {
     widget.currentUser.addToCurrent(widget.book);
     logger.i("Started reading: ${widget.book.title}");
-    isInCurrentList = widget.currentUser.currentList.contains(widget.book);
+    isInCurrentList = currentList.contains(widget.book);
     if (isInCurrentList) logger.i("Is in current list: ${widget.book.title}");
   }
 
   // Method to add new page
   void _addPages(int newPage) {
     // Find the book in the currentList based on the title
-    Book? selected = widget.currentUser.currentList.firstWhere(
+    Book? selected = currentList.firstWhere(
       (book) => book.title == widget.book.title,
       orElse: () => Book.empty(), // If the book is not found, return null
     );
@@ -110,8 +121,8 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
       if (newPage == selected.totalPages) {
         setState(() {
           isCompleted = true;
-          widget.currentUser
-              .addToCompleted(selected); // Directly update the book
+         
+              _addToCompletedList(selected); // Directly update the book
         });
         logger.i("Finished book: ${widget.book.title}");
       } else {
@@ -197,7 +208,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
                         // Find the selected book
                         Book? selected =
-                            widget.currentUser.currentList.firstWhere(
+                            currentList.firstWhere(
                           (book) => book.title == widget.book.title,
                           orElse: () => Book.empty(),
                         );
