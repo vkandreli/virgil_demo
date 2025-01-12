@@ -5,6 +5,7 @@ import 'package:virgil_demo/SQLService.dart';
   late List<Review> usersReviews, bookReviews;
   late List<Pack> usersPacks;
   late List<Badges> usersBadges = [];
+  late List<User> followedUsers =[];
   Future<void> _getResources() async {
     completedList =
         await SQLService().getBooksCompletedForUser(widget.currentUser.id);
@@ -16,23 +17,38 @@ import 'package:virgil_demo/SQLService.dart';
     bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
     usersBadges = await SQLService().getBadgesForUser(widget.currentUser.id);
+    followedUsers = await SQLService().getFollowersForUser(widget.currentUser.id);
   }
 
 
 
-Future<bool> checkBadgeRequirement(int userId, Badge badge) async {
+Future<bool> checkBadgeRequirement(int userId, Badges badge) async {
   if (badge.name == "Master Reviewer") {
     return usersReviews.length >= 10; // Requirement is met if the user has 10 or more reviews
   }
   if (badge.name == "Social Butterfly") {
-    // For example, check if the user follows 20 users (similar logic)
-    int followedUsersCount = await getFollowedUsersCount(userId);
+  
+    int followedUsersCount = followedUsers.length;
     return followedUsersCount >= 20;
   }
+  if (badge.name == "Page Turner"){
 
+  }
   // Add more badge requirements here as needed
   return false;
 }
+
+// Future<bool> _showBadgeRequirements(int userId) async {
+//   List<Badges> badges = await SQLService().getAllBadges();
+
+//   // Check the requirement for each badge
+//   for (var badge in badges) {
+//     bool requirementMet = await checkBadgeRequirement(userId, badge);
+
+// return requirementMet;
+//   }
+
+// }
 
 
 /** 

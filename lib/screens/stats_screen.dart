@@ -33,23 +33,57 @@ class _StatsScreenState extends State<StatsScreen> {
           date.isBefore(endOfWeek.add(Duration(days: 1)));
     }).toList();
   }
-
   late List<Book> completedList, currentList, readingList;
   late List<Review> usersReviews, bookReviews;
   late List<Pack> usersPacks;
   late List<Badges> usersBadges = [];
-  Future<void> _getResources() async {
-    completedList =
-        await SQLService().getBooksCompletedForUser(widget.currentUser.id);
-    currentList =
-        await SQLService().getBooksReadingForUser(widget.currentUser.id);
-    readingList =
-        await SQLService().getBooksWishlistForUser(widget.currentUser.id);
-    usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
-    bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
-    usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
-    usersBadges = await SQLService().getBadgesForUser(widget.currentUser.id);
+  late List<User> followedUsers =[];
+
+Future<void> _getResources() async {
+  completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
+  currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
+  readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
+  usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
+  bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
+  usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
+  usersBadges = await SQLService().getBadgesForUser(widget.currentUser.id);
+  followedUsers = await SQLService().getFollowersForUser(widget.currentUser.id);
+
+  // Fetch all available badges from the database
+  final allBadges = await SQLService().getAllBadges();
+
+  // Loop through each badge and check if the user meets the requirements
+  for (var badge in allBadges) {
+    bool requirementMet = await checkBadgeRequirement(widget.currentUser.id, badge);
+
+    if (requirementMet) {
+      // If the requirement is met, add the badge to the user
+      await SQLService().addBadgeToUser(widget.currentUser.id, badge.id);
+    }
   }
+}
+
+Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
+  if (badge.name == "Master Reviewer") {
+    // Check if the user has written 10 reviews
+    return usersReviews.length >= 10;
+  }
+  
+  if (badge.name == "Social Butterfly") {
+    // Check if the user has followed 20 users
+    int followedUsersCount = followedUsers.length;
+    return followedUsersCount >= 20;
+  }
+
+  if (badge.name == "Page Turner") {
+    // Check if the user has read 100 pages in a day
+    int pagesReadToday = await SQLService().getPagesReadToday(userId);
+    return pagesReadToday >= 100;
+  }
+
+  // Add more badge requirements here as needed
+  return false;
+}
 
   String _generateGoalProgressText(User user) {
     // Define the list of goals
@@ -296,7 +330,6 @@ class _StatsScreenState extends State<StatsScreen> {
                     // Badges Section
                     GestureDetector(
                       onTap: () {
-                        // Navigate to a more detailed Pages Read Screen
                       },
                       child: Card(
                         elevation: 4.0,

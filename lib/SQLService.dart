@@ -504,7 +504,7 @@ Future<void> assignBadgeToUser(UserBadge userBadge) async {
   );
 }
 
-Future<void> addBadgeToUser(int userId, int badgeId) async {
+Future<void> addBadgeToUser(int? userId, int? badgeId) async {
   final db = await database;
 
   // Insert a new row into the user_badges table
