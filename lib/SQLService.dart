@@ -767,7 +767,7 @@ Future<List<Review>> getReviewsByDate() async {
     UserBook NewUserBook =  UserBook(
     user_id: userId,
     book_id: bookId,  
-    listCategory: 1,  //Reading
+    listCategory: 3,  //Wishlist pfff
     currentPage: 1,
     );
     
@@ -785,11 +785,11 @@ Future<List<Review>> getReviewsByDate() async {
     await insertUserBook(NewUserBook);
   }
 
-  Future<void> addBookToWishlist(int? bookId, int? userId) async {
+  Future<void> addBookToCurrentList(int? bookId, int? userId) async {
     UserBook NewUserBook =  UserBook(
     user_id: userId,
     book_id: bookId,  
-    listCategory: 3,  //Wishlist
+    listCategory: 1,  //reading rn
     currentPage: 1,
     );
     

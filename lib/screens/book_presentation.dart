@@ -47,6 +47,14 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     await  SQLService().removeBookFromReadingList(bookId, userId);
   }
 
+    Future<void> addToCurrentList(int? bookId, int? userId) async {
+    await  SQLService().addBookToCurrentList(bookId, userId);
+    }
+
+     Future<void> addToCompletedList(int? bookId, int? userId) async {
+    await  SQLService().addBookToCompletedList(bookId, userId);
+    }
+
 
   @override
   void initState() {
@@ -63,10 +71,10 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
     setState(() {
       if (isInReadingList) {
        RemoveFromReadList(widget.book.id, widget.currentUser.id);
-        logger.i("Removed book from reading list: ${widget.book.title}");
+        logger.i("Removed book from wishlist: ${widget.book.title}");
       } else {
         addToReadList(widget.book.id, widget.currentUser.id);
-        logger.i("Saved book to reading list: ${widget.book.title}");
+        logger.i("Saved book to wishlist: ${widget.book.title}");
       }
       isInReadingList = !isInReadingList;
     });
@@ -74,21 +82,21 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
   // Handle Add button click
   void _addToList() {
-    logger.i("Added book to the list: ${widget.book.title}");
+    logger.i("Added book to your list: ${widget.book.title}");
   }
 
   // Handle Start Reading button click
   void _startReading() {
-    widget.currentUser.addToCurrent(widget.book);
+    addToCurrentList(widget.book.id, widget.currentUser.id);
     logger.i("Started reading: ${widget.book.title}");
-    isInCurrentList = widget.currentUser.currentList.contains(widget.book);
+    isInCurrentList = currentList.contains(widget.book);
     if (isInCurrentList) logger.i("Is in current list: ${widget.book.title}");
   }
 
   // Method to add new page
   void _addPages(int newPage) {
     // Find the book in the currentList based on the title
-    Book? selected = widget.currentUser.currentList.firstWhere(
+    Book? selected = currentList.firstWhere(
       (book) => book.title == widget.book.title,
       orElse: () => Book.empty(), // If the book is not found, return null
     );
@@ -119,8 +127,8 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
       if (newPage == selected.totalPages) {
         setState(() {
           isCompleted = true;
-          widget.currentUser
-              .addToCompleted(selected); // Directly update the book
+          
+              addToCompletedList(selected.id, widget.currentUser.id); // Directly update the book
         });
         logger.i("Finished book: ${widget.book.title}");
       } else {
@@ -206,7 +214,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
 
                         // Find the selected book
                         Book? selected =
-                            widget.currentUser.currentList.firstWhere(
+                            currentList.firstWhere(
                           (book) => book.title == widget.book.title,
                           orElse: () => Book.empty(),
                         );
@@ -248,7 +256,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
               ElevatedButton(
                 onPressed: () async {
                   if (!usersReviews.any((review) =>
-                      review.user == widget.currentUser && review.book == widget.book)) {
+                      review.user_id == widget.currentUser.id && review.book_id == widget.book.id)) {
                     logger.i("Reviewing book: ${widget.book.title}");
                     
                     // Navigate to CreateReviewScreen
@@ -267,8 +275,8 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                   }
                 },
                 child: Text(
-                  (!widget.currentUser.usersReviews.any((review) =>
-                      review.user == widget.currentUser && review.book == widget.book)
+                  (!usersReviews.any((review) =>
+                      review.user_id == widget.currentUser.id && review.book_id == widget.book.id)
                       ? 'Review book'
                       : "Already reviewed"),
                   style: TextStyle(color: AppColors.darkBrown),
