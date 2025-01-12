@@ -647,6 +647,25 @@ db.execute(
     );
   }
 
+
+  Future<Book> getBookForId(Book book) async {
+  final db = await SQLService().database;
+
+  // Query the database for a book with the given title, author, and totalPages
+  final result = await db.query(
+    'books', // Table name
+    where: 'title = ? AND author = ? AND totalPages = ?', // Conditions
+    whereArgs: [book.title, book.author, book.totalPages], // Parameters
+  );
+
+  // If the book exists, return it as a Book object; otherwise, return null
+ 
+    return Book.fromMap(result.first);
+  
+
+// Return null if no book matches the query
+}
+
   //*******       Post Setters      ********/
 
   Future<void> insertPost(Post post) async {
