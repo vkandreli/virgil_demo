@@ -31,6 +31,8 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
   userReviews = await SQLService().getReviewsForUser(reviewsUser.id);
   bookReviews = await SQLService().getReviewsForBook(reviewsBook.id);
   authorReviews = await SQLService().getReviewsForAuthor(reviewsBook.author);
+         setState(() {
+          });
   }
 
 

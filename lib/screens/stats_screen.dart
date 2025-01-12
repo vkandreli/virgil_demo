@@ -35,76 +35,79 @@ class _StatsScreenState extends State<StatsScreen> {
           date.isBefore(endOfWeek.add(Duration(days: 1)));
     }).toList();
   }*/
-  late List<Book> completedList= [], currentList= [], readingList= [];
-  late List<Review> usersReviews= [], bookReviews= [];
-  late List<Pack> usersPacks= [];
+  late List<Book> completedList = [], currentList = [], readingList = [];
+  late List<Review> usersReviews = [], bookReviews = [];
+  late List<Pack> usersPacks = [];
   late List<Badges> usersBadges = [];
-  late List<User> followedUsers =[];
+  late List<User> followedUsers = [];
   late int pagesReadToday = 0;
-  late List<Map<DateTime, int>> pagesReadThisWeek= [];
+  late List<Map<DateTime, int>> pagesReadThisWeek = [];
 
-Future<void> _getResources() async {
-  completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
-  currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
-  readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
-  usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
-  bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
-  usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
-  usersBadges = await SQLService().getBadgesForUser(widget.currentUser.id);
-  followedUsers = await SQLService().getFollowersForUser(widget.currentUser.id);
-  pagesReadToday = await SQLService().getPagesPerDay(widget.currentUser.id, DateTime.now.toString().split(' ')[0]);
-  pagesReadThisWeek = await SQLService().getPagesReadThisWeek(widget.currentUser.id);
+  Future<void> _getResources() async {
+    completedList =
+        await SQLService().getBooksCompletedForUser(widget.currentUser.id);
+    currentList =
+        await SQLService().getBooksReadingForUser(widget.currentUser.id);
+    readingList =
+        await SQLService().getBooksWishlistForUser(widget.currentUser.id);
+    usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
+    bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
+    usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
+    usersBadges = await SQLService().getBadgesForUser(widget.currentUser.id);
+    followedUsers =
+        await SQLService().getFollowersForUser(widget.currentUser.id);
+    pagesReadToday = await SQLService().getPagesPerDay(
+        widget.currentUser.id, DateTime.now.toString().split(' ')[0]);
+    pagesReadThisWeek =
+        await SQLService().getPagesReadThisWeek(widget.currentUser.id);
 
- 
- 
-  
+    // Fetch all available badges from the database
+    final allBadges = await SQLService().getAllBadges();
 
-  // Fetch all available badges from the database
-  final allBadges = await SQLService().getAllBadges();
+    // Loop through each badge and check if the user meets the requirements
+    for (var badge in allBadges) {
+      bool requirementMet =
+          await checkBadgeRequirement(widget.currentUser.id, badge);
 
-  // Loop through each badge and check if the user meets the requirements
-  for (var badge in allBadges) {
-    bool requirementMet = await checkBadgeRequirement(widget.currentUser.id, badge);
-
-    if (requirementMet) {
-      // If the requirement is met, add the badge to the user
-      await SQLService().addBadgeToUser(widget.currentUser.id, badge.id);
+      if (requirementMet) {
+        // If the requirement is met, add the badge to the user
+        await SQLService().addBadgeToUser(widget.currentUser.id, badge.id);
+      }
     }
-  }
-}
-
-Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
-  if (badge.name == "Master Reviewer") {
-    // Check if the user has written 10 reviews
-    return usersReviews.length >= 10;
-  }
-  
-  if (badge.name == "Social Butterfly") {
-    // Check if the user has followed 20 users
-    int followedUsersCount = followedUsers.length;
-    return followedUsersCount >= 1;
+    setState(() {});
   }
 
-  if (badge.name == "Page Turner") {
-    // Check if the user has read 100 pages in a day
-  //  int pagesReadToday = await SQLService().getPagesReadToday(userId);
-    return pagesReadToday >= 100;
-  }
+  Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
+    if (badge.name == "Master Reviewer") {
+      // Check if the user has written 10 reviews
+      return usersReviews.length >= 10;
+    }
+
+    if (badge.name == "Social Butterfly") {
+      // Check if the user has followed 20 users
+      int followedUsersCount = followedUsers.length;
+      return followedUsersCount >= 1;
+    }
+
+    if (badge.name == "Page Turner") {
+      // Check if the user has read 100 pages in a day
+      //  int pagesReadToday = await SQLService().getPagesReadToday(userId);
+      return pagesReadToday >= 100;
+    }
 
     if (badge.name == "Book Worm") {
-    return pagesReadToday >= 500;
-  }
+      return pagesReadToday >= 500;
+    }
 
-      if (badge.name == "Multilingual Reader") {
-    return completedList.map((book) => book.language).toSet().length >= 3;
-  }
+    if (badge.name == "Multilingual Reader") {
+      return completedList.map((book) => book.language).toSet().length >= 3;
+    }
 
-  
-      if (badge.name == "Polyglot Reader") {
-    return completedList.map((book) => book.language).toSet().length  >= 5;
+    if (badge.name == "Polyglot Reader") {
+      return completedList.map((book) => book.language).toSet().length >= 5;
+    }
+    return false;
   }
-  return false;
-}
 
   String _generateGoalProgressText(User user) {
     // Define the list of goals
@@ -155,8 +158,8 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
   @override
   Widget build(BuildContext context) {
     // Get pages read this week
- //   final pagesReadThisWeek =
- //       getPagesReadThisWeek(widget.currentUser.pagesPerDay);
+    //   final pagesReadThisWeek =
+    //       getPagesReadThisWeek(widget.currentUser.pagesPerDay);
 
     return SafeArea(
       child: Scaffold(
@@ -180,7 +183,7 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
 //   );
 // },
 //                 ),
-                 Spacer(), // To push the profile picture to the right
+                Spacer(), // To push the profile picture to the right
                 IconButton(
                   icon: CircleAvatar(
                     backgroundImage: NetworkImage(
@@ -358,8 +361,7 @@ Future<bool> checkBadgeRequirement(int? userId, Badges badge) async {
 
                     // Badges Section
                     GestureDetector(
-                      onTap: () {
-                      },
+                      onTap: () {},
                       child: Card(
                         elevation: 4.0,
                         shape: RoundedRectangleBorder(
