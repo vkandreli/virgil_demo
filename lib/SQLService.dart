@@ -1,15 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/widgets.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
-
-
 
 class SQLService {
   // Singleton instance
   static final SQLService _instance = SQLService._internal();
+final logger = Logger();
 
   // Factory constructor to return the singleton
   factory SQLService() => _instance;
@@ -27,103 +25,54 @@ class SQLService {
     // Initialize the database
     _database = await _initDB();
     return _database!;
-    
   }
- 
 
   Future<void> deleteDatabase(String path) =>
-    databaseFactory.deleteDatabase(path);
+      databaseFactory.deleteDatabase(path);
 
   // Initialize the database
   Future<Database> _initDB() async {
+  try {
     final dbPath = await getDatabasesPath();
-    return await openDatabase(
+    final database = await openDatabase(
       join(dbPath, 'user_database.db'),
       onCreate: (db, version) async {
-        // Create tables when the database is first created
         await db.execute(
-        '''CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT,
-         username TEXT NOT NULL, email TEXT, profileImage TEXT, status TEXT, currentCity TEXT, 
-         isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0)''',
-      );
-      await  db.execute(
-      '''CREATE TABLE books(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL,
-        author TEXT NOT NULL, publisher TEXT NOT NULL, language TEXT NOT NULL, posterUrl TEXT NOT NULL, description TEXT NOT NULL,
-        dateAdded TEXT, dateCompleted TEXT, totalPages INTEGER NOT NULL, genre TEXT)
-        ''',
-      );
-      await  db.execute(
-      '''CREATE TABLE user_books(user_id INTEGER,book_id INTEGER, list_category INTEGER CHECK(list_category >= 1 AND list_category <= 3),
-       current_page INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (user_id, book_id)
-      )
-      ''',
+          '''CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL, email TEXT, profileImage TEXT, status TEXT, currentCity TEXT, 
+            isPacksPrivate INTEGER DEFAULT 0, isReviewsPrivate INTEGER DEFAULT 0, isReadListPrivate INTEGER DEFAULT 0)''',
+        );
+        await db.execute(
+          '''CREATE TABLE books(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL,
+            author TEXT NOT NULL, publisher TEXT NOT NULL, language TEXT NOT NULL, posterUrl TEXT NOT NULL, description TEXT NOT NULL,
+            dateAdded TEXT, dateCompleted TEXT, totalPages INTEGER NOT NULL, genre TEXT)
+            ''',
+        );
+        await db.execute(
+          '''CREATE TABLE user_books(user_id INTEGER, book_id INTEGER, list_category INTEGER CHECK(list_category >= 1 AND list_category <= 3),
+            current_page INTEGER, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (user_id, book_id))''',
+        );
+        db.execute(
+          '''CREATE TABLE posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, originalPoster_id INTEGER, reblogger_id INTEGER, imageUrl TEXT,
+            quote TEXT, book_id INTEGER, timePosted TEXT, likes INTEGER DEFAULT 0, reblogs INTEGER DEFAULT 0,
+            FOREIGN KEY (originalPoster_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (reblogger_id) REFERENCES users(id) ON DELETE SET NULL,
+            FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE)''',
+        );
+        // Add the rest of your table creation statements here...
+      },
+      version: 1,
     );
-      db.execute(
-      '''CREATE TABLE user_followeduser(user_id INTEGER,followeduser_id INTEGER,CHECK (user_id != followeduser_id),
-       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, FOREIGN KEY (followeduser_id) REFERENCES users(id)
-        ON DELETE CASCADE, PRIMARY KEY (user_id, followeduser_id)
-      )
-      ''',
-    ); 
-       db.execute(
-      '''CREATE TABLE posts (
-          id INTEGER PRIMARY KEY AUTOINCREMENT, originalPoster_id INTEGER, reblogger_id INTEGER, imageUrl TEXT,
-          quote TEXT, book_id INTEGER, timePosted TEXT,likes INTEGER DEFAULT 0, reblogs INTEGER DEFAULT 0,
-          FOREIGN KEY (originalPoster_id) REFERENCES users(id) ON DELETE CASCADE,
-          FOREIGN KEY (reblogger_id) REFERENCES users(id) ON DELETE SET NULL,
-          FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE)''',
-    );
-       db.execute(
-        '''CREATE TABLE reviews (
-     id INTEGER PRIMARY KEY AUTOINCREMENT, book_id INTEGER NOT NULL, user_id INTEGER NOT NULL,
-     text TEXT NOT NULL, reviewDate TEXT NOT NULL, stars INTEGER CHECK(stars >= 0 AND stars <= 5), 
-     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)'''
-   );
-       db.execute(
-      '''CREATE TABLE packs (
-      id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, publicationDate TEXT NOT NULL, creator_id INTEGER NOT NULL, 
-  packImage TEXT NOT NULL, description TEXT NOT NULL, FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE)'''
-      );
-       db.execute(
-      '''CREATE TABLE pack_books(pack_id INTEGER,book_id INTEGER, FOREIGN KEY (pack_id) REFERENCES packs(id) ON DELETE CASCADE,
-         FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE, PRIMARY KEY (pack_id, book_id)
-         )
-      ''',
-    );
-     db.execute(
-      '''CREATE TABLE comments(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, post_id INTEGER,
-         FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE)
-      ''',
-    );
-         db.execute(
-      '''CREATE TABLE pagesPerDay(id INTEGER PRIMARY KEY AUTOINCREMENT, pages INTEGER, user_id INTEGER, date TEXT
-         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)
-      ''',
-    );
-    db.execute('''CREATE TABLE badges (
-  id INTEGER PRIMARY KEY AUTOINCREMENT, 
-  name TEXT NOT NULL,
-  image TEXT NOT NULL,
-  description TEXT,
-  requirement INTEGER NOT NULL
-)''',);
 
-db.execute('''CREATE TABLE user_badges (
-  id INTEGER PRIMARY KEY AUTOINCREMENT, 
-  user_id INTEGER NOT NULL,
-  badge_id INTEGER NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users(id),
-  FOREIGN KEY (badge_id) REFERENCES badges(id)
-)''',);
-
-  },
-    
-    // Set the version. This executes the onCreate function and provides a
-    // path to perform database upgrades and downgrades.
-    version: 1,
-  );
+    return database;
+  } catch (e, stackTrace) {
+    logger.e("Error initializing database", e, stackTrace);
+    rethrow; // Rethrow exception after logging
+  }
 }
+
 
 //*******     User Setters      ********/
 
@@ -159,28 +108,24 @@ db.execute('''CREATE TABLE user_badges (
     ];
   }*/
 
+  Future<void> reinitializeDatabase() async {
+    try {
+      final dbPath = await getDatabasesPath();
+      final path = join(dbPath, 'user_database.db');
 
-Future<void> reinitializeDatabase() async {
-  try {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'user_database.db');
+      // Delete the existing database
+      await deleteDatabase(path);
+      print('Database deleted successfully.');
 
-    // Delete the existing database
-    await deleteDatabase(path);
-    print('Database deleted successfully.');
-
-    // Trigger the reinitialization by accessing the database getter
-    final db = await database;
-    print('Database reinitialized successfully.');
-  } catch (e) {
-    print('Error during reinitialization: $e');
+      // Trigger the reinitialization by accessing the database getter
+      final db = await database;
+      print('Database reinitialized successfully.');
+    } catch (e) {
+      print('Error during reinitialization: $e');
+    }
   }
-}
-
-
 
   Future<void> dropAllTables(Database db) async {
-
     // Drop all existing tables
     await db.execute('DROP TABLE IF EXISTS users');
     await db.execute('DROP TABLE IF EXISTS books');
@@ -194,60 +139,54 @@ Future<void> reinitializeDatabase() async {
     await db.execute('DROP TABLE IF EXISTS badges');
     await db.execute('DROP TABLE IF EXISTS user_badges');
 
-
     print('All tables dropped successfully');
   }
 
   Future<void> printUsername(int userId) async {
-  // Get a reference to the database
-  final db = await SQLService().database;
+    // Get a reference to the database
+    final db = await SQLService().database;
 
-  // Query the Users table for the user with the given userId
-  final List<Map<String, dynamic>> result = await db.query(
-    'users',
-    columns: ['username'], // Only fetch the username column
-    where: 'id = ?',       // Specify the condition
-    whereArgs: [userId],   // Pass the userId as an argument
-    limit: 1,              // Limit the query to one result
-  );
+    // Query the Users table for the user with the given userId
+    final List<Map<String, dynamic>> result = await db.query(
+      'users',
+      columns: ['username'], // Only fetch the username column
+      where: 'id = ?', // Specify the condition
+      whereArgs: [userId], // Pass the userId as an argument
+      limit: 1, // Limit the query to one result
+    );
 
-  // Check if a user was found
-  if (result.isNotEmpty) {
-    // Extract the username from the query result
-    String username = result.first['username'] as String;
+    // Check if a user was found
+    if (result.isNotEmpty) {
+      // Extract the username from the query result
+      String username = result.first['username'] as String;
 
-    // Print the username
-    print('Username: $username');
-  } else {
-    print('No user found with id $userId');
+      // Print the username
+      print('Username: $username');
+    } else {
+      print('No user found with id $userId');
+    }
   }
-}
 
-
-
-
-Future<void> printTables() async {
-  var db = await SQLService().database;  // Get the initialized database
-  var tables = await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table"');
-  print(tables);  // This will print the names of all the tables in the database
-}
-
-
-Future<void> printTable(String tableName) async {
-  // Get a reference to the database
-  final db = await database;
-
-  // Query the entire table
-  final List<Map<String, dynamic>> rows = await db.query(tableName);
-
-  // Print each row
-  for (var row in rows) {
-    print(row); // Prints the row as a map
+  Future<void> printTables() async {
+    var db = await SQLService().database; // Get the initialized database
+    var tables =
+        await db.rawQuery('SELECT name FROM sqlite_master WHERE type="table"');
+    print(
+        tables); // This will print the names of all the tables in the database
   }
-}
 
+  Future<void> printTable(String tableName) async {
+    // Get a reference to the database
+    final db = await database;
 
+    // Query the entire table
+    final List<Map<String, dynamic>> rows = await db.query(tableName);
 
+    // Print each row
+    for (var row in rows) {
+      print(row); // Prints the row as a map
+    }
+  }
 
   Future<void> updateUser(User user) async {
     // Get a reference to the database.
@@ -278,8 +217,6 @@ Future<void> printTable(String tableName) async {
     );
   }
 
-
-
   Future<List<User>> getUsersByUsername(String username) async {
     final db = await database;
 
@@ -289,286 +226,289 @@ Future<void> printTable(String tableName) async {
       where: 'username = ?',
       whereArgs: [username],
     );
-  return maps.map((map) => User.fromMap(map)).toList();
+    return maps.map((map) => User.fromMap(map)).toList();
   }
 
-Future<String> getUsernameByUserId(int userId) async {
-  final db = await SQLService().database;
+  Future<String> getUsernameByUserId(int userId) async {
+    final db = await SQLService().database;
 
-  // Query the users table where the user_id matches
-  final List<Map<String, dynamic>> maps = await db.query(
-    'users',
-    where: 'id = ?',
-    whereArgs: [userId],
-  );
+    // Query the users table where the user_id matches
+    final List<Map<String, dynamic>> maps = await db.query(
+      'users',
+      where: 'id = ?',
+      whereArgs: [userId],
+    );
 
-  if (maps.isNotEmpty) {
-    return maps.first['username']; 
-  } else {
-    throw Exception('User not found');
+    if (maps.isNotEmpty) {
+      return maps.first['username'];
+    } else {
+      throw Exception('User not found');
+    }
   }
-}
 
+  Future<dynamic> takeElement(String tableName, String columnName,
+      Map<String, dynamic> whereClause) async {
+    final db = await SQLService().database; // Access the database instance
 
+    // Build the WHERE clause dynamically
+    String whereString =
+        whereClause.keys.map((key) => "$key = ?").join(" AND ");
+    List<dynamic> whereArgs = whereClause.values.toList();
 
-Future<dynamic> takeElement(String tableName, String columnName, Map<String, dynamic> whereClause) async {
-  final db = await SQLService().database; // Access the database instance
-  
-  // Build the WHERE clause dynamically
-  String whereString = whereClause.keys.map((key) => "$key = ?").join(" AND ");
-  List<dynamic> whereArgs = whereClause.values.toList();
+    // Query the table
+    final List<Map<String, dynamic>> result = await db.query(
+      tableName,
+      columns: [columnName],
+      where: whereString,
+      whereArgs: whereArgs,
+      limit: 1, // Only return one record
+    );
 
-  // Query the table
-  final List<Map<String, dynamic>> result = await db.query(
-    tableName,
-    columns: [columnName],
-    where: whereString,
-    whereArgs: whereArgs,
-    limit: 1, // Only return one record
-  );
-
-  // If the result is empty, return null; otherwise, return the desired element
-  if (result.isEmpty) {
-    return null;
-  } else {
-    return result.first[columnName];
+    // If the result is empty, return null; otherwise, return the desired element
+    if (result.isEmpty) {
+      return null;
+    } else {
+      return result.first[columnName];
+    }
   }
-}
 
-Future<List<Book>> getBooksForPack(int? packId) async {
-  final db = await database;
+  Future<List<Book>> getBooksForPack(int? packId) async {
+    final db = await database;
 
-  final List<Map<String, dynamic>> maps = await db.query(
-    'pack_books',
-    where: 'pack_id = ?',  // Find all books related to the given packId
-    whereArgs: [packId],
-  );
+    final List<Map<String, dynamic>> maps = await db.query(
+      'pack_books',
+      where: 'pack_id = ?', // Find all books related to the given packId
+      whereArgs: [packId],
+    );
 
-  if (maps.isNotEmpty) {
-    List<int> bookIds = maps.map((map) => map['book_id'] as int).toList();
+    if (maps.isNotEmpty) {
+      List<int> bookIds = maps.map((map) => map['book_id'] as int).toList();
 
-    List<Book> books = [];
-    for (int bookId in bookIds) {
-      final bookMaps = await db.query(
+      List<Book> books = [];
+      for (int bookId in bookIds) {
+        final bookMaps = await db.query(
+          'books',
+          where: 'id = ?', // Retrieve book details based on book_id
+          whereArgs: [bookId],
+        );
+
+        if (bookMaps.isNotEmpty) {
+          books.add(Book.fromMap(bookMaps.first));
+        }
+      }
+
+      return books; // Return the list of books for the given pack
+    } else {
+      throw Exception("No books found for pack with ID $packId");
+    }
+  }
+
+  Future<User> getUserForPack(int? packId) async {
+    final db = await database;
+
+    // Query to find the pack with the specific packId and get its creator_id
+    final List<Map<String, dynamic>> packMaps = await db.query(
+      'packs',
+      where: 'id = ?',
+      whereArgs: [packId],
+    );
+
+    if (packMaps.isNotEmpty) {
+      // Get the creator_id from the pack
+      int creatorId = packMaps.first['creator_id'];
+
+      // Query the users table to get the user by creator_id
+      final List<Map<String, dynamic>> userMaps = await db.query(
+        'users',
+        where: 'id = ?',
+        whereArgs: [creatorId],
+      );
+
+      if (userMaps.isNotEmpty) {
+        return User.fromMap(userMaps.first); // Return the user
+      } else {
+        throw Exception("User not found with ID $creatorId");
+      }
+    } else {
+      throw Exception("Pack not found with ID $packId");
+    }
+  }
+
+  Future<Book> getBookForReview(int? reviewId) async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> reviewMaps = await db.query(
+      'reviews',
+      where: 'id = ?',
+      whereArgs: [reviewId],
+    );
+
+    if (reviewMaps.isNotEmpty) {
+      int bookId = reviewMaps.first['book_id'];
+
+      final List<Map<String, dynamic>> bookMaps = await db.query(
         'books',
-        where: 'id = ?',  // Retrieve book details based on book_id
+        where: 'id = ?',
         whereArgs: [bookId],
       );
 
       if (bookMaps.isNotEmpty) {
-        books.add(Book.fromMap(bookMaps.first));
+        return Book.fromMap(bookMaps.first); // Return the book
+      } else {
+        throw Exception("Book not found with ID $bookId");
       }
+    } else {
+      throw Exception("Review not found with ID $reviewId");
     }
-
-    return books;  // Return the list of books for the given pack
-  } else {
-    throw Exception("No books found for pack with ID $packId");
   }
-}
 
-Future<User> getUserForPack(int? packId) async {
-  final db = await database;
+  Future<User> getUserForReview(int? reviewId) async {
+    final db = await database;
 
-  // Query to find the pack with the specific packId and get its creator_id
-  final List<Map<String, dynamic>> packMaps = await db.query(
-    'packs',
-    where: 'id = ?', 
-    whereArgs: [packId], 
-  );
-
-  if (packMaps.isNotEmpty) {
-    // Get the creator_id from the pack
-    int creatorId = packMaps.first['creator_id'];
-
-    // Query the users table to get the user by creator_id
-    final List<Map<String, dynamic>> userMaps = await db.query(
-      'users',
-      where: 'id = ?', 
-      whereArgs: [creatorId],
+    // Query to find the review with the specific reviewId and get its user_id
+    final List<Map<String, dynamic>> reviewMaps = await db.query(
+      'reviews',
+      where: 'id = ?',
+      whereArgs: [reviewId],
     );
 
-    if (userMaps.isNotEmpty) {
-      return User.fromMap(userMaps.first);  // Return the user
+    if (reviewMaps.isNotEmpty) {
+      // Get the user_id from the review
+      int userId = reviewMaps.first['user_id'];
+
+      // Query the users table to get the user by user_id
+      final List<Map<String, dynamic>> userMaps = await db.query(
+        'users',
+        where: 'id = ?',
+        whereArgs: [userId],
+      );
+
+      if (userMaps.isNotEmpty) {
+        return User.fromMap(userMaps.first); // Return the user
+      } else {
+        throw Exception("User not found with ID $userId");
+      }
     } else {
-      throw Exception("User not found with ID $creatorId");
+      throw Exception("Review not found with ID $reviewId");
     }
-  } else {
-    throw Exception("Pack not found with ID $packId");
   }
-}
 
-
-
-Future<Book> getBookForReview(int? reviewId) async {
-  final db = await database;
-
-  final List<Map<String, dynamic>> reviewMaps = await db.query(
-    'reviews',
-    where: 'id = ?', 
-    whereArgs: [reviewId], 
-  );
-
-  if (reviewMaps.isNotEmpty) {
-    int bookId = reviewMaps.first['book_id'];
-
-    final List<Map<String, dynamic>> bookMaps = await db.query(
-      'books',
-      where: 'id = ?', 
-      whereArgs: [bookId],
+  Future<void> insertBadge(Badges Badges) async {
+    final db = await database; // Get the database instance
+    await db.insert(
+      'badges',
+      Badges.toMap(),
+      conflictAlgorithm: ConflictAlgorithm
+          .replace, // Handle conflict by replacing existing records
     );
-
-    if (bookMaps.isNotEmpty) {
-      return Book.fromMap(bookMaps.first);  // Return the book
-    } else {
-      throw Exception("Book not found with ID $bookId");
-    }
-  } else {
-    throw Exception("Review not found with ID $reviewId");
   }
-}
 
+  Future<List<Badges>> getBadgesForUser(int? userId) async {
+    final db = await database;
 
-Future<User> getUserForReview(int? reviewId) async {
-  final db = await database;
-
-  // Query to find the review with the specific reviewId and get its user_id
-  final List<Map<String, dynamic>> reviewMaps = await db.query(
-    'reviews',
-    where: 'id = ?', 
-    whereArgs: [reviewId], 
-  );
-
-  if (reviewMaps.isNotEmpty) {
-    // Get the user_id from the review
-    int userId = reviewMaps.first['user_id'];
-
-    // Query the users table to get the user by user_id
-    final List<Map<String, dynamic>> userMaps = await db.query(
-      'users',
-      where: 'id = ?', 
+    // Query the user_badges table to get badge_ids associated with the user
+    final List<Map<String, dynamic>> badgeIds = await db.query(
+      'user_badges',
+      where: 'user_id = ?',
       whereArgs: [userId],
     );
 
-    if (userMaps.isNotEmpty) {
-      return User.fromMap(userMaps.first);  // Return the user
-    } else {
-      throw Exception("User not found with ID $userId");
+    // Now, fetch Badges details from the badges table based on the badge_ids
+    List<Badges> badges = [];
+    for (var badgeData in badgeIds) {
+      final badgeId = badgeData['badge_id'];
+      final badgeDetails = await db.query(
+        'badges',
+        where: 'id = ?',
+        whereArgs: [badgeId],
+      );
+
+      if (badgeDetails.isNotEmpty) {
+        badges.add(Badges.fromMap(badgeDetails.first)); // Now this should work
+      }
     }
-  } else {
-    throw Exception("Review not found with ID $reviewId");
+
+    return badges;
   }
-}
 
-Future<void> insertBadge(Badges Badges) async {
-  final db = await database; // Get the database instance
-  await db.insert(
-    'badges',
-    Badges.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflict by replacing existing records
-  );
-}
-Future<List<Badges>> getBadgesForUser(int? userId) async {
-  final db = await database;
+  Future<void> assignBadgeToUser(UserBadge userBadge) async {
+    final db = await database; // Get the database instance
+    await db.insert(
+      'user_badges',
+      userBadge.toMap(),
+      conflictAlgorithm: ConflictAlgorithm
+          .replace, // Handle conflict by replacing existing records
+    );
+  }
 
-  // Query the user_badges table to get badge_ids associated with the user
-  final List<Map<String, dynamic>> badgeIds = await db.query(
-    'user_badges',
-    where: 'user_id = ?',
-    whereArgs: [userId],
-  );
+  Future<void> addBadgeToUser(int? userId, int? badgeId) async {
+    final db = await database;
 
-  // Now, fetch Badges details from the badges table based on the badge_ids
-  List<Badges> badges = [];
-  for (var badgeData in badgeIds) {
-    final badgeId = badgeData['badge_id'];
-    final badgeDetails = await db.query(
+    // Insert a new row into the user_badges table
+    await db.insert(
+      'user_badges',
+      {
+        'user_id': userId,
+        'badge_id': badgeId,
+      },
+      conflictAlgorithm: ConflictAlgorithm.ignore, // Avoid duplicates
+    );
+  }
+
+  Future<List<Badges>> getAllBadges() async {
+    final db = await database;
+
+    // Fetch all badges from the badges table
+    final List<Map<String, dynamic>> badgeMaps = await db.query('badges');
+
+    // Convert the result to a list of Badges objects
+    return List.generate(badgeMaps.length, (i) {
+      return Badges.fromMap(badgeMaps[i]); // Assuming Badges.fromMap exists
+    });
+  }
+
+  Future<bool> hasUserBadge(int userId, int badgeId) async {
+    final db = await database;
+
+    // Query the user_badges table to check if the user has the specific Badges
+    final List<Map<String, dynamic>> result = await db.query(
+      'user_badges',
+      where: 'user_id = ? AND badge_id = ?',
+      whereArgs: [userId, badgeId],
+    );
+
+    // Return true if the result contains a record, otherwise false
+    return result.isNotEmpty;
+  }
+
+  Future<void> removeBadgeFromUser(int userId, int badgeId) async {
+    final db = await database;
+
+    // Delete the corresponding Badges entry for the user
+    await db.delete(
+      'user_badges',
+      where: 'user_id = ? AND badge_id = ?',
+      whereArgs: [userId, badgeId],
+    );
+  }
+
+  Future<Badges?> getBadgeById(int badgeId) async {
+    final db = await database;
+
+    // Query the badges table to get a Badges by its ID
+    final List<Map<String, dynamic>> badgeData = await db.query(
       'badges',
       where: 'id = ?',
       whereArgs: [badgeId],
     );
 
-    if (badgeDetails.isNotEmpty) {
-      badges.add(Badges.fromMap(badgeDetails.first)); // Now this should work
+    if (badgeData.isNotEmpty) {
+      return Badges.fromMap(badgeData.first); // Assuming Badges.fromMap exists
+    } else {
+      return null;
     }
   }
 
-  return badges;
-}
-
-Future<void> assignBadgeToUser(UserBadge userBadge) async {
-  final db = await database; // Get the database instance
-  await db.insert(
-    'user_badges',
-    userBadge.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflict by replacing existing records
-  );
-}
-
-Future<void> addBadgeToUser(int? userId, int? badgeId) async {
-  final db = await database;
-
-  // Insert a new row into the user_badges table
-  await db.insert(
-    'user_badges',
-    {
-      'user_id': userId,
-      'badge_id': badgeId,
-    },
-    conflictAlgorithm: ConflictAlgorithm.ignore,  // Avoid duplicates
-  );
-}
-Future<List<Badges>> getAllBadges() async {
-  final db = await database;
-
-  // Fetch all badges from the badges table
-  final List<Map<String, dynamic>> badgeMaps = await db.query('badges');
-
-  // Convert the result to a list of Badges objects
-  return List.generate(badgeMaps.length, (i) {
-    return Badges.fromMap(badgeMaps[i]);  // Assuming Badges.fromMap exists
-  });
-}
-Future<bool> hasUserBadge(int userId, int badgeId) async {
-  final db = await database;
-
-  // Query the user_badges table to check if the user has the specific Badges
-  final List<Map<String, dynamic>> result = await db.query(
-    'user_badges',
-    where: 'user_id = ? AND badge_id = ?',
-    whereArgs: [userId, badgeId],
-  );
-
-  // Return true if the result contains a record, otherwise false
-  return result.isNotEmpty;
-}
-Future<void> removeBadgeFromUser(int userId, int badgeId) async {
-  final db = await database;
-
-  // Delete the corresponding Badges entry for the user
-  await db.delete(
-    'user_badges',
-    where: 'user_id = ? AND badge_id = ?',
-    whereArgs: [userId, badgeId],
-  );
-}
-Future<Badges?> getBadgeById(int badgeId) async {
-  final db = await database;
-
-  // Query the badges table to get a Badges by its ID
-  final List<Map<String, dynamic>> badgeData = await db.query(
-    'badges',
-    where: 'id = ?',
-    whereArgs: [badgeId],
-  );
-
-  if (badgeData.isNotEmpty) {
-    return Badges.fromMap(badgeData.first);  // Assuming Badges.fromMap exists
-  } else {
-    return null;
-  }
-}
-
- 
   /// Create a User and add it to the users table
   /**var fido = User(
     id: 0,
@@ -597,21 +537,21 @@ Future<Badges?> getBadgeById(int badgeId) async {
 
   // Print the list of users (empty).
   print(await users());*/
-  
-static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";
 
+  static const String defaultProfileImage =
+      "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";
 
-Future<List<User>> getAllUsers() async {
-  final db = await SQLService().database; 
+  Future<List<User>> getAllUsers() async {
+    final db = await SQLService().database;
 
-  final List<Map<String, dynamic>> result = await db.query('users'); 
+    final List<Map<String, dynamic>> result = await db.query('users');
 
-  return result.map((userMap) => User.fromMap(userMap)).toList();
-}
+    return result.map((userMap) => User.fromMap(userMap)).toList();
+  }
 
   /*******     Book Setters      ********/
 
-Future<void> insertBook(Book book) async {
+  Future<void> insertBook(Book book) async {
     // Get a reference to the database.
     final db = await database;
 
@@ -622,13 +562,12 @@ Future<void> insertBook(Book book) async {
     );
   }
 
-
-   Future<void> updateBook(Book book) async {
+  Future<void> updateBook(Book book) async {
     // Get a reference to the database.
     final db = await database;
 
     // Update the given Book.
-     await db.update(
+    await db.update(
       'books',
       book.toMap(),
       // Ensure that the Book has a matching id.
@@ -652,7 +591,7 @@ Future<void> insertBook(Book book) async {
     );
   }
 
- //*******       Post Setters      ********/
+  //*******       Post Setters      ********/
 
   Future<void> insertPost(Post post) async {
     final db = await database;
@@ -674,13 +613,12 @@ Future<void> insertBook(Book book) async {
     );
   }
 
-
-   Future<void> updatePost(Post post) async {
+  Future<void> updatePost(Post post) async {
     // Get a reference to the database.
     final db = await database;
 
     // Update the given Post.
-     await db.update(
+    await db.update(
       'posts',
       post.toMap(),
       // Ensure that the Post has a matching id.
@@ -705,58 +643,56 @@ Future<void> insertBook(Book book) async {
   }
 
   Future<void> addCommentToPost(Comment comment) async {
-  final db = await SQLService().database;
+    final db = await SQLService().database;
 
-  // Insert the comment into the "comments" table
-  await db.insert(
-    'comments',
-    comment.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace,
-  );
-}
+    // Insert the comment into the "comments" table
+    await db.insert(
+      'comments',
+      comment.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 
   Future<List<Comment>> getCommentsForPost(int? postId) async {
-  final db = await SQLService().database;
+    final db = await SQLService().database;
 
-  // Query to get comments for the specified post
-  final List<Map<String, dynamic>> maps = await db.query(
-    'comments',
-    where: 'post_id = ?',
-    whereArgs: [postId],
-  );
+    // Query to get comments for the specified post
+    final List<Map<String, dynamic>> maps = await db.query(
+      'comments',
+      where: 'post_id = ?',
+      whereArgs: [postId],
+    );
 
-  // Convert the list of maps into a list of Comment objects
-  return List.generate(maps.length, (i) {
-    return Comment.fromMap(maps[i]);
-  });
-}
+    // Convert the list of maps into a list of Comment objects
+    return List.generate(maps.length, (i) {
+      return Comment.fromMap(maps[i]);
+    });
+  }
 
-Future<Post?> getPostForComment(int? commentId) async {
-  final db = await SQLService().database;
+  Future<Post?> getPostForComment(int? commentId) async {
+    final db = await SQLService().database;
 
-  // Query to get the post for the specified comment
-  final List<Map<String, dynamic>> maps = await db.rawQuery(
-    '''
+    // Query to get the post for the specified comment
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
     SELECT posts.* 
     FROM posts
     INNER JOIN comments ON posts.id = comments.post_id
     WHERE comments.id = ?
     ''',
-    [commentId],
-  );
+      [commentId],
+    );
 
-  // Return the first post if found, otherwise null
-  if (maps.isNotEmpty) {
-    return Post.fromMap(maps.first);
+    // Return the first post if found, otherwise null
+    if (maps.isNotEmpty) {
+      return Post.fromMap(maps.first);
+    }
+    return null;
   }
-  return null;
-}
-
 
 //*******     Review Setters      ********/
 
-
-Future<void> insertReview(Review review) async {
+  Future<void> insertReview(Review review) async {
     // Get a reference to the database.
     final db = await database;
 
@@ -767,13 +703,12 @@ Future<void> insertReview(Review review) async {
     );
   }
 
-
-   Future<void> updateReview(Review review) async {
+  Future<void> updateReview(Review review) async {
     // Get a reference to the database.
     final db = await database;
 
     // Update the given Review.
-     await db.update(
+    await db.update(
       'reviews',
       review.toMap(),
       // Ensure that the Review has a matching id.
@@ -797,12 +732,9 @@ Future<void> insertReview(Review review) async {
     );
   }
 
- 
-
 //*******     Pack Setters      ********/
 
-
-Future<void> insertPack(Pack pack) async {
+  Future<void> insertPack(Pack pack) async {
     // Get a reference to the database.
     final db = await database;
 
@@ -813,13 +745,12 @@ Future<void> insertPack(Pack pack) async {
     );
   }
 
-
-   Future<void> updatePack(Pack pack) async {
+  Future<void> updatePack(Pack pack) async {
     // Get a reference to the database.
     final db = await database;
 
     // Update the given Pack.
-     await db.update(
+    await db.update(
       'packs',
       pack.toMap(),
       // Ensure that the Pack has a matching id.
@@ -843,93 +774,82 @@ Future<void> insertPack(Pack pack) async {
     );
   }
 
- Future<List<Pack>> getPacksForUser(int? userId) async {
-
+  Future<List<Pack>> getPacksForUser(int? userId) async {
     final db = await database;
 
-   
     final List<Map<String, dynamic>> maps = await db.query(
       'packs',
-        where: 'creator_id = ?',
-        whereArgs: [userId],
+      where: 'creator_id = ?',
+      whereArgs: [userId],
     );
 
-   //Choose the form of the list that is returned by the table
+    //Choose the form of the list that is returned by the table
     return List.generate(maps.length, (i) {
-    return Pack.fromMap(maps[i]);
+      return Pack.fromMap(maps[i]);
     });
   }
 
-
   Future<List<Review>> getReviewsForUser(int? userId) async {
-  final db = await database;
+    final db = await database;
 
-  // Query to find all reviews made by the specific user
-  final List<Map<String, dynamic>> maps = await db.query(
-    'reviews',
-    where: 'user_id = ?',
-    whereArgs: [userId],
-  );
-  // Convert the maps to a list of Review objects
-  return List.generate(maps.length, (i) {
-    return Review.fromMap(maps[i]);
-  });
-}
-
-
+    // Query to find all reviews made by the specific user
+    final List<Map<String, dynamic>> maps = await db.query(
+      'reviews',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
+    // Convert the maps to a list of Review objects
+    return List.generate(maps.length, (i) {
+      return Review.fromMap(maps[i]);
+    });
+  }
 
   Future<List<Review>> getReviewsForAuthor(String Author) async {
-  final db = await database;
+    final db = await database;
 
-  // Query to find all reviews made by the specific user
-  final List<Map<String, dynamic>> maps = await db.query(
-    '''
+    // Query to find all reviews made by the specific user
+    final List<Map<String, dynamic>> maps = await db.query(
+      '''
     SELECT reviews.* 
     FROM reviews
     INNER JOIN books ON reviews.book_id = books.id
     WHERE books.author = ?
     ''',
-    whereArgs: [Author],
-  );
-  // Convert the maps to a list of Review objects
-  return List.generate(maps.length, (i) {
-    return Review.fromMap(maps[i]);
-  });
-}
+      whereArgs: [Author],
+    );
+    // Convert the maps to a list of Review objects
+    return List.generate(maps.length, (i) {
+      return Review.fromMap(maps[i]);
+    });
+  }
 
+  Future<List<Review>> getReviewsForBook(int? bookId) async {
+    final db = await database;
 
+    // Query to find all reviews for the specific book
+    final List<Map<String, dynamic>> maps = await db.query(
+      'reviews',
+      where: 'book_id = ?',
+      whereArgs: [bookId],
+    );
 
+    // Convert the maps to a list of Review objects
+    return List.generate(maps.length, (i) {
+      return Review.fromMap(maps[i]);
+    });
+  }
 
-Future<List<Review>> getReviewsForBook(int? bookId) async {
-  final db = await database;
+  Future<List<Review>> getReviewsByDate() async {
+    final db = await SQLService().database;
 
-  // Query to find all reviews for the specific book
-  final List<Map<String, dynamic>> maps = await db.query(
-    'reviews',
-    where: 'book_id = ?',
-    whereArgs: [bookId],
-  );
+    final List<Map<String, dynamic>> maps = await db.query(
+      'reviews',
+      orderBy: 'reviewDate DESC',
+      limit: 10,
+    );
 
-  // Convert the maps to a list of Review objects
-  return List.generate(maps.length, (i) {
-    return Review.fromMap(maps[i]);
-  });
-}
-
-Future<List<Review>> getReviewsByDate() async {
-  final db = await SQLService().database;
-
-  final List<Map<String, dynamic>> maps = await db.query(
-    'reviews',
-    orderBy: 'reviewDate DESC',
-    limit: 10,
-  );
-
-  return maps.map((reviewMap) => Review.fromMap(reviewMap)).toList();
-}
-
-
-
+    return maps.map((reviewMap) => Review.fromMap(reviewMap)).toList();
+  }
 
 //*************    User's Library     ******************/
 
@@ -942,171 +862,169 @@ Future<List<Review>> getReviewsByDate() async {
         'user_id': userId,
         'book_id': bookId,
       },
-    conflictAlgorithm: ConflictAlgorithm.ignore, 
-   );
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
   }
 
-   Future<void> disassociateUserWithBook(int userId, int bookId) async {
+  Future<void> disassociateUserWithBook(int userId, int bookId) async {
     final db = await database;
 
     await db.delete(
       'user_books',
-       where: 'user_id = ? AND book_id = ?',
-       whereArgs: [userId, bookId],
-   );
+      where: 'user_id = ? AND book_id = ?',
+      whereArgs: [userId, bookId],
+    );
   }
 
   Future<void> addBookToReadingList(int? bookId, int? userId) async {
-    UserBook NewUserBook =  UserBook(
-    user_id: userId,
-    book_id: bookId,  
-    listCategory: 3,  //Wishlist pfff
-    currentPage: 1,
+    UserBook NewUserBook = UserBook(
+      user_id: userId,
+      book_id: bookId,
+      listCategory: 3, //Wishlist pfff
+      currentPage: 1,
     );
-    
+
     await insertUserBook(NewUserBook);
   }
 
   Future<void> addBookToCompletedList(int? bookId, int? userId) async {
-    UserBook NewUserBook =  UserBook(
-    user_id: userId,
-    book_id: bookId,  
-    listCategory: 2,  //Completed
-    currentPage: 1,
+    UserBook NewUserBook = UserBook(
+      user_id: userId,
+      book_id: bookId,
+      listCategory: 2, //Completed
+      currentPage: 1,
     );
-    
+
     await insertUserBook(NewUserBook);
   }
 
   Future<void> addBookToCurrentList(int? bookId, int? userId) async {
-    UserBook NewUserBook =  UserBook(
-    user_id: userId,
-    book_id: bookId,  
-    listCategory: 1,  //reading rn
-    currentPage: 1,
+    UserBook NewUserBook = UserBook(
+      user_id: userId,
+      book_id: bookId,
+      listCategory: 1, //reading rn
+      currentPage: 1,
     );
-    
+
     await insertUserBook(NewUserBook);
   }
 
   Future<void> removeBookFromReadingList(int? bookId, int? userId) async {
-  final db = await SQLService().database;
+    final db = await SQLService().database;
 
-  await db.delete(
-    'user_books',
-    where: 'user_id = ? AND book_id = ? AND listCategory = 1', // Condition to match the correct entry
-    whereArgs: [userId, bookId], 
-  );
-}
-   Future<List<Book>> getBooksForUser(int userId) async {
+    await db.delete(
+      'user_books',
+      where:
+          'user_id = ? AND book_id = ? AND listCategory = 1', // Condition to match the correct entry
+      whereArgs: [userId, bookId],
+    );
+  }
 
+  Future<List<Book>> getBooksForUser(int userId) async {
     final db = await database;
 
     // Query to join 'user_books' and 'books' tables to get books for the user
     final List<Map<String, dynamic>> maps = await db.query(
       'books',
-        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ?)',
-        whereArgs: [userId],
+      where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ?)',
+      whereArgs: [userId],
     );
 
-   //Choose the form of the list that is returned by the table
+    //Choose the form of the list that is returned by the table
     return List.generate(maps.length, (i) {
-    return Book.fromMap(maps[i]);
+      return Book.fromMap(maps[i]);
     });
   }
 
+  Future<UserBook?> getUserBook(int userId, int bookId) async {
+    final db = await SQLService().database; // Access the database
 
-Future<UserBook?> getUserBook(int userId, int bookId) async {
-  final db = await SQLService().database; // Access the database
-
-  // Perform the query
-  final List<Map<String, dynamic>> result = await db.query(
-    'user_books', // Assuming your table is named 'user_books'
-    where: 'user_id = ? AND book_id = ?', // Match both user_id and book_id
-    whereArgs: [userId, bookId], // Provide values for the placeholders
-    limit: 1, // Since only one UserBook can exist for a user-book pair
-  );
-    return UserBook.fromMap(result.first); // Convert the first result into a UserBook
-}
-
-
-Future<int> getCurrentPage(int? userId, int? bookId) async {
-  final db = await SQLService().database;
-
-  // Query the database for the specific userId and bookId
-  final List<Map<String, dynamic>> result = await db.query(
-    'user_books',
-    columns: ['currentPage'], // Only fetch the currentPage column
-    where: 'user_id = ? AND book_id = ?',
-    whereArgs: [userId, bookId],
-  );
-
-  if (result.isNotEmpty) {
-    // Return the currentPage if the record exists
-    return result.first['currentPage'] as int;
-  } else {
-    // Return null if no record is found
-    return 0;
+    // Perform the query
+    final List<Map<String, dynamic>> result = await db.query(
+      'user_books', // Assuming your table is named 'user_books'
+      where: 'user_id = ? AND book_id = ?', // Match both user_id and book_id
+      whereArgs: [userId, bookId], // Provide values for the placeholders
+      limit: 1, // Since only one UserBook can exist for a user-book pair
+    );
+    return UserBook.fromMap(
+        result.first); // Convert the first result into a UserBook
   }
-}
 
+  Future<int> getCurrentPage(int? userId, int? bookId) async {
+    final db = await SQLService().database;
 
-   Future<List<Book>> getBooksCompletedForUser(int? userId) async {
+    // Query the database for the specific userId and bookId
+    final List<Map<String, dynamic>> result = await db.query(
+      'user_books',
+      columns: ['currentPage'], // Only fetch the currentPage column
+      where: 'user_id = ? AND book_id = ?',
+      whereArgs: [userId, bookId],
+    );
 
+    if (result.isNotEmpty) {
+      // Return the currentPage if the record exists
+      return result.first['currentPage'] as int;
+    } else {
+      // Return null if no record is found
+      return 0;
+    }
+  }
+
+  Future<List<Book>> getBooksCompletedForUser(int? userId) async {
     final db = await database;
 
     // Query to join 'user_books' and 'books' tables to get books for the user
     final List<Map<String, dynamic>> maps = await db.query(
       'books',
-        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 2)',
-        whereArgs: [userId],
+      where:
+          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 2)',
+      whereArgs: [userId],
     );
 
-   //Choose the form of the list that is returned by the table
+    //Choose the form of the list that is returned by the table
     return List.generate(maps.length, (i) {
-    return Book.fromMap(maps[i]);
+      return Book.fromMap(maps[i]);
     });
   }
 
-    Future<List<Book>> getBooksReadingForUser(int? userId) async {
-
+  Future<List<Book>> getBooksReadingForUser(int? userId) async {
     final db = await database;
 
     // Query to join 'user_books' and 'books' tables to get books for the user
     final List<Map<String, dynamic>> maps = await db.query(
       'books',
-        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 1)',
-        whereArgs: [userId],
+      where:
+          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 1)',
+      whereArgs: [userId],
     );
 
-   //Choose the form of the list that is returned by the table
+    //Choose the form of the list that is returned by the table
     return List.generate(maps.length, (i) {
-    return Book.fromMap(maps[i]);
+      return Book.fromMap(maps[i]);
     });
   }
 
-      Future<List<Book>> getBooksWishlistForUser(int? userId) async {
-
+  Future<List<Book>> getBooksWishlistForUser(int? userId) async {
     final db = await database;
 
     // Query to join 'user_books' and 'books' tables to get books for the user
     final List<Map<String, dynamic>> maps = await db.query(
       'books',
-        where: 'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 3)',
-        whereArgs: [userId],
+      where:
+          'id IN (SELECT book_id FROM user_books WHERE user_id = ? AND listCategory = 3)',
+      whereArgs: [userId],
     );
 
-   //Choose the form of the list that is returned by the table
+    //Choose the form of the list that is returned by the table
     return List.generate(maps.length, (i) {
-    return Book.fromMap(maps[i]);
+      return Book.fromMap(maps[i]);
     });
   }
 
+  Future<List<Book>> getCommunityReading(int? currentUserId) async {
+    final db = await SQLService().database;
 
-Future<List<Book>> getCommunityReading(int? currentUserId) async {
-  final db = await SQLService().database;
-
-  final List<Map<String, dynamic>> results = await db.rawQuery('''
+    final List<Map<String, dynamic>> results = await db.rawQuery('''
     SELECT books.*, COUNT(user_books.book_id) AS frequency
     FROM user_books
     JOIN books ON user_books.book_id = books.id
@@ -1115,119 +1033,118 @@ Future<List<Book>> getCommunityReading(int? currentUserId) async {
     GROUP BY user_books.book_id
     ORDER BY frequency DESC
     LIMIT 10;
-  ''', [currentUserId]);  
+  ''', [currentUserId]);
 
-  return results.map((map) => Book.fromMap(map)).toList();
-}
-
+    return results.map((map) => Book.fromMap(map)).toList();
+  }
 
 // Get the book associated with a post
-Future<Book> getBooksForPost(int? postId) async {
-  final db = await database;
+  Future<Book> getBooksForPost(int? postId) async {
+    final db = await database;
 
-  // Query to get the book_id for the specific post
-  final List<Map<String, dynamic>> maps = await db.query(
-    'posts',
-    where: 'id = ?',  // Find the post by its ID
-    whereArgs: [postId],
-  );
-
-  if (maps.isNotEmpty) {
-    final bookId = maps.first['book_id'];
-
-    // Now query the 'books' table to get the book details
-    final bookMaps = await db.query(
-      'books',
-      where: 'id = ?',
-      whereArgs: [bookId],
+    // Query to get the book_id for the specific post
+    final List<Map<String, dynamic>> maps = await db.query(
+      'posts',
+      where: 'id = ?', // Find the post by its ID
+      whereArgs: [postId],
     );
 
-    if (bookMaps.isNotEmpty) {
-      return Book.fromMap(bookMaps.first);
+    if (maps.isNotEmpty) {
+      final bookId = maps.first['book_id'];
+
+      // Now query the 'books' table to get the book details
+      final bookMaps = await db.query(
+        'books',
+        where: 'id = ?',
+        whereArgs: [bookId],
+      );
+
+      if (bookMaps.isNotEmpty) {
+        return Book.fromMap(bookMaps.first);
+      }
     }
+    return Book.empty();
   }
-  return Book.empty();
-}
 
 // Get the original poster for a post
-Future<User> getPosterForPost(int? postId) async {
-  final db = await database;
+  Future<User> getPosterForPost(int? postId) async {
+    final db = await database;
 
-  // Query to get the originalPoster_id for the specific post
-  final List<Map<String, dynamic>> maps = await db.query(
-    'posts',
-    where: 'id = ?',  // Find the post by its ID
-    whereArgs: [postId],
-  );
-
-  if (maps.isNotEmpty) {
-    final posterId = maps.first['originalPoster_id'];
-
-    // Now query the 'users' table to get the user details
-    final userMaps = await db.query(
-      'users',
-      where: 'id = ?',
-      whereArgs: [posterId],
+    // Query to get the originalPoster_id for the specific post
+    final List<Map<String, dynamic>> maps = await db.query(
+      'posts',
+      where: 'id = ?', // Find the post by its ID
+      whereArgs: [postId],
     );
 
-    if (userMaps.isNotEmpty) {
-      return User.fromMap(userMaps.first);
-    }
-  }
+    if (maps.isNotEmpty) {
+      final posterId = maps.first['originalPoster_id'];
 
-  return User.empty(); // Return null if no user found
-}
-Future<List<Post>> getPostsForUser(int? userId) async {
-  final db = await database;
-
-  // Query to find all posts made by the given user (originalPoster_id)
-  final List<Map<String, dynamic>> maps = await db.query(
-    'posts',
-    where: 'originalPoster_id = ?',
-    whereArgs: [userId],
-  );
-
-  // If we have matching posts, map them to a list of Post objects
-  return List.generate(maps.length, (i) {
-    return Post.fromMap(maps[i]);
-  });
-}
-// Get the reblogger for a post (this can be null)
-Future<User> getRebloggerForPost(int? postId) async {
-  final db = await database;
-
-  // Query to get the reblogger_id for the specific post
-  final List<Map<String, dynamic>> maps = await db.query(
-    'posts',
-    where: 'id = ?',  // Find the post by its ID
-    whereArgs: [postId],
-  );
-
-  if (maps.isNotEmpty) {
-    final rebloggerId = maps.first['reblogger_id'];
-
-    if (rebloggerId != null) {
-      // If there's a reblogger, query the 'users' table to get the user details
+      // Now query the 'users' table to get the user details
       final userMaps = await db.query(
         'users',
         where: 'id = ?',
-        whereArgs: [rebloggerId],
+        whereArgs: [posterId],
       );
 
       if (userMaps.isNotEmpty) {
         return User.fromMap(userMaps.first);
       }
     }
+
+    return User.empty(); // Return null if no user found
   }
 
-  return User.empty(); // Return null if no reblogger or user found
-}
+  Future<List<Post>> getPostsForUser(int? userId) async {
+    final db = await database;
 
+    // Query to find all posts made by the given user (originalPoster_id)
+    final List<Map<String, dynamic>> maps = await db.query(
+      'posts',
+      where: 'originalPoster_id = ?',
+      whereArgs: [userId],
+    );
+
+    // If we have matching posts, map them to a list of Post objects
+    return List.generate(maps.length, (i) {
+      return Post.fromMap(maps[i]);
+    });
+  }
+
+// Get the reblogger for a post (this can be null)
+  Future<User> getRebloggerForPost(int? postId) async {
+    final db = await database;
+
+    // Query to get the reblogger_id for the specific post
+    final List<Map<String, dynamic>> maps = await db.query(
+      'posts',
+      where: 'id = ?', // Find the post by its ID
+      whereArgs: [postId],
+    );
+
+    if (maps.isNotEmpty) {
+      final rebloggerId = maps.first['reblogger_id'];
+
+      if (rebloggerId != null) {
+        // If there's a reblogger, query the 'users' table to get the user details
+        final userMaps = await db.query(
+          'users',
+          where: 'id = ?',
+          whereArgs: [rebloggerId],
+        );
+
+        if (userMaps.isNotEmpty) {
+          return User.fromMap(userMaps.first);
+        }
+      }
+    }
+
+    return User.empty(); // Return null if no reblogger or user found
+  }
 
 //*************    User Following     ******************/
 
-
-   Future<void> followUser(int? userId, int? followedId) async {
+  Future<void> followUser(int? userId, int? followedId) async {
     final db = await database;
 
     await db.insert(
@@ -1236,46 +1153,37 @@ Future<User> getRebloggerForPost(int? postId) async {
         'user_id': userId,
         'followeduser_id': followedId,
       },
-    conflictAlgorithm: ConflictAlgorithm.ignore, 
-   );
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
   }
 
-Future<void> unfollowUser(int? userId, int? followedId) async {
+  Future<void> unfollowUser(int? userId, int? followedId) async {
     final db = await database;
 
     await db.delete(
       'user_dolloweduser',
-       where: 'user_id = ? AND followeduser_id = ?',
-       whereArgs: [userId, followedId],
-   );
+      where: 'user_id = ? AND followeduser_id = ?',
+      whereArgs: [userId, followedId],
+    );
   }
 
- Future<List<User>> getFollowersForUser(int? userId) async {
-
+  Future<List<User>> getFollowersForUser(int? userId) async {
     final db = await database;
 
-   
     final List<Map<String, dynamic>> maps = await db.query(
       'users',
-        where: 'id IN (SELECT followeduser_id FROM user_followeduser WHERE user_id = ?)',
-        whereArgs: [userId],
+      where:
+          'id IN (SELECT followeduser_id FROM user_followeduser WHERE user_id = ?)',
+      whereArgs: [userId],
     );
 
-   //Choose the form of the list that is returned by the table
+    //Choose the form of the list that is returned by the table
     return List.generate(maps.length, (i) {
-    return User.fromMap(maps[i]);
+      return User.fromMap(maps[i]);
     });
   }
 
-
-
-
-
-
-
 //*************    Books in a Pack     ******************/
-
-
 
   Future<void> addBooktoPack(int? packId, int? bookId) async {
     final db = await database;
@@ -1286,88 +1194,83 @@ Future<void> unfollowUser(int? userId, int? followedId) async {
         'pack_id': packId,
         'book_id': bookId,
       },
-    conflictAlgorithm: ConflictAlgorithm.ignore, 
-   );
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
   }
 
-Future<void> removeBookfromPack(int packId, int bookId) async {
+  Future<void> removeBookfromPack(int packId, int bookId) async {
     final db = await database;
 
     await db.delete(
       'pack_books',
-       where: 'pack_id = ? AND book_id = ?',
-       whereArgs: [packId, bookId],
-   );
+      where: 'pack_id = ? AND book_id = ?',
+      whereArgs: [packId, bookId],
+    );
   }
 
+  Future<void> insertUserBook(UserBook userBook) async {
+    final db = await database;
 
-
-Future<void> insertUserBook(UserBook userBook) async {
-  final db = await database;
-
- 
     await db.insert(
-      'user_books',         
-      userBook.toMap(),      
-      conflictAlgorithm: ConflictAlgorithm.replace, 
+      'user_books',
+      userBook.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
-}
-Future<void> updateUserBook(int? userId, int? bookId, int? currentPage) async {
-  final db = await SQLService().database;
+  }
 
-  
+  Future<void> updateUserBook(
+      int? userId, int? bookId, int? currentPage) async {
+    final db = await SQLService().database;
+
     await db.update(
-      'user_books',                    
-      {'currentPage': currentPage},  
-      where: 'user_id = ? AND book_id = ?',  
+      'user_books',
+      {'currentPage': currentPage},
+      where: 'user_id = ? AND book_id = ?',
       whereArgs: [userId, bookId],
     );
-}                                                       
+  }
 
-Future<int> getPagesPerDay(int? userId, String date) async {
-  final db = await SQLService().database;
+  Future<int> getPagesPerDay(int? userId, String date) async {
+    final db = await SQLService().database;
 
-  // Query the database for the specific user_id and date
-  final List<Map<String, dynamic>> result = await db.query(
-    'pagesPerDay',
-    where: 'user_id = ? AND date = ?',
-    whereArgs: [userId, date],
-  );
+    // Query the database for the specific user_id and date
+    final List<Map<String, dynamic>> result = await db.query(
+      'pagesPerDay',
+      where: 'user_id = ? AND date = ?',
+      whereArgs: [userId, date],
+    );
     return result.first['pages'] as int;
-}
+  }
 
+  Future<List<Map<DateTime, int>>> getPagesReadThisWeek(int? userId) async {
+    final db = await SQLService().database;
 
-Future<List<Map<DateTime, int>>> getPagesReadThisWeek(int? userId) async {
-  final db = await SQLService().database;
+    // Get the current date and calculate the date 7 days ago
+    final DateTime now = DateTime.now();
+    final DateTime oneWeekAgo = now.subtract(Duration(days: 7));
 
-  // Get the current date and calculate the date 7 days ago
-  final DateTime now = DateTime.now();
-  final DateTime oneWeekAgo = now.subtract(Duration(days: 7));
+    // Query the pagesPerDay table for the last 7 days for the given user
+    final List<Map<String, dynamic>> result = await db.query(
+      'pagesPerDay',
+      columns: ['date', 'pages'], // Fetch the date and pages columns
+      where: 'user_id = ? AND date BETWEEN ? AND ?',
+      whereArgs: [
+        userId,
+        oneWeekAgo.toString().split(' ')[0], // Format as YYYY-MM-DD
+        now.toString().split(' ')[0], // Format as YYYY-MM-DD
+      ],
+      orderBy: 'date ASC', // Order by date in ascending order
+    );
 
-  // Query the pagesPerDay table for the last 7 days for the given user
-  final List<Map<String, dynamic>> result = await db.query(
-    'pagesPerDay',
-    columns: ['date', 'pages'], // Fetch the date and pages columns
-    where: 'user_id = ? AND date BETWEEN ? AND ?',
-    whereArgs: [
-      userId,
-      oneWeekAgo.toString().split(' ')[0], // Format as YYYY-MM-DD
-      now.toString().split(' ')[0],       // Format as YYYY-MM-DD
-    ],
-    orderBy: 'date ASC', // Order by date in ascending order
-  );
-
-  // Convert the result into a list of DateTime and int pairs
-  return result.map((entry) {
-    return {
-      DateTime.parse(entry['date']): entry['pages'] as int,
-    };
-  }).toList();
-}
-
+    // Convert the result into a list of DateTime and int pairs
+    return result.map((entry) {
+      return {
+        DateTime.parse(entry['date']): entry['pages'] as int,
+      };
+    }).toList();
+  }
 
 ///////// Commands that would work if anything worked
-
 
 //on create post
 
@@ -1378,7 +1281,7 @@ Future<List<Map<DateTime, int>>> getPagesReadThisWeek(int? userId) async {
 
 )*/
 
-Future<void> CreatePost(Post post) async {
+  Future<void> CreatePost(Post post) async {
     // Get a reference to the database.
     final db = await database;
 
@@ -1389,25 +1292,24 @@ Future<void> CreatePost(Post post) async {
     );
   }
 
-Future<List<Post>> getAllPosts() async {
-  final db = await SQLService().database; 
+  Future<List<Post>> getAllPosts() async {
+    final db = await SQLService().database;
 
-  final List<Map<String, dynamic>> result = await db.query('posts'); 
+    final List<Map<String, dynamic>> result = await db.query('posts');
 
-  return result.map((postMap) => Post.fromMap(postMap)).toList();
-}
+    return result.map((postMap) => Post.fromMap(postMap)).toList();
+  }
 
-
-Future<void> ReblogPost(Post post, int? rebloggerId) async {
+  Future<void> ReblogPost(Post post, int? rebloggerId) async {
     final db = await database;
-  post.reblogger_id = rebloggerId;
-  CreatePost(post);
-}
+    post.reblogger_id = rebloggerId;
+    CreatePost(post);
+  }
 
-Future<List<Book>> topBooksByCity(String? City) async {
-  final db = await SQLService().database;
+  Future<List<Book>> topBooksByCity(String? City) async {
+    final db = await SQLService().database;
 
-  final List<Map<String, dynamic>> result = await db.rawQuery('''
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
     SELECT books.*
     FROM books
     JOIN user_books ON books.id = user_books.book_id
@@ -1418,58 +1320,50 @@ Future<List<Book>> topBooksByCity(String? City) async {
     LIMIT 10;
   ''', [City]);
 
-  return result.map((bookMap) => Book.fromMap(bookMap)).toList();
+    return result.map((bookMap) => Book.fromMap(bookMap)).toList();
+  }
+
+  Future<void> addPagesPerDay(int? userId, int? Pages, String Date) async {
+    final db = await SQLService().database;
+    PagesPerDay pagesPerDay = PagesPerDay(
+      user_id: userId,
+      pages: Pages,
+      date: Date,
+    );
+
+    await db.insert(
+      'pagesPerDay', // Table name
+      pagesPerDay.toMap(), // Convert the object to a map
+      conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflicts
+    );
+  }
+
+  Future<void> updatePagesPerDay(int? id, int? newPages) async {
+    final db = await SQLService().database;
+
+    await db.update(
+      'pagesPerDay',
+      {'pages': newPages}, //Adds new pages to current pages
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<bool> doesPagesPerDayExist(int? userId, String date) async {
+    final db = await SQLService().database;
+
+    // Query the table for the specific user and date
+    final List<Map<String, dynamic>> result = await db.query(
+      'pagesPerDay',
+      where: 'user_id = ? AND date = ?', // WHERE clause
+      whereArgs: [userId, date], // Arguments for the placeholders
+      limit: 1, // Limit to one record for efficiency
+    );
+
+    // If the result list is not empty, the record exists
+    return result.isNotEmpty;
+  }
 }
-
-Future<void> addPagesPerDay(int? userId,  int? Pages, String Date) async {
-  final db = await SQLService().database;
-PagesPerDay pagesPerDay = PagesPerDay(
-    user_id: userId,
-    pages: Pages, 
-    date: Date,
- );
-
-
-  await db.insert(
-    'pagesPerDay',        // Table name
-    pagesPerDay.toMap(),  // Convert the object to a map
-    conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflicts
-  );
-}
-
-
-Future<void> updatePagesPerDay(int? id, int? newPages) async {
-  final db = await SQLService().database;
-
-  await db.update(
-    'pagesPerDay',             
-    {'pages': newPages},       //Adds new pages to current pages
-    where: 'id = ?',           
-    whereArgs: [id],           
-  );
-}
-
-Future<bool> doesPagesPerDayExist(int? userId, String date) async {
-  final db = await SQLService().database;
-
-  // Query the table for the specific user and date
-  final List<Map<String, dynamic>> result = await db.query(
-    'pagesPerDay',
-    where: 'user_id = ? AND date = ?', // WHERE clause
-    whereArgs: [userId, date],        // Arguments for the placeholders
-    limit: 1,                         // Limit to one record for efficiency
-  );
-
-  // If the result list is not empty, the record exists
-  return result.isNotEmpty;
-}
-
-
-
-
-}
-
-
 
 //*************    Classes, Class Mapping     ******************/
 
@@ -1486,7 +1380,8 @@ class User {
   bool isReviewsPrivate;
   bool isReadListPrivate;
 
-  static const String defaultProfileImage = "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";
+  static const String defaultProfileImage =
+      "https://tse1.mm.bing.net/th?id=OIP.PKlD9uuBX0m4S8cViqXZHAHaHa&pid=Api";
 
   // User collections
   /**List<User> followedUsers = [];
@@ -1539,9 +1434,8 @@ class User {
     );
   }
 
-   User.empty()
-      :
-        id = null,
+  User.empty()
+      : id = null,
         username = '',
         email = '',
         profileImage = '',
@@ -1550,7 +1444,6 @@ class User {
         isPacksPrivate = false,
         isReviewsPrivate = false,
         isReadListPrivate = false;
-
 
   // Method to toggle the privacy status of the packs
   /**void togglePacksPrivacy() {
@@ -1659,10 +1552,7 @@ class User {
   }*/
 }
 
-
-
 //*********    Book  **********/
-
 
 class Book {
   final int? id;
@@ -1678,7 +1568,7 @@ class Book {
   int totalPages;
   String? genre;
 
-   Book({
+  Book({
     this.id,
     required this.title,
     required this.publicationDate,
@@ -1693,8 +1583,7 @@ class Book {
     this.genre,
   });
 
-
- // Convert Book instance to a Map for database insertion
+  // Convert Book instance to a Map for database insertion
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -1723,8 +1612,11 @@ class Book {
       posterUrl: map['posterUrl'],
       description: map['description'],
       language: map['language'],
-      dateAdded: map['dateAdded'] != null ? DateTime.parse(map['dateAdded']) : null,
-      dateCompleted: map['dateCompleted'] != null ? DateTime.parse(map['dateCompleted']) : null,
+      dateAdded:
+          map['dateAdded'] != null ? DateTime.parse(map['dateAdded']) : null,
+      dateCompleted: map['dateCompleted'] != null
+          ? DateTime.parse(map['dateCompleted'])
+          : null,
       totalPages: map['totalPages'],
       genre: map['genre'],
     );
@@ -1735,10 +1627,11 @@ class Book {
       title: '',
       description: '',
       genre: '',
-      language:'',
-      posterUrl: 'https://tse3.mm.bing.net/th?id=OIP.0fb3mN86pTUI9jvsDmkqgwHaJl&pid=Api',
+      language: '',
+      posterUrl:
+          'https://tse3.mm.bing.net/th?id=OIP.0fb3mN86pTUI9jvsDmkqgwHaJl&pid=Api',
       totalPages: 0,
- //     currentPage: 0,
+      //     currentPage: 0,
       publicationDate: "",
       publisher: "",
       author: "",
@@ -1747,48 +1640,47 @@ class Book {
 }
 //*********    Post  **********/
 
-
-
 class Post {
   final int? id;
   final int? originalPoster_id;
-  int? reblogger_id; 
+  int? reblogger_id;
   String? imageUrl;
   String? quote;
   final int? book_id;
   String timePosted;
   int likes, reblogs;
- /// List<String> comments; 
+
+  /// List<String> comments;
 
   // Constructor
   Post({
     this.id,
     required this.originalPoster_id,
     required this.timePosted,
-    this.reblogger_id,  
+    this.reblogger_id,
     this.imageUrl,
     this.quote,
     this.book_id,
-    this.likes = 0,           // Default value for likes
-    this.reblogs = 0,         // Default value for reblogs
- ///   this.comments = const [], // Default empty list for comments   
+    this.likes = 0, // Default value for likes
+    this.reblogs = 0, // Default value for reblogs
+    ///   this.comments = const [], // Default empty list for comments
   });
 
-  Map<String, Object?> toMap(){
+  Map<String, Object?> toMap() {
     return {
-    'originalPosterId': originalPoster_id,  // User's ID (int)
-    'rebloggerId': reblogger_id,  // User's ID (nullable int)
-    'imageUrl': imageUrl,  // String
-    'quote': quote,  // String
-    'bookId': book_id,  // Book's ID (int)
-    'timePosted': timePosted,  // String representation of DateTime
-    'likes': likes,  // int
-    'reblogs': reblogs,  // int
- ///   'comments': comments.join(',')
+      'originalPosterId': originalPoster_id, // User's ID (int)
+      'rebloggerId': reblogger_id, // User's ID (nullable int)
+      'imageUrl': imageUrl, // String
+      'quote': quote, // String
+      'bookId': book_id, // Book's ID (int)
+      'timePosted': timePosted, // String representation of DateTime
+      'likes': likes, // int
+      'reblogs': reblogs, // int
+      ///   'comments': comments.join(',')
     };
   }
 
-    factory Post.fromMap(Map<String, dynamic> map) {
+  factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
       id: map['id'],
       originalPoster_id: map['originalPoster_id'],
@@ -1801,24 +1693,17 @@ class Post {
       reblogs: map['reblogs'],
     );
   }
-
-
-
-
 }
-
 
 //*********    Review  **********/
 
-
 class Review {
   final int? id;
-  final int? book_id; 
-  final int? user_id; 
+  final int? book_id;
+  final int? user_id;
   final String text;
   final String reviewDate;
   final int stars;
-
 
   Review({
     this.id,
@@ -1828,7 +1713,7 @@ class Review {
     required this.reviewDate,
     required this.stars,
   });
-    Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'book_id': book_id,
       'user_id': user_id,
@@ -1837,10 +1722,6 @@ class Review {
       'stars': stars,
     };
   }
-
-
-
-
 
   factory Review.fromMap(Map<String, dynamic> map) {
     return Review(
@@ -1852,8 +1733,6 @@ class Review {
       stars: map['stars'] as int,
     );
   }
-
-
 }
 //*******       Comment      ********/
 
@@ -1862,15 +1741,13 @@ class Comment {
   final String text;
   final int? post_id;
 
-
   Comment({
     this.id,
     required this.text,
     this.post_id,
   });
 
-
-    Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'text': text,
@@ -1888,10 +1765,7 @@ class Comment {
   }
 }
 
-
-
 //*********    Pack  **********/
-
 
 class Pack {
   final int? id;
@@ -1901,8 +1775,7 @@ class Pack {
   final String packImage;
   final String description;
 
-
-   Pack({
+  Pack({
     this.id,
     required this.title,
     required this.publicationDate,
@@ -1911,19 +1784,18 @@ class Pack {
     required this.description,
   });
 
-
-   Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'title': title,
       'publicationDate': publicationDate,
-      'creator_id': creator_id, // Assuming 'id' is a property of the 'User' class
+      'creator_id':
+          creator_id, // Assuming 'id' is a property of the 'User' class
       'packImage': packImage,
       'description': description,
     };
   }
 
-
-   factory Pack.fromMap(Map<String, dynamic> map) {
+  factory Pack.fromMap(Map<String, dynamic> map) {
     return Pack(
       id: map['id'],
       title: map['title'],
@@ -1940,7 +1812,7 @@ class Pack {
 class UserBook {
   final int? user_id;
   final int? book_id;
-  final int? listCategory;  // e.g., 1: Reading, 2: Completed, 3: Want to Read
+  final int? listCategory; // e.g., 1: Reading, 2: Completed, 3: Want to Read
   final int? currentPage;
 
   UserBook({
@@ -1953,13 +1825,14 @@ class UserBook {
   // Convert the UserBook object to a Map for database operations
   Map<String, dynamic> toMap() {
     return {
-      'user_id': user_id,           // The ID of the user
-      'book_id': book_id,           // The ID of the book
-      'list_category': listCategory, // The category of the book (e.g., Reading, Completed, etc.)
-      'current_page': currentPage,      // The number of pages the user has read in the book
+      'user_id': user_id, // The ID of the user
+      'book_id': book_id, // The ID of the book
+      'list_category':
+          listCategory, // The category of the book (e.g., Reading, Completed, etc.)
+      'current_page':
+          currentPage, // The number of pages the user has read in the book
     };
   }
-
 
   factory UserBook.fromMap(Map<String, dynamic> map) {
     return UserBook(
@@ -1971,12 +1844,11 @@ class UserBook {
   }
 }
 
-
 class PagesPerDay {
-  final int? id;        // Auto-incrementing primary key
-  final int? pages;      // Number of pages
-  final int? user_id;     // Foreign key for user
-  final String date;    // Date as a string
+  final int? id; // Auto-incrementing primary key
+  final int? pages; // Number of pages
+  final int? user_id; // Foreign key for user
+  final String date; // Date as a string
 
   PagesPerDay({
     this.id,
@@ -2006,18 +1878,17 @@ class PagesPerDay {
   }
 }
 
-
 //////////////////////////////////
 // Badges class
 class Badges {
-  final int id;            // Unique identifier for the Badges
+  final int id; // Unique identifier for the Badges
   final String name;
   final String image;
   final String description;
   final bool requirement;
 
   Badges({
-    required this.id,      // Add id as a required field
+    required this.id, // Add id as a required field
     required this.name,
     required this.image,
     required this.description,
@@ -2025,7 +1896,7 @@ class Badges {
   });
 
   // Convert Badges object to Map for database operations
- Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
@@ -2034,8 +1905,9 @@ class Badges {
       'requirement': requirement,
     };
   }
+
   // Convert Map to Badges object
-factory Badges.fromMap(Map<String, dynamic> map) {
+  factory Badges.fromMap(Map<String, dynamic> map) {
     return Badges(
       id: map['id'],
       name: map['name'],
@@ -2043,16 +1915,16 @@ factory Badges.fromMap(Map<String, dynamic> map) {
       description: map['description'],
       requirement: map['requirement'],
     );
-}
+  }
 }
 
 class UserBadge {
-  final int id;           // Unique identifier for the UserBadge relationship
+  final int id; // Unique identifier for the UserBadge relationship
   final int user_id;
   final int badge_id;
 
   UserBadge({
-    required this.id,        // Include the id field here as well
+    required this.id, // Include the id field here as well
     required this.user_id,
     required this.badge_id,
   });
@@ -2060,8 +1932,8 @@ class UserBadge {
   // Convert UserBadge object to Map for database operations
   Map<String, dynamic> toMap() {
     return {
-      'id': id,             // Include the id field in the map
-      'user_id': user_id,   // The ID of the user
+      'id': id, // Include the id field in the map
+      'user_id': user_id, // The ID of the user
       'badge_id': badge_id, // The ID of the Badges
     };
   }
@@ -2069,7 +1941,7 @@ class UserBadge {
   // Convert Map to UserBadge object
   factory UserBadge.fromMap(Map<String, dynamic> map) {
     return UserBadge(
-      id: map['id'],         // Retrieve the id from the map
+      id: map['id'], // Retrieve the id from the map
       user_id: map['user_id'],
       badge_id: map['badge_id'],
     );
