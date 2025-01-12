@@ -496,6 +496,46 @@ await db.insert('packs', {
   'description': 'Master Dart programming with this collection.',
 });
 
+  await db.insert(
+    'badges', 
+    {
+      'name': "Master Reviewer",
+      'image': "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+      'description': "Write 10 thoughtful book reviews.",
+      'requirement': 1, // 1 for true
+    },
+  );
+
+  await db.insert(
+    'badges', 
+    {
+      'name': "Social Butterfly",
+      'image': "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+      'description': "Follow 20 different users on the platform.",
+      'requirement': 1, // 1 for true
+    },
+  );
+
+  await db.insert(
+    'badges', 
+    {
+      'name': "Night Owl",
+      'image': "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+      'description': "Read for 5 hours straight at night.",
+      'requirement': 1, // 1 for true
+    },
+  );
+
+  await db.insert(
+    'badges', 
+    {
+      'name': "Page Turner",
+      'image': "https://tse3.mm.bing.net/th?id=OIP.DFtDWy0uR7EIRkqvefasXAHaE8&pid=Api",
+      'description': "Read 100 pages in a day.",
+      'requirement': 1, // 1 for true
+    },
+  );
+
 // Adventure Pack (Books 1, 2, 3)
 await db.insert('pack_books', {'pack_id': 1, 'book_id': 1});
 await db.insert('pack_books', {'pack_id': 1, 'book_id': 2});
