@@ -426,7 +426,7 @@ bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
                 ),
                 SizedBox(height: 8),
                 if (usersReviews.isNotEmpty) ...[
-                  reviewScroll("${loadBook.title}'s reviews",
+                  reviewScroll("${loadBook.id}'s reviews",
                       usersReviews,
                       currentUser: widget.currentUser),
                 ],
