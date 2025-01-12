@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _login,
-              child: Text('Login'),
+              child: Text('Login',style: TextStyle(color: AppColors.darkBrown),)
             ),
             SizedBox(height: 20),
             TextButton(
@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
             MaterialPageRoute(builder: (context) => SignupScreen()),
           );
               },
-              child: Text('Don\'t have an account? Sign up'),
+              child: Text('Don\'t have an account? Sign up', style: TextStyle(color: AppColors.darkBrown),)
             ),
           ],
         ),
