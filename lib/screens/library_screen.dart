@@ -37,6 +37,12 @@ class _LibraryScreenState extends State<LibraryScreen> {
 usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
 bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id); 
 usersPacks = await SQLService().getPacksForUser(widget.currentUser.id); 
+
+if (mounted) {
+  setState(() {
+    
+  });
+}
   }
 
 
