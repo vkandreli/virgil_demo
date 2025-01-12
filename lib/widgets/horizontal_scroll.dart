@@ -117,12 +117,12 @@ Widget reviewScroll(
 
 Widget badgeScroll(
   String title,
-  List<Achievement> badges, {
+  List<Badges> badges, {
   bool showProgress = false,
   bool isCompleted = false,
   required User currentUser,
 }) {
-  return genericScroll<Achievement>(
+  return genericScroll<Badges>(
     title: title,
     items: badges,
     itemBuilder: (context, badge) {
@@ -448,7 +448,7 @@ class _ReviewCardState extends State<ReviewCard> {
 
 
 class BadgeCard extends StatelessWidget {
-  final Achievement badge;
+  final Badges badge;
   final User currentUser;
 
   BadgeCard({required this.badge, required this.currentUser});

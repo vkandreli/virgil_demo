@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:virgil_demo/assets/placeholders.dart';
+// import 'package:virgil_demo/assets/placeholders.dart';
 import 'package:virgil_demo/main.dart';
 import 'package:virgil_demo/models/goal.dart';
 //import 'package:virgil_demo/models/book.dart';
-//import 'package:virgil_demo/models/user.dart'; 
+//import 'package:virgil_demo/models/user.dart';
 import 'package:virgil_demo/screens/bottom_navigation.dart';
 import 'package:virgil_demo/screens/own_profile_screen.dart';
 import 'package:virgil_demo/widgets/horizontal_scroll.dart';
 
 import '../SQLService.dart';
+
 class StatsScreen extends StatefulWidget {
   final User currentUser;
 
@@ -32,49 +33,63 @@ class _StatsScreenState extends State<StatsScreen> {
           date.isBefore(endOfWeek.add(Duration(days: 1)));
     }).toList();
   }
-    late List<Book> completedList, currentList, readingList;
+
+  late List<Book> completedList, currentList, readingList;
   late List<Review> usersReviews, bookReviews;
-    late List<Pack> usersPacks;
-
+  late List<Pack> usersPacks;
+  late List<Badges> usersBadges = [];
   Future<void> _getResources() async {
-  completedList = await SQLService().getBooksCompletedForUser(widget.currentUser.id);
-  currentList = await SQLService().getBooksReadingForUser(widget.currentUser.id);
-  readingList = await SQLService().getBooksWishlistForUser(widget.currentUser.id);
-usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
-bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id); 
-usersPacks = await SQLService().getPacksForUser(widget.currentUser.id); 
+    completedList =
+        await SQLService().getBooksCompletedForUser(widget.currentUser.id);
+    currentList =
+        await SQLService().getBooksReadingForUser(widget.currentUser.id);
+    readingList =
+        await SQLService().getBooksWishlistForUser(widget.currentUser.id);
+    usersReviews = await SQLService().getReviewsForUser(widget.currentUser.id);
+    bookReviews = await SQLService().getReviewsForBook(widget.currentUser.id);
+    usersPacks = await SQLService().getPacksForUser(widget.currentUser.id);
+    usersBadges = await SQLService().getBadgesForUser(widget.currentUser.id);
   }
-String _generateGoalProgressText(User user) {
-  // Define the list of goals
-  List<Goal> goals = [
-    Goal(
-      name: 'Read 10 books',
-      requirement: (User user) => completedList.length >= 10,
-      userChoseThis: (User user) => true,//user.selectedGoals.contains('Read 10 books'),
-      getProgress: (User user) => '${completedList.length}/10',
-    ),
-    Goal(
-      name: 'Read 5 Greek books',
-      requirement: (User user) => completedList.where((book) => book.language == 'gr').toList().length >= 5,
-      userChoseThis: (User user) => true,//user.selectedGoals.contains('Read 5 Greek books'),
-      getProgress: (User user) => '${completedList.where((book) => book.language == 'gr').toList().length}/5',
-    ),
-        Goal(
-      name: 'Read 500 pages in a day',
-      requirement: (User user) => widget.currentUser.pagesPerDay >= 500,
-      userChoseThis: (User user) => true,
-      getProgress: (User user) => '${widget.currentUser.pagesPerDay}/500',
-    ),
-  ];
 
-  // Generate the list of progress strings
-  return goals
-      .where((goal) => goal.userChoseThis(user)) // Filter for goals the user chose
-      .map((goal) => '${goal.name} (${goal.getProgress(user)})') // Format the goal with progress
-      .join('\n'); // Join the goals into a single string with newlines
-}
+  String _generateGoalProgressText(User user) {
+    // Define the list of goals
+    List<Goal> goals = [
+      Goal(
+        name: 'Read 10 books',
+        requirement: (User user) => completedList.length >= 10,
+        userChoseThis: (User user) =>
+            true, //user.selectedGoals.contains('Read 10 books'),
+        getProgress: (User user) => '${completedList.length}/10',
+      ),
+      Goal(
+        name: 'Read 5 Greek books',
+        requirement: (User user) =>
+            completedList
+                .where((book) => book.language == 'gr')
+                .toList()
+                .length >=
+            5,
+        userChoseThis: (User user) =>
+            true, //user.selectedGoals.contains('Read 5 Greek books'),
+        getProgress: (User user) =>
+            '${completedList.where((book) => book.language == 'gr').toList().length}/5',
+      ),
+      Goal(
+        name: 'Read 500 pages in a day',
+        requirement: (User user) => widget.currentUser.pagesPerDay >= 500,
+        userChoseThis: (User user) => true,
+        getProgress: (User user) => '${widget.currentUser.pagesPerDay}/500',
+      ),
+    ];
 
-
+    // Generate the list of progress strings
+    return goals
+        .where((goal) =>
+            goal.userChoseThis(user)) // Filter for goals the user chose
+        .map((goal) =>
+            '${goal.name} (${goal.getProgress(user)})') // Format the goal with progress
+        .join('\n'); // Join the goals into a single string with newlines
+  }
 
   @override
   void initState() {
@@ -82,12 +97,11 @@ String _generateGoalProgressText(User user) {
     _getResources();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     // Get pages read this week
-    final pagesReadThisWeek = getPagesReadThisWeek(widget.currentUser.pagesPerDay);
+    final pagesReadThisWeek =
+        getPagesReadThisWeek(widget.currentUser.pagesPerDay);
 
     return SafeArea(
       child: Scaffold(
@@ -107,7 +121,8 @@ String _generateGoalProgressText(User user) {
                 IconButton(
                   icon: CircleAvatar(
                     backgroundImage: NetworkImage(
-                        widget.currentUser.profileImage ?? User.defaultProfileImage),
+                        widget.currentUser.profileImage ??
+                            User.defaultProfileImage),
                   ),
                   onPressed: () {
                     // Navigate to the user's profile screen
@@ -141,7 +156,7 @@ String _generateGoalProgressText(User user) {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
-                        color: AppColors.lightBrown, 
+                        color: AppColors.lightBrown,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0.0),
                           child: Column(
@@ -149,11 +164,15 @@ String _generateGoalProgressText(User user) {
                             children: [
                               // Pane Title
                               Container(
-                                color: AppColors.darkBrown, 
-                                width: double.infinity, 
-                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                color: AppColors.darkBrown,
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
                                 child: Text('Pages Read This Week',
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
                               ),
                               SizedBox(height: 20),
                               Container(
@@ -180,7 +199,7 @@ String _generateGoalProgressText(User user) {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
-                        color: AppColors.lightBrown, 
+                        color: AppColors.lightBrown,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0.0),
                           child: Column(
@@ -188,30 +207,38 @@ String _generateGoalProgressText(User user) {
                             children: [
                               // Pane Title
                               Container(
-                                color: AppColors.darkBrown, 
-                                width: double.infinity, 
-                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                color: AppColors.darkBrown,
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
                                 child: Text("Books You've Finished",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
                               ),
                               SizedBox(height: 8),
                               if (completedList.isEmpty) ...[
-                              //                              bookScroll(
-                              //   '',
-                              //   <Book> [virgil],
-                              //   isCompleted: false,
-                              //   widget.currentUser: widget.currentUser,
-                              // ),
-                                    Text("You have not finished any books yet. Try adding pages",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: AppColors.darkBrown)),
+                                //                              bookScroll(
+                                //   '',
+                                //   <Book> [virgil],
+                                //   isCompleted: false,
+                                //   widget.currentUser: widget.currentUser,
+                                // ),
+                                Text(
+                                    "You have not finished any books yet. Try adding pages",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.normal,
+                                        color: AppColors.darkBrown)),
                               ],
                               if (completedList.isNotEmpty) ...[
-                              bookScroll(
-                                '',
-                                completedList,
-                                isCompleted: true,
-                                currentUser: widget.currentUser,
-                              ),
+                                bookScroll(
+                                  '',
+                                  completedList,
+                                  isCompleted: true,
+                                  currentUser: widget.currentUser,
+                                ),
                               ],
                             ],
                           ),
@@ -221,44 +248,48 @@ String _generateGoalProgressText(User user) {
                     SizedBox(height: 16),
 
                     // Goals Section
-                   GestureDetector(
-  onTap: () {
-    // Navigate to Goals screen
-  },
-  child: Card(
-    elevation: 4.0,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.zero,
-    ),
-    color: AppColors.lightBrown, 
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Pane Title
-          Container(
-            color: AppColors.darkBrown, 
-            width: double.infinity, 
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            child: Text("Goals",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-          ),
-          // Display the goals with progress
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            child: Text(
-              _generateGoalProgressText(widget.currentUser),
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-),
-
+                    GestureDetector(
+                      onTap: () {
+                        // Navigate to Goals screen
+                      },
+                      child: Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        color: AppColors.lightBrown,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Pane Title
+                              Container(
+                                color: AppColors.darkBrown,
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
+                                child: Text("Goals",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
+                              ),
+                              // Display the goals with progress
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
+                                child: Text(
+                                  _generateGoalProgressText(widget.currentUser),
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
 
                     SizedBox(height: 16),
 
@@ -272,7 +303,7 @@ String _generateGoalProgressText(User user) {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
-                        color: AppColors.lightBrown, 
+                        color: AppColors.lightBrown,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0.0),
                           child: Column(
@@ -280,15 +311,19 @@ String _generateGoalProgressText(User user) {
                             children: [
                               // Pane Title
                               Container(
-                                color: AppColors.darkBrown, 
-                                width: double.infinity, 
-                                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                color: AppColors.darkBrown,
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 8),
                                 child: Text("Badges You've Earned",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
                               ),
                               badgeScroll(
                                 "",
-                                widget.currentUser.badges,
+                                usersBadges,
                                 currentUser: widget.currentUser,
                               ),
                             ],
@@ -303,22 +338,23 @@ String _generateGoalProgressText(User user) {
             ),
           ],
         ),
-  bottomNavigationBar: CustomBottomNavBar(context: context, currentUser:widget.currentUser),
+        bottomNavigationBar: CustomBottomNavBar(
+            context: context, currentUser: widget.currentUser),
       ),
-      
     );
   }
 }
 
 class PagesReadBarChart extends CustomPainter {
-  final List<Map<DateTime, int>> pagesReadPerDay;  // Data: pages read per day
-  final List<int> pagesPerDayList;  // A list of total pages read each day
+  final List<Map<DateTime, int>> pagesReadPerDay; // Data: pages read per day
+  final List<int> pagesPerDayList; // A list of total pages read each day
 
-  PagesReadBarChart(this.pagesReadPerDay) 
-    : pagesPerDayList = _getPagesReadThisWeek(pagesReadPerDay);
+  PagesReadBarChart(this.pagesReadPerDay)
+      : pagesPerDayList = _getPagesReadThisWeek(pagesReadPerDay);
 
   // Helper function to calculate pages read per day
-  static List<int> _getPagesReadThisWeek(List<Map<DateTime, int>> pagesReadPerDay) {
+  static List<int> _getPagesReadThisWeek(
+      List<Map<DateTime, int>> pagesReadPerDay) {
     List<int> pagesPerDayList = List.filled(7, 0);
 
     for (var dayData in pagesReadPerDay) {
@@ -327,7 +363,7 @@ class PagesReadBarChart extends CustomPainter {
         int pages = entry.value;
 
         // Map the days to their index (Mon = 0, ..., Sun = 6)
-        int dayIndex = date.weekday - 1;  // Weekday returns 1 for Monday
+        int dayIndex = date.weekday - 1; // Weekday returns 1 for Monday
         pagesPerDayList[dayIndex] += pages;
       }
     }
@@ -343,19 +379,20 @@ class PagesReadBarChart extends CustomPainter {
 
     final labelStyle = TextStyle(fontSize: 12, color: Colors.black);
 
-    final maxPages = pagesPerDayList.isEmpty ? 1 : pagesPerDayList.reduce((a, b) => a > b ? a : b);
-    final barWidth = size.width / 7;  // Divide available width by 7 for each day
-    final barHeightFactor = size.height / maxPages;  // Scale bars based on max pages read
+    final maxPages = pagesPerDayList.isEmpty
+        ? 1
+        : pagesPerDayList.reduce((a, b) => a > b ? a : b);
+    final barWidth = size.width / 7; // Divide available width by 7 for each day
+    final barHeightFactor =
+        size.height / maxPages; // Scale bars based on max pages read
 
     // Draw bars
     for (int i = 0; i < pagesPerDayList.length; i++) {
       final pages = pagesPerDayList[i];
-      final barHeight = pages == 0 ? 1.0 :  pages * barHeightFactor;
+      final barHeight = pages == 0 ? 1.0 : pages * barHeightFactor;
 
       final xPosition = i * barWidth;
       final yPosition = size.height - barHeight;
-
-
 
       // Draw the number of pages read on top of the bar
       final textPainter = TextPainter(
@@ -368,12 +405,14 @@ class PagesReadBarChart extends CustomPainter {
       textPainter.layout();
       textPainter.paint(
         canvas,
-        Offset(xPosition + (barWidth - textPainter.width) / 2, yPosition -20 ), // Center the text above the bar
+        Offset(xPosition + (barWidth - textPainter.width) / 2,
+            yPosition - 20), // Center the text above the bar
       );
 
-            // Draw the bar
+      // Draw the bar
       canvas.drawRect(
-        Rect.fromLTWH(xPosition + (barWidth - textPainter.width) / 2, yPosition , barWidth*0.3, barHeight),  // Adjust width for space between bars
+        Rect.fromLTWH(xPosition + (barWidth - textPainter.width) / 2, yPosition,
+            barWidth * 0.3, barHeight), // Adjust width for space between bars
         paint,
       );
     }
@@ -391,7 +430,8 @@ class PagesReadBarChart extends CustomPainter {
       textPainter.layout();
       textPainter.paint(
         canvas,
-        Offset(i * barWidth + (barWidth / 2) - (textPainter.width / 2), size.height ), // Positioning below the bar
+        Offset(i * barWidth + (barWidth / 2) - (textPainter.width / 2),
+            size.height), // Positioning below the bar
       );
     }
   }

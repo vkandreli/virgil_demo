@@ -102,7 +102,7 @@ class SQLService {
       ''',
     );
     db.execute('''CREATE TABLE badges (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Auto-incrementing ID for the badge
+  id INTEGER PRIMARY KEY AUTOINCREMENT, 
   name TEXT NOT NULL,
   image TEXT NOT NULL,
   description TEXT,
@@ -110,7 +110,7 @@ class SQLService {
 )''',);
 
 db.execute('''CREATE TABLE user_badges (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Auto-incrementing ID for the user-badge relationship
+  id INTEGER PRIMARY KEY AUTOINCREMENT, 
   user_id INTEGER NOT NULL,
   badge_id INTEGER NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id),
@@ -459,13 +459,40 @@ Future<User> getUserForReview(int? reviewId) async {
   }
 }
 
-Future<void> insertBadge(Badge badge) async {
+Future<void> insertBadge(Badges badge) async {
   final db = await database; // Get the database instance
   await db.insert(
     'badges',
     badge.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace, // Handle conflict by replacing existing records
   );
+}
+Future<List<Badges>> getBadgesForUser(int? userId) async {
+  final db = await database;
+
+  // Query the user_badges table to get badge_ids associated with the user
+  final List<Map<String, dynamic>> badgeIds = await db.query(
+    'user_badges',
+    where: 'user_id = ?',
+    whereArgs: [userId],
+  );
+
+  // Now, fetch badge details from badges table based on the badge_ids
+  List<Badges> badges = [];
+  for (var badge in badgeIds) {
+    final badgeId = badge['badge_id'];
+    final badgeDetails = await db.query(
+      'badges',
+      where: 'id = ?',
+      whereArgs: [badgeId],
+    );
+
+    if (badgeDetails.isNotEmpty) {
+      badges.add(Badges.fromMap(badgeDetails.first)); // Assuming Badge.fromMap exists
+    }
+  }
+
+  return badges;
 }
 
 Future<void> assignBadgeToUser(UserBadge userBadge) async {
@@ -1806,14 +1833,14 @@ class PagesPerDay {
 
 //////////////////////////////////
 // Badge class
-class Badge {
+class Badges {
   final int id;            // Unique identifier for the badge
   final String name;
   final String image;
   final String description;
   final bool requirement;
 
-  Badge({
+  Badges({
     required this.id,      // Add id as a required field
     required this.name,
     required this.image,
@@ -1833,8 +1860,8 @@ class Badge {
   }
 
   // Convert Map to Badge object
-  factory Badge.fromMap(Map<String, dynamic> map) {
-    return Badge(
+  factory Badges.fromMap(Map<String, dynamic> map) {
+    return Badges(
       id: map['id'],          // Retrieve the id from the map
       name: map['name'],
       image: map['image'],
