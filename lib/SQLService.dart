@@ -677,11 +677,10 @@ Future<User> getUserById(int? id) async {
   );
 
   // If the book exists, return it as a Book object; otherwise, return null
- 
-    return Book.fromMap(result.first);
+  return Book.fromMap(result.first);
   
 
-// Return null if no book matches the query
+
 }
 
   //*******       Post Setters      ********/
